@@ -983,4 +983,11 @@ class Admin extends Admin_Controller
 
     }
 
+	public function operationalDocuments(){
+		$this->load->view('layout/header');
+        $this->load->view('admin/operationalDocuments');
+        $this->load->view('layout/footer');
+
+	}
+
 }
