@@ -1,157 +1,4 @@
-<div class="content-wrapper">
-		
-    <!-- Main content -->
-    <section class="content">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="box box-primary">
-                  
-                    <div class="box-body">
-<?php
-
-	$base_dir = FCPATH.'uploads/operationalDocuments';
-	if(isset($_POST['create_folder'])=="Add Folder"){
-		$base_dir = $_POST['base_dir'];
-
-		$folder_name=$_POST['createfolder'];
-		$output_dir=$base_dir."/".$folder_name;
-		
-		if (!file_exists($output_dir."/".$folder_name))/* Check folder exists or not */
-		{
-			@mkdir($output_dir , 0777);/* Create folder by using mkdir function */
-		}else{
-			die("invalid path");
-		}
-	}
-		
-?>
-
-<?php
-if(isset($_POST['create_file'])=="Add file"){
-	if(isset($_FILES['file']['name']) != ""){
-		$base_dir = $_POST['base_dir'];
-		$path=$_FILES['file']['name'];
-		$pathto=$base_dir."/";
-		move_uploaded_file( $_FILES['file']['tmp_name'],$pathto . basename($_FILES['file']['name'])) or die( "Could not copy file!");
-	}
-	else {
-		die("No file specified!");
-	}
-}
-?>
-
-
-  
-<div class="container">
-<div class="row">
-<div class="col-md-6" >
-<form action="" method="post">
-    
-	<div class="input-group" style="display:flex">
-		<div class="input-group-append">
-			<input name="base_dir" value='<?= $base_dir;?>' type="hidden" id="base_dir">
-			<input name="createfolder" required class="form-control" type="text" placeholder="Type Folder Name">
-		</div>
-    <input type="submit" name="create_folder" class="btn btn-success" value="Add Folder">
-	</div>
-  </form>
-</div>
-<div class="col-md-6">
-<form action="" method="post" enctype="multipart/form-data">
-<div class="input-group" style="display:flex">
-	<div class="input-group-append">
-	<input name="base_dir" value='<?= $base_dir;?>' type="hidden" id="base_dir_file">
-    <input name="file" required type="file" style="opacity:1" class="control-fileupload">
-</div>
-    <input type="submit" name="create_file" class="btn btn-success" value="Add file">
- 
-</div>
-
- </form>
-<a class="btn btn-info" href="<?= base_url('admin/admin/operationalDocuments');?>" style="float:right">Home Directory</a><br><br>
-</div>
-</div>
-</div>
-
-  <div class="folder-wrap level-current scrolling">
-<?php
-
-function getDirContents($dir, &$results = array()) {
-
-    $files = scandir($dir);
-	if($files){
-    foreach ($files as $key => $value) {
-        $path = realpath($dir . DIRECTORY_SEPARATOR . $value);
-        if (!is_dir($path)) {
-			
-            $results[] = $path;
-        } else if ($value != "." && $value != "..") {
-            //getDirContents($path, $results);
-            $results[] = $path;
-            
-        }
-    }
-	}else{
-		$results = array();
-	}
-
-    return $results;
-}
-
-if (isset($_POST["dir"]) && !empty($_POST["dir"])) {
-  $files = getDirContents($_POST["dir"]);
-}else{
-	$files = getDirContents("$base_dir");
-}
-
-sort($files);
-if($files){
- // this does the sorting
-foreach($files as $file){
-	if(is_dir($file)){ ?>
-
-		 <div class="tile folder" id='<?= $file; ?>'>
-		  <i class="mdi mdi-folder"></i>
-		  <h3><?= basename($file); ?></h3>
-		  
-		</div><!-- .tile.folder -->
-
-		<?php }else{  ?>
-		<div class="tile form">
-			<a target="_blank" href="<?= base_url('uploads/operationalDocuments/'.str_replace(FCPATH,'',$file)); ?>" download>
-		  <i class="mdi mdi-file-document"></i>
-		  <h3><?= basename($file); ?></h3></a>
-		  <h3><?= FCPATH; ?></h3></a>
-		</div>
-<?php	} } }else{ ?>
-	<div class="row"style="width:100%">
-		<div class="alert alert-warning center" >
-		  <strong>No Records!</strong> 
-		</div>
-	</div>
-
-<?php } ?>
-	</div>
-	</div>
-	</section>
-	</div>
-    
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<link href="https://cdn.materialdesignicons.com/2.5.94/css/materialdesignicons.min.css" rel="stylesheet" />
-<link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro" rel="stylesheet" />
-<script>
-$(document).on('click', '.folder', function () {
-    var directory = this.id;
-	
-	$.post('<?php echo base_url("admin/admin/operationalDocuments");?>', ({"dir":directory}), function(data){
-		
-		console.log(data); // Will output, whatever your starter-functions outputs
-		$("body").html(data);
-		$("#base_dir").val(directory);
-		$("#base_dir_file").val(directory);
-	  });
-});
-</script>
+   <style>
 <style>
 HTML CSS JSResult Skip Results Iframe
 EDIT ON
@@ -259,3 +106,161 @@ Resources1× 0.5× 0.25×Rerun
 
 </style>
 
+
+</style>   
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<link href="https://cdn.materialdesignicons.com/2.5.94/css/materialdesignicons.min.css" rel="stylesheet" />
+<div class="content-wrapper">
+		
+    <!-- Main content -->
+    <section class="content">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="box box-primary">
+                  
+                    <div class="box-body">
+<?php
+
+	$base_dir = FCPATH.'uploads/operationalDocuments';
+	if(isset($_POST['create_folder'])=="Add Folder"){
+		$base_dir = $_POST['base_dir'];
+
+		$folder_name=$_POST['createfolder'];
+		$output_dir=$base_dir."/".$folder_name;
+		
+		if (!file_exists($output_dir."/".$folder_name))/* Check folder exists or not */
+		{
+			@mkdir($output_dir , 0777);/* Create folder by using mkdir function */
+		}else{
+			die("invalid path");
+		}
+	}
+		
+?>
+
+<?php
+if(isset($_POST['create_file'])=="Add file"){
+	if(isset($_FILES['file']['name']) != ""){
+		$base_dir = $_POST['base_dir'];
+		$path=$_FILES['file']['name'];
+		$pathto=$base_dir."/";
+		move_uploaded_file( $_FILES['file']['tmp_name'],$pathto . basename($_FILES['file']['name'])) or die( "Could not copy file!");
+	}
+	else {
+		die("No file specified!");
+	}
+}
+?>
+
+
+  
+<div class="container">
+<div class="row">
+<div class="col-md-3 pull-left" >
+<a class="btn btn-info pull-left" href="<?= base_url('admin/admin/operationalDocuments');?>" style="float:right">Go Back</a>
+</div>
+<div class="col-md-4" >
+
+<form action="" method="post">
+    
+	<div class="input-group" style="display:flex">
+		<div class="input-group-append">
+			<input name="base_dir" value='<?= $base_dir;?>' type="hidden" id="base_dir">
+			<input name="createfolder" required class="form-control" type="text" placeholder="Type Folder Name">
+		</div>
+    <input type="submit" name="create_folder" class="btn btn-success" value="Add Folder">
+	</div>
+  </form>
+</div>
+<div class="col-md-4">
+<form action="" method="post" enctype="multipart/form-data">
+<div class="input-group" style="display:flex">
+	<div class="input-group-append">
+	<input name="base_dir" value='<?= $base_dir;?>' type="hidden" id="base_dir_file">
+    <input name="file" required type="file" style="opacity:1" class="control-fileupload">
+</div>
+    <input type="submit" name="create_file" class="btn btn-success" value="Add file">
+ 
+</div>
+
+ </form>
+
+</div>
+</div>
+</div>
+<br><br>
+  <div class="folder-wrap level-current scrolling">
+<?php
+
+function getDirContents($dir, &$results = array()) {
+
+    $files = scandir($dir);
+	if($files){
+    foreach ($files as $key => $value) {
+        $path = realpath($dir . DIRECTORY_SEPARATOR . $value);
+        if (!is_dir($path)) {
+			
+            $results[] = $path;
+        } else if ($value != "." && $value != "..") {
+            //getDirContents($path, $results);
+            $results[] = $path;
+            
+        }
+    }
+	}else{
+		$results = array();
+	}
+
+    return $results;
+}
+
+if (isset($_POST["dir"]) && !empty($_POST["dir"])) {
+  $files = getDirContents($_POST["dir"]);
+}else{
+	$files = getDirContents("$base_dir");
+}
+
+sort($files);
+if($files){
+ // this does the sorting
+foreach($files as $file){
+	if(is_dir($file)){ ?>
+
+		 <div class="tile folder" id='<?= $file; ?>'>
+		  <i class="mdi mdi-folder"></i>
+		  <h3><?= basename($file); ?></h3>
+		  
+		</div><!-- .tile.folder -->
+
+		<?php }else{  ?>
+		<div class="tile form">
+			<a target="_blank" href="<?= base_url(str_replace(FCPATH,'',$file)); ?>" download>
+		  <i class="mdi mdi-file-document"></i>
+		  <h3><?= basename($file); ?></h3></a>
+		</div>
+<?php	} } }else{ ?>
+	<div class="row"style="width:100%">
+		<div class="alert alert-warning center" >
+		  <strong>No Records!</strong> 
+		</div>
+	</div>
+
+<?php } ?>
+	</div>
+	</div>
+	</section>
+	</div>
+
+<script>
+$(document).on('click', '.folder', function () {
+    var directory = this.id;
+	
+	$.post('<?php echo base_url("admin/admin/operationalDocuments");?>', ({"dir":directory}), function(data){
+		
+		console.log(data); // Will output, whatever your starter-functions outputs
+		$("body").html(data);
+		$("#base_dir").val(directory);
+		$("#base_dir_file").val(directory);
+	  });
+});
+</script>
