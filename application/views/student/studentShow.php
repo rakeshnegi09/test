@@ -201,6 +201,8 @@ $currency_symbol = $this->customlib->getSchoolCurrencyFormat(); ?>
 						
 						</div>
 					<input type="submit" name="Save" class="btn btn-success" style="float:right">
+				 
+				 </form>
 				 </div>
 				</div>
 	
@@ -972,16 +974,88 @@ if (!empty($cutom_fields_data)) {
           </table>
       </div>
 	  
-	  <div class="tab-pane" id="wel">
+	   <div class="tab-pane" id="wel">
 		<div class="timeline-header no-border">
 			 <div class="table-responsive" style="clear: both;">
-		<?php
-			echo display_custom_fields('students', $student['id']);
-		?>	
-<p>WEL Not done Yet</p>
+				<form  method="post" action="<?php echo base_url('student/wel_save');?>">
+					<div class="timeline-header no-border">
+						 <div class="table-responsive">
+						 
+								
+								<div class="form-row">
+									<div class="form-group col-md-3">
+									  <label for="">Establishment</label>
+									</div>
+									<div class="form-group col-md-3">
+									  <label for="">from Date</label>
+									</div>
+									<div class="form-group col-md-3">
+									  <label for="">Start Date</label>
+									</div>
+									<div class="form-group col-md-3">
+									  <label for="">Total Hour</label>
+									</div>
+								 </div>
+								<?php
+								$count = 1;
+								$get_wel = get_wel($student["id"]);
+								if($get_wel){
+									foreach($get_wel as $row){ 
+									
+									?>
+								<div class="form-group col-md-3">
+									<input type="text" class="form-control" value="<?php echo $row["establishment"]; ?>" name="establishment[<?= $count;?>]" >
+									<input type="hidden" value="<?php echo $row["student_id"]; ?>" class="form-control" name="student_id[<?= $count;?>]" >
+									<input type="hidden" value="<?php echo $row["id"]; ?>" class="form-control" name="id[<?= $count;?>]" >
+								 </div>
+								 <div class="form-group col-md-3">
+									<input type="text" value="<?php echo date("Y/m/d",strtotime($row["from_date"])); ?>" class="form-control date" name="from_date[<?= $count;?>]" >
+								  </div>
+								  <div class="form-group col-md-3">
+									<input type="text"  value="<?php echo date("Y/m/d",strtotime($row["to_date"])); ?>" class="form-control date" name="to_date[<?= $count;?>]" >
+								  </div>
+								  <div class="form-group col-md-3">
+								   <input type="text" value="<?php echo $row["total_hours"]; ?>" class="form-control" name="total_hours[<?= $count;?>]" >
+								</div>
+									
+								<?php $count++; } } ?>
+								
+							  <?php for($i=$count; $i<15; $i++){ ?>
+								<div class="form-group col-md-3">
+									<input type="text" class="form-control" name="establishment[<?= $i;?>]" >
+									<input type="hidden" value="<?php echo $student["id"]; ?>" class="form-control" name="student_id[<?= $i;?>]" >
+									<input type="hidden" value="" class="form-control" name="id[<?= $i;?>]" >
+								 </div>
+								 <div class="form-group col-md-3">
+									<input type="text" class="form-control date" name="from_date[<?= $i;?>]" >
+								  </div>
+								  <div class="form-group col-md-3">
+									<input type="text" class="form-control date" name="to_date[<?= $i;?>]" >
+								  </div>
+								  <div class="form-group col-md-3">
+								   <input type="text" class="form-control" name="total_hours[<?= $i;?>]" >
+								</div>
+								  
+							  <?php } ?>
+								 <div class="col-lg-12">
+									<div class="pull-right"><label>Total hours worked</label>
+										<input type="text" class="" size="10" name="total_hour" >
+										<input type="text" class="" size="12" name="manual_hours" >
+									</div>
+								 </div><br><br>
+								 <div class="col-lg-12">
+								 <div class="pull-right">
+									<input type="submit"  name="wel_save" value="Save" class=" btn btn-success">
+								 </div>
+								 </div>
+							  
+						</div>
+					</div>
+				  </div>
+				 </form >
 			</div>
 		</div>
-	  </div>
+	 
 	  <div class="tab-pane" id="results">
 		<div class="timeline-header no-border">
 			 <div class="table-responsive" style="clear: both;">

@@ -1,5 +1,5 @@
 <?php
-die("test");
+
 /**
  * CodeIgniter
  *
@@ -56,7 +56,7 @@ die("test");
  */
     ini_set('max_execution_time', 300); // 0 = Unlimited
 
-	define('ENVIRONMENT', 'development');
+	define('ENVIRONMENT', 'production');
 	
 	
 	if( ! ini_get('date.timezone') )

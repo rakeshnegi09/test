@@ -52,3 +52,16 @@ if(!function_exists('fees_due_date')) {
         return $result;
     }
 }
+
+
+if(!function_exists('get_wel')) {
+    function get_wel($id) {
+        $CI = &get_instance();			
+        $CI->db->select('*');
+        $CI->db->from('wel')->limit(1);    
+        $CI->db->where('student_id', $id); 
+        $query = $CI->db->get();
+        $result = $query->result_array();
+        return $result;
+    }
+}
