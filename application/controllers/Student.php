@@ -2148,5 +2148,37 @@ class Student extends Admin_Controller
 		}
 		redirect('student/view/'.$student_id);
 	}
+	
+	
+	public function wel_save(){
+		
+		if(isset($_POST['wel_save'])){
+				
+				foreach($_POST['establishment'] as $key=>$row){
+					if(empty($_POST['establishment'][$key])){
+						break;
+					}
+					$data_array = array(
+						'establishment'=>$_POST['establishment'][$key],
+						'student_id'=>$_POST['student_id'][$key],
+						'from_date'=>date("Y-m-d",strtotime($_POST['from_date'][$key])),
+						'to_date'=>date("Y-m-d",strtotime($_POST['to_date'][$key])),
+						'total_hours'=>$_POST['total_hours'][$key],
+						'manual_hours'=>$_POST['manual_hours'],
+					);
+					
+					$check_exist = $this->db->select("*")->from('wel')->where('id',$_POST['id'][$key])->get()->row_array();
+					if($check_exist){
+						$this->db->where('id',$_POST['id'][$key]);
+						$this->db->update('wel',$data_array);
+					}else{
+						$this->db->insert('wel',$data_array);
+					}
+				}
+				
+				$this->session->set_flashdata('success_covid', 'success');
+				redirect($_SERVER['HTTP_REFERER']);
+		}
+	}
 
 }
