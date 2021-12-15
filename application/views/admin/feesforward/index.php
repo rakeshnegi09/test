@@ -1,7 +1,11 @@
 <?php
 $currency_symbol = $this->customlib->getSchoolCurrencyFormat();
 ?>
+<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+<link href="http://www.jqueryscript.net/demo/jQuery-Plugin-For-Multi-Select-List-with-Checkboxes-MultiSelect/jquery.multiselect.css" rel="stylesheet" type="text/css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 
+<script src="http://www.jqueryscript.net/demo/jQuery-Plugin-For-Multi-Select-List-with-Checkboxes-MultiSelect/jquery.multiselect.js"></script>
 <div class="content-wrapper" style="min-height: 946px;">
     <!-- Content Header (Page header) -->
     <section class="content-header">
@@ -25,19 +29,22 @@ $currency_symbol = $this->customlib->getSchoolCurrencyFormat();
                             <?php echo $this->customlib->getCSRF(); ?>
                             <div class="row">
                                 <div class="col-md-12">                                   
-                                    <?php if ($this->session->flashdata('msg')) { ?>
+                                    <?php 
+								
+									if ($this->session->flashdata('msg')) { ?>
                                         <?php echo $this->session->flashdata('msg') ?>
                                     <?php } ?>
                                 </div>
                                 <div class="col-md-6">                                   
                                     <div class="form-group">
                                         <label for="exampleInputEmail1"><?php echo $this->lang->line('class'); ?></label><small class="req"> *</small>
-                                        <select  id="class_id" name="class_id" class="form-control"  >
-                                            <option value=""><?php echo $this->lang->line('select'); ?></option>
-                                            <?php
+                                        <select  id="class_id" multiple name="class_id[]" class="form-control"  >
+										<option value="">Select option</option>
+											<?php
+											
                                             foreach ($classlist as $class) {
                                                 ?>
-                                                <option value="<?php echo $class['id'] ?>"<?php if (set_value('class_id') == $class['id']) echo "selected=selected" ?>><?php echo $class['class'] ?></option>
+                                                <option value="<?php echo $class['id'] ?>"<?php if(in_array($class['id'],$class_id_array)){ echo "selected=selected"; } ?>><?php echo $class['class'] ?></option>
                                                 <?php
                                                 $count++;
                                             }
@@ -48,12 +55,17 @@ $currency_symbol = $this->customlib->getSchoolCurrencyFormat();
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="exampleInputEmail1">Campus</label><small class="req"> *</small>
-                                        <select  id="section_id" name="section_id" class="form-control" >
-                                            <option value=""   ><?php echo $this->lang->line('select'); ?></option>
-                                        </select>
-                                        <span class="text-danger"><?php echo form_error('section_id'); ?></span>
-                                    </div>
+										<?php $section = get_section(); ?>
+										<label><?php echo $this->lang->line('section'); ?></label>
+										<select  id="" name="section_id" class="form-control" >
+											<option value=""><?php echo $this->lang->line('select'); ?></option>
+											<?php foreach($section as $row){ ?>
+											<option <?php if (set_value('section_id') == $row['id']) echo "selected=selected" ?> value="<?php echo $row['id']; ?>"><?php echo $row['section']; ?></option>
+											<?php } ?>
+											
+										</select>
+										<span class="text-danger"><?php echo form_error('section_id'); ?></span>
+									</div>
                                 </div>
                             </div>
 
@@ -186,7 +198,29 @@ $currency_symbol = $this->customlib->getSchoolCurrencyFormat();
 
 
 <script type="text/javascript">
-
+	$(document).ready(function () {
+		
+		$('select[multiple]').multiselect({
+			columns:0,
+			
+		});
+		$('ul').css({'max-height':'300px','overflow':'auto',"padding":"0"});
+		setTimeout(
+		function() 
+		{
+			$('ul').find("input:checkbox").each(function(key, val) {
+				key++;
+				if ($(this).is(":checked")){
+					//$(this).prop( "checked", true );
+				}else{
+					//console.log("asd");
+					//console.log(key);
+				}
+				
+			});
+		}, 3000);
+		
+	});
 
     $(document).ready(function () {
 

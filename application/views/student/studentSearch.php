@@ -1,6 +1,12 @@
 <?php
 $currency_symbol = $this->customlib->getSchoolCurrencyFormat();
 ?>
+<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+<link href="http://www.jqueryscript.net/demo/jQuery-Plugin-For-Multi-Select-List-with-Checkboxes-MultiSelect/jquery.multiselect.css" rel="stylesheet" type="text/css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+
+<script src="http://www.jqueryscript.net/demo/jQuery-Plugin-For-Multi-Select-List-with-Checkboxes-MultiSelect/jquery.multiselect.js"></script>
+
 <div class="content-wrapper">
     <section class="content-header">
         <h1>
@@ -23,30 +29,35 @@ $currency_symbol = $this->customlib->getSchoolCurrencyFormat();
                                         <?php echo $this->customlib->getCSRF(); ?>
                                         <div class="col-sm-6">
                                             <div class="form-group">
+											  <div class="select_container">
                                                 <label><?php echo $this->lang->line('class'); ?></label> <small class="req"> *</small>
-                                                <select autofocus="" id="class_id" name="class_id" class="form-control" >
-                                                    <option value=""><?php echo $this->lang->line('select'); ?></option>
+                                                <select autofocus="" id="class_id" multiple  name="class_id[]" class="form-control" style="height: 100%;" >
+                                                    
                                                     <?php
-$count = 0;
-foreach ($classlist as $class) {
-    ?>
+													$count = 0;
+													foreach ($classlist as $class) {
+														?>
                                                         <option value="<?php echo $class['id'] ?>" <?php if (set_value('class_id') == $class['id']) {
-        echo "selected=selected";
-    }
-    ?>><?php echo $class['class'] ?></option>
-                                                        <?php
-$count++;
-}
-?>
-                                                </select>
+																echo "selected=selected";
+															}
+														?>>
+														<?php echo $class['class'] ?></option>
+                                                        <?php $count++;	} ?>
+													</select>
+												</div>
                                                   <span class="text-danger" id="error_class_id"></span>
                                             </div>
                                         </div>
                                         <div class="col-sm-6">
                                             <div class="form-group">
+												<?php $section = get_section(); ?>
                                                 <label><?php echo $this->lang->line('section'); ?></label>
-                                                <select  id="section_id" name="section_id" class="form-control" >
+                                                <select  id="" name="section_id" class="form-control" >
                                                     <option value=""><?php echo $this->lang->line('select'); ?></option>
+													<?php foreach($section as $row){ ?>
+													<option value="<?php echo $row['id']; ?>"><?php echo $row['section']; ?></option>
+													<?php } ?>
+													
                                                 </select>
                                                 <span class="text-danger"><?php echo form_error('section_id'); ?></span>
                                             </div>
@@ -218,8 +229,13 @@ if ($this->rbac->hasPrivilege('student', 'can_edit')) {
                                                         </div>
 
 <script type="text/javascript">
-
-
+$(document).ready(function () {
+	$('select[multiple]').multiselect({
+		columns:0,
+		placeholder: 'Select options'
+	});
+	$('ul').css({'max-height':'300px','overflow':'auto',"padding":"0"});
+});
 function getSectionByClass(class_id, section_id) {
     if (class_id != "" && section_id != "") {
         $('#section_id').html("");
@@ -245,6 +261,7 @@ function getSectionByClass(class_id, section_id) {
     }
 }
 $(document).ready(function () {
+
     var class_id = $('#class_id').val();
     var section_id = '<?php echo set_value('section_id') ?>';
     getSectionByClass(class_id, section_id);
@@ -295,7 +312,7 @@ $(document).on('submit','.class_search_form',function(e){
                 resetFields($this.attr('value'));
                },
               success: function(response) { // your success handler
-
+				console.log(response);
                 if(!response.status){
                     $.each(response.error, function(key, value) {
                     $('#error_' + key).html(value);

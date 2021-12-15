@@ -70,3 +70,15 @@ if(!function_exists('get_wel')) {
         return $result;
     }
 }
+
+
+if(!function_exists('get_section')) {
+    function get_section() {
+        $CI = &get_instance();			
+        $CI->db->select('*');
+        $CI->db->from('sections');    
+        $query = $CI->db->get();
+        $result = $query->result_array();
+        return $result;
+    }
+}
