@@ -31,8 +31,13 @@ class Feesforward extends Admin_Controller {
         $data['adm_auto_insert'] = $this->sch_setting_detail->adm_auto_insert;
         $data['sch_setting'] = $this->sch_setting_detail;
         $data['classlist'] = $class;
+        
         $action = $this->input->post('action');
+		$class_id = array();
+		
         $class_id = $this->input->post('class_id');
+		
+		$data['class_id_array'] = $class_id;
         $section_id = $this->input->post('section_id');
         if ($this->input->server('REQUEST_METHOD') == "POST") {
             $setting_result = $this->setting_model->get();
@@ -55,7 +60,7 @@ class Feesforward extends Admin_Controller {
 
             //========================
             if ($action == 'search') {
-                $this->form_validation->set_rules('class_id', $this->lang->line('class'), 'required');
+                $this->form_validation->set_rules('class_id[]', $this->lang->line('class'), 'required');
                 $this->form_validation->set_rules('section_id', $this->lang->line('section'), 'required');
                 if ($this->form_validation->run() == TRUE) {
                     $data['student_due_fee'] = array();

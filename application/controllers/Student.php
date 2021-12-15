@@ -1966,7 +1966,7 @@ class Student extends Admin_Controller
 
         if ($srch_type == 'search_filter') {
 
-            $this->form_validation->set_rules('class_id', $this->lang->line('class'), 'trim|required|xss_clean');
+            $this->form_validation->set_rules('class_id[]', $this->lang->line('class'), 'trim|required|xss_clean');
             if ($this->form_validation->run() == true) {
 
                 $params = array('srch_type' => $srch_type, 'class_id' => $class_id, 'section_id' => $section_id);

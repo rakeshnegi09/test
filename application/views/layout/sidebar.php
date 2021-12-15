@@ -1,4 +1,4 @@
-<aside class="main-sidebar" id="alert2">
+<aside class="main-sidebar" id="alert2" style="opacity:0">
     <?php if ($this->rbac->hasPrivilege('student', 'can_view')) {?>
         <form class="navbar-form navbar-left search-form2" role="search"  action="<?php echo site_url('admin/admin/search'); ?>" method="POST">
             <?php echo $this->customlib->getCSRF(); ?>
@@ -186,17 +186,17 @@ if ($this->module_lib->hasActive('fees_collection')) {
                         </a>
                         <ul class="treeview-menu">
                             <?php if ($this->rbac->hasPrivilege('collect_fees', 'can_view')) {?>
-                                <!--li class="<?php echo set_Submenu('studentfee/index'); ?>"><a href="<?php echo base_url(); ?>studentfee"><i class="fa fa-angle-double-right"></i> <?php echo $this->lang->line('collect_fees'); ?></a></li>
+                                <li class="<?php echo set_Submenu('studentfee/index'); ?>"><a href="<?php echo base_url(); ?>studentfee"><i class="fa fa-angle-double-right"></i> <?php echo $this->lang->line('collect_fees'); ?></a></li>
                                 <?php
 }
         if ($this->rbac->hasPrivilege('search_fees_payment', 'can_view')) {
             ?>
-                                <li class="<?php echo set_Submenu('studentfee/searchpayment'); ?>"><a href="<?php echo base_url(); ?>studentfee/searchpayment"><i class="fa fa-angle-double-right"></i> <?php echo $this->lang->line('search_fees_payment'); ?></a></li-->
+                                <!--li class="<?php echo set_Submenu('studentfee/searchpayment'); ?>"><a href="<?php echo base_url(); ?>studentfee/searchpayment"><i class="fa fa-angle-double-right"></i> <?php echo $this->lang->line('search_fees_payment'); ?></a></li-->
                                 <?php
 }
         if ($this->rbac->hasPrivilege('search_due_fees', 'can_view')) {
             ?>
-                                <li class="<?php echo set_Submenu('studentfee/feesearch'); ?>"><a href="<?php echo base_url(); ?>studentfee/feesearch"><i class="fa fa-angle-double-right"></i> <?php echo $this->lang->line('search_due_fees'); ?> </a></li>
+                                <!--li class="<?php echo set_Submenu('studentfee/feesearch'); ?>"><a href="<?php echo base_url(); ?>studentfee/feesearch"><i class="fa fa-angle-double-right"></i> <?php echo $this->lang->line('search_due_fees'); ?> </a></li-->
                                 <?php
 }
 
@@ -224,7 +224,7 @@ if ($this->module_lib->hasActive('fees_collection')) {
 }
         if ($this->rbac->hasPrivilege('fees_carry_forward', 'can_view')) {
             ?>
-                                <li class="<?php echo set_Submenu('feesforward/index'); ?>"><a href="<?php echo base_url('admin/feesforward'); ?>"><i class="fa fa-angle-double-right"></i> <?php echo $this->lang->line('fees_carry_forward'); ?></a></li>
+                                <li class="<?php echo set_Submenu('feesforward/index'); ?>"><a href="<?php echo base_url('admin/feesforward'); ?>">Payable Fees</a></li>
                                 <?php
 }
 

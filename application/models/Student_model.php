@@ -1203,7 +1203,8 @@ class Student_model extends MY_Model
 
     public function getPreviousSessionStudent($previous_session_id, $class_id, $section_id)
     {
-        $sql = "SELECT student_session.student_id as student_id, student_session.id as current_student_session_id, student_session.class_id as current_session_class_id ,previous_session.id as previous_student_session_id,students.firstname,students.middlename,students.lastname,students.admission_no,students.roll_no,students.father_name,students.admission_date FROM `student_session` left JOIN (SELECT * FROM `student_session` where session_id=$previous_session_id) as previous_session on student_session.student_id=previous_session.student_id INNER join students on students.id =student_session.student_id where student_session.session_id=$this->current_session and student_session.class_id=$class_id and student_session.section_id=$section_id and students.is_active='yes' ORDER BY students.firstname ASC";
+		$class = join(',',$class_id); 
+        $sql = "SELECT student_session.student_id as student_id, student_session.id as current_student_session_id, student_session.class_id as current_session_class_id ,previous_session.id as previous_student_session_id,students.firstname,students.middlename,students.lastname,students.admission_no,students.roll_no,students.father_name,students.admission_date FROM `student_session` left JOIN (SELECT * FROM `student_session` where session_id=$previous_session_id) as previous_session on student_session.student_id=previous_session.student_id INNER join students on students.id =student_session.student_id where student_session.session_id=$this->current_session and student_session.section_id=$section_id and students.is_active='yes' AND student_session.class_id in ($class) ORDER BY students.firstname ASC";
 
         $query = $this->db->query($sql);
         return $query->result();
@@ -1852,9 +1853,9 @@ class Student_model extends MY_Model
         }
     }
 
-        public function searchdtByClassSection($class_id = null, $section_id = null)
+     public function searchdtByClassSection($class_id = null, $section_id = null)
     {
-
+		
         $i = 1;
         $custom_fields   = $this->customfield_model->get_custom_fields('students', 1);
         $field_var_array = array();
@@ -1872,14 +1873,18 @@ class Student_model extends MY_Model
         
         $field_variable = implode(',', $field_var_array);
         $field_name = implode(',', $field_var_array_name);
-
+		$this->datatables->group_start();
         if ($class_id != null) {
-            $this->datatables->where('student_session.class_id', $class_id);
+			//$class = join(',',$class_id); 
+			foreach($class_id as $class){
+				$this->datatables->or_where('student_session.class_id', $class);
+            }
         }
+		$this->datatables->group_end();
         if ($section_id != null) {
             $this->datatables->where('student_session.section_id', $section_id);
         }
-
+		
          $this->datatables
             ->select('classes.id AS `class_id`,student_session.id as student_session_id,students.id,classes.class,sections.id AS `section_id`,sections.section,students.id,students.admission_no , students.roll_no,students.admission_date,students.firstname,students.middlename,  students.lastname,students.image,    students.mobileno, students.email ,students.state ,   students.city , students.pincode ,     students.religion,     students.dob ,students.current_address,    students.permanent_address,IFNULL(students.category_id, 0) as `category_id`,IFNULL(categories.category, "") as `category`,students.adhar_no,students.samagra_id,students.bank_account_no,students.bank_name, students.ifsc_code , students.guardian_name , students.guardian_relation,students.guardian_phone,students.guardian_address,students.is_active ,students.created_at ,students.updated_at,students.father_name,students.app_key,students.parent_app_key,students.rte,students.gender,'. $field_variable)
             ->searchable('students.admission_no,students.firstname,classes.class,students.father_name,students.dob,students.admission_date,students.gender,categories.category,students.mobileno,'.$field_variable)
