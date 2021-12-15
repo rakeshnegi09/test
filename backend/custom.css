@@ -25,7 +25,12 @@
 .slidealert {
     display: none;
 }
-
+.form-control {
+    border-radius: 0;
+    box-shadow: none;
+	padding: 5px;
+    border: 1px solid #b2afaf !important;
+}
 #myModalSuccess .modal-content{
 	padding-top: 76px;
     padding-bottom: 70px;

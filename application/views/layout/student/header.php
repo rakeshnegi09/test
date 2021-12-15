@@ -190,7 +190,7 @@ if($this->studentmodule_lib->hasActive('multi_class')){
                                    
                                 <?php }  if ($this->studentmodule_lib->hasActive('chat')){
                                 ?>
-                                 <li class="cal15"><a data-placement="bottom" data-toggle="tooltip" title="" href="<?php echo base_url()?>user/chat" data-original-title="<?php echo $this->lang->line('chat');?>" class="todoicon"><i class="fa fa-whatsapp"></i></a></li> 
+                                 <li class="cal15"><a data-placement="bottom" target="_blank" data-toggle="tooltip" title="" href="https://api.whatsapp.com/send?phone=1234567890" data-original-title="<?php echo $this->lang->line('chat');?>" class="todoicon"><i class="fa fa-whatsapp"></i></a></li> 
                                 <?php }
 
 
