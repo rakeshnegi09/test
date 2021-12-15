@@ -999,6 +999,7 @@ if (!empty($cutom_fields_data)) {
 								<?php
 								$count = 1;
 								$get_wel = get_wel($student["id"]);
+								$total_hours = 0;
 								if($get_wel){
 									foreach($get_wel as $row){ 
 									
@@ -1018,7 +1019,9 @@ if (!empty($cutom_fields_data)) {
 								   <input type="text" value="<?php echo $row["total_hours"]; ?>" class="form-control" name="total_hours[<?= $count;?>]" >
 								</div>
 									
-								<?php $count++; } } ?>
+								<?php 
+								$total_hours  = $total_hours + $row["total_hours"];
+								$count++; } } ?>
 								
 							  <?php for($i=$count; $i<15; $i++){ ?>
 								<div class="form-group col-md-3">
@@ -1039,8 +1042,8 @@ if (!empty($cutom_fields_data)) {
 							  <?php } ?>
 								 <div class="col-lg-12">
 									<div class="pull-right"><label>Total hours worked</label>
-										<input type="text" class="" size="10" name="total_hour" >
-										<input type="text" class="" size="12" name="manual_hours" >
+										<input type="text" class="" size="10" name="total_hour" value="<?= $total_hours; ?>">
+										<input type="text" class="" size="12" name="manual_hours" value="<?php if(isset($row["manual_hours"][0])){ echo $get_wel[0]["manual_hours"]; } ?>" >
 									</div>
 								 </div><br><br>
 								 <div class="col-lg-12">

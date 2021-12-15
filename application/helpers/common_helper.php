@@ -48,8 +48,13 @@ if(!function_exists('fees_due_date')) {
         $CI->db->where('student_session_id', $id); 	
         $CI->db->where('due_date !=', NULL);
         $query = $CI->db->get();
-        $result = $query->row_array()['due_date'];
-        return $result;
+        $result = $query->row_array();
+		if($result){
+			return $result['due_date'];
+		}else{
+			return false;;
+		}
+        
     }
 }
 
@@ -58,7 +63,7 @@ if(!function_exists('get_wel')) {
     function get_wel($id) {
         $CI = &get_instance();			
         $CI->db->select('*');
-        $CI->db->from('wel')->limit(1);    
+        $CI->db->from('wel');    
         $CI->db->where('student_id', $id); 
         $query = $CI->db->get();
         $result = $query->result_array();

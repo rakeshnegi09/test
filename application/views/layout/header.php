@@ -206,7 +206,7 @@ $tasklist = $this->customlib->getincompleteTask($userdata["id"]);
                                 if ($this->module_lib->hasActive('chat')){
                                     if($this->rbac->hasPrivilege('chat','can_view')){
                                         ?>
-                                         <li class="cal15"><a data-placement="bottom" data-toggle="tooltip" title="" href="<?php echo base_url()?>admin/chat" data-original-title="<?php echo $this->lang->line('chat')?>" class="todoicon"><i class="fa fa-whatsapp"></i></a></li> 
+                                         <li class="cal15"><a target="_blank" data-placement="bottom" data-toggle="tooltip" title="" href="https://api.whatsapp.com/send?phone=1234567890" data-original-title="<?php echo $this->lang->line('chat')?>" class="todoicon"><i class="fa fa-whatsapp"></i></a></li> 
                                         <?php
                                     }
                                 ?>

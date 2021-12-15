@@ -148,11 +148,15 @@
                   <li class=""><a href="#covid" data-toggle="tab" aria-expanded="true"><?php echo $this->lang->line(
                       "covid-19"
                   ); ?></a></li>
-                  <?php if ($sch_setting->student_profile_edit) { ?>
+                  <?php if(isset($student["section"]) == "Campus Mokopane"){
+					  $email = "portalplk@limpopochefs.co.za";
+				  }else{
+					  $email = "portalmkp@limpopochefs.co.za";
+				  } ?>
                   <li class="pull-right">
-                     <a  href="mailto:admin@cheaf.com"><span style="background-color:green" class="badge badge-pill badge-success">Update Details</span></a>
+                     <a  href="mailto:<?= $email;?>"><span style="background-color:green" class="badge badge-pill badge-success">Update Details</span></a>
                   </li>
-                  <?php } ?>
+                 
                </ul>
                <div class="tab-content">
                   <div class="tab-pane active" id="activity">
@@ -947,8 +951,77 @@
 					</div>
 	  
 				  <div class="tab-pane" id="wel">
-					<p>WEL Not done Yet</p>
+		<div class="timeline-header no-border">
+			 <div class="table-responsive" style="clear: both;">
+				
+					<div class="timeline-header no-border">
+						 <div class="table-responsive">
+						 
+								
+								<div class="form-row">
+									<div class="form-group col-md-3">
+									  <label for="">Establishment</label>
+									</div>
+									<div class="form-group col-md-3">
+									  <label for="">from Date</label>
+									</div>
+									<div class="form-group col-md-3">
+									  <label for="">Start Date</label>
+									</div>
+									<div class="form-group col-md-3">
+									  <label for="">Total Hour</label>
+									</div>
+								 </div>
+								<?php
+								$count = 1;
+								$get_wel = get_wel($student["id"]);
+								$total_hours = 0;
+								if($get_wel){
+									foreach($get_wel as $row){ 
+									
+									?>
+								<div class="form-group col-md-3">
+									<input type="text" readonly class="form-control" value="<?php echo $row["establishment"]; ?>" name="establishment[<?= $count;?>]" >
+									<input type="hidden" readonly value="<?php echo $row["student_id"]; ?>" class="form-control" name="student_id[<?= $count;?>]" >
+									<input type="hidden" value="<?php echo $row["id"]; ?>" class="form-control" name="id[<?= $count;?>]" >
+								 </div>
+								 <div class="form-group col-md-3">
+									<input type="text" readonly value="<?php echo date("Y/m/d",strtotime($row["from_date"])); ?>" class="form-control " name="from_date[<?= $count;?>]" >
+								  </div>
+								  <div class="form-group col-md-3">
+									<input type="text"  value="<?php echo date("Y/m/d",strtotime($row["to_date"])); ?>" class="form-control " name="to_date[<?= $count;?>]" >
+								  </div>
+								  <div class="form-group col-md-3">
+								   <input type="text" readonly value="<?php echo $row["total_hours"]; ?>" class="form-control" name="total_hours[<?= $count;?>]" >
+								</div>
+									
+								<?php 
+								$total_hours  = $total_hours + $row["total_hours"];
+								$count++; } ?>
+								
+								
+								 <div class="col-lg-12">
+									<div class="pull-right"><label>Total hours worked</label>
+										<input type="text" readonly class="" size="10" name="total_hour" value="<?= $total_hours; ?>">
+										<input type="text" readonly class="" size="12" name="manual_hours" value="<?php if(isset($row["manual_hours"][0])){ echo $get_wel[0]["manual_hours"]; } ?>" >
+									</div>
+								 </div><br><br>
+								 
+								<?php }else{ ?>
+								
+								<div class="col-lg-12">
+									<div class="pull-right"><label>No Records!</label>
+										
+								 </div><br><br>
+								 
+								<?php } ?>
+						</div>
+					</div>
 				  </div>
+				
+			</div>
+		</div>
+	 
 				  <div class="tab-pane" id="results">
 					<p>Results Not done Yet</p>
 				  </div>
