@@ -3,7 +3,6 @@ $currency_symbol = $this->customlib->getSchoolCurrencyFormat();
 ?>
 <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
 <link href="http://www.jqueryscript.net/demo/jQuery-Plugin-For-Multi-Select-List-with-Checkboxes-MultiSelect/jquery.multiselect.css" rel="stylesheet" type="text/css">
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 
 <script src="http://www.jqueryscript.net/demo/jQuery-Plugin-For-Multi-Select-List-with-Checkboxes-MultiSelect/jquery.multiselect.js"></script>
 <div class="content-wrapper" style="min-height: 946px;">
@@ -35,12 +34,12 @@ $currency_symbol = $this->customlib->getSchoolCurrencyFormat();
                                         <?php echo $this->session->flashdata('msg') ?>
                                     <?php } ?>
                                 </div>
+								<input type="hidden" value="<?php if(!empty($class_id_array)){ echo implode(",",$class_id_array) ;}?>" name="class_array">
                                 <div class="col-md-6">                                   
                                     <div class="form-group">
                                         <label for="exampleInputEmail1"><?php echo $this->lang->line('class'); ?></label><small class="req"> *</small>
                                         <select  id="class_id" multiple name="class_id[]" class="form-control"  >
-										<option value="">Select option</option>
-											<?php
+										<?php
 											
                                             foreach ($classlist as $class) {
                                                 ?>
@@ -198,28 +197,22 @@ $currency_symbol = $this->customlib->getSchoolCurrencyFormat();
 
 
 <script type="text/javascript">
-	$(document).ready(function () {
-		
+	$(document.body).ready(function () {
+		var selected_value = '<?php echo json_encode($class_id_array);?>';
+		//var selected_value = ["4"];
 		$('select[multiple]').multiselect({
 			columns:0,
-			
+			placeholder:"Please select"
 		});
-		$('ul').css({'max-height':'300px','overflow':'auto',"padding":"0"});
-		setTimeout(
-		function() 
-		{
-			$('ul').find("input:checkbox").each(function(key, val) {
-				key++;
-				if ($(this).is(":checked")){
-					//$(this).prop( "checked", true );
-				}else{
-					//console.log("asd");
-					//console.log(key);
-				}
+		$('.form-group ul').css({'max-height':'300px','overflow':'auto',"padding":"0"});
+		$('ul').find("input:checkbox").each(function(key, val) {
+			key++;
+			var value = document.getElementById('ms-opt-'+key).value;
+			if($.inArray(value, selected_value) != -1) {
 				
-			});
-		}, 3000);
-		
+					$(this).click();
+			}
+		});
 	});
 
     $(document).ready(function () {
@@ -243,7 +236,7 @@ $currency_symbol = $this->customlib->getSchoolCurrencyFormat();
 
 
     function getSectionByClass(class_id, section_id) {
-
+		return false;
         if (class_id != "") {
             $('#section_id').html("");
             var base_url = '<?php echo base_url() ?>';

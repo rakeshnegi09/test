@@ -73,10 +73,10 @@ class Feesforward extends Admin_Controller {
                 }
             } else if ($action == 'fee_submit') {
 
-                $student_Array = json_decode($this->findPreviousBalanceFees($pre_session->id, $class_id, $section_id, $current_session));
+                /*$student_Array = json_decode($this->findPreviousBalanceFees($pre_session->id, $class_id, $section_id, $current_session));
 
                 $data['student_due_fee'] = $student_Array->student_Array;
-                $data['is_update'] = $student_Array->is_update;
+                $data['is_update'] = $student_Array->is_update;*/
                 $this->form_validation->set_rules('due_date', $this->lang->line('date'), 'required');
                 $counter = $this->input->post('student_counter');
 
