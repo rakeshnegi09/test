@@ -234,7 +234,7 @@ $(document).ready(function () {
 		columns:0,
 		placeholder: 'Select options'
 	});
-	$('ul').css({'max-height':'300px','overflow':'auto',"padding":"0"});
+	$('.select_container ul').css({'max-height':'300px','overflow':'auto',"padding":"0"});
 });
 function getSectionByClass(class_id, section_id) {
     if (class_id != "" && section_id != "") {
