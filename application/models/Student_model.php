@@ -1402,9 +1402,15 @@ class Student_model extends MY_Model
         $this->db->join('categories', 'students.category_id = categories.id', 'left');
         $this->db->where('student_session.session_id', $this->current_session);
         $this->db->where('students.is_active', "no");
-        if ($class != null) {
-            $this->db->where('student_session.class_id', $class);
+        
+		$this->db->group_start();
+        if (!empty($class)) {
+			foreach($class as $class_id){
+				$this->db->or_where('student_session.class_id', $class_id);
+            }
         }
+		$this->db->group_end();
+		
         if ($section != null) {
             $this->db->where('student_session.section_id', $section);
         }
@@ -1951,5 +1957,38 @@ class Student_model extends MY_Model
     }
 
     //===========
+	
+	 public function get_covid_report($class_id = null, $section_id = null
+        , $from_date = null, $to_date =null) {
+       
+	   
+	   $this->db->group_start();
+        if (!empty($class_id)) {
+			foreach($class_id as $class){
+				$this->db->or_where('student_session.class_id', $class);
+            }
+        }
+		$this->db->group_end();
+		
+		$this->db->group_start();
+        if (!empty($section_id)) {
+			foreach($section_id as $section){
+				$this->db->or_where('student_session.section_id', $section);
+            }
+        }
+		$this->db->group_end();
+		$this->db->where('covid_screening.date >=', $from_date);
+		$this->db->where('covid_screening.date <=', $to_date);
+         $this->datatables->select('covid_screening.id as c_id,covid_screening.date as c_date,students.*,sections.*,classes.*')        
+        ->searchable('*')
+        ->orderable('sections.section,students.admission_no,students.firstname,covid_screening.date')
+        ->join('student_session', 'covid_screening.student_id = student_session.id')
+        ->join('students', 'covid_screening.student_id = students.id')
+        ->join('classes', 'student_session.class_id = classes.id')
+        ->join('sections', 'sections.id = student_session.section_id')
+        ->from('covid_screening');
+        return $this->datatables->generate('json');
+    }
+
 
 }

@@ -58,7 +58,8 @@
                         <li class="col-lg-4 col-md-4 col-sm-6 <?php echo set_SubSubmenu('Reports/student_information/boys_girls_ratio'); ?>"><a href="<?php echo base_url(); ?>report/boys_girls_ratio"><i class="fa fa-file-text-o"></i> <?php echo $this->lang->line('student') . " " . $this->lang->line('gender') . " " . $this->lang->line('ratio') . " " . $this->lang->line('report'); ?></a></li>
                         <?php }if ($this->rbac->hasPrivilege('student_teacher_ratio_report', 'can_view')) { ?>
                         <li class="col-lg-4 col-md-4 col-sm-6 <?php echo set_SubSubmenu('Reports/student_information/student_teacher_ratio'); ?>"><a href="<?php echo base_url(); ?>report/student_teacher_ratio"><i class="fa fa-file-text-o"></i> <?php echo $this->lang->line('student') . " " . $this->lang->line('teacher') . " " . $this->lang->line('ratio') . " " . $this->lang->line('report'); ?></a></li>
-<?php } ?>
+						<?php } ?>
+						<li class="col-lg-4 col-md-4 col-sm-6 <?php echo set_SubSubmenu('Reports/student_information/covid_report'); ?>"><a href="<?php echo base_url(); ?>student/covid_report"><i class="fa fa-file-text-o"></i>Covid-19 Reports</a></li>
                 </ul>
             </div>
         </div> 

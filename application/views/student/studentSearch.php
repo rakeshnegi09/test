@@ -1,11 +1,7 @@
 <?php
 $currency_symbol = $this->customlib->getSchoolCurrencyFormat();
 ?>
-<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
-<link href="http://www.jqueryscript.net/demo/jQuery-Plugin-For-Multi-Select-List-with-Checkboxes-MultiSelect/jquery.multiselect.css" rel="stylesheet" type="text/css">
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 
-<script src="http://www.jqueryscript.net/demo/jQuery-Plugin-For-Multi-Select-List-with-Checkboxes-MultiSelect/jquery.multiselect.js"></script>
 
 <div class="content-wrapper">
     <section class="content-header">
@@ -234,7 +230,7 @@ $(document).ready(function () {
 		columns:0,
 		placeholder: 'Select options'
 	});
-	$('.select_container ul').css({'max-height':'300px','overflow':'auto',"padding":"0"});
+	
 });
 function getSectionByClass(class_id, section_id) {
     if (class_id != "" && section_id != "") {

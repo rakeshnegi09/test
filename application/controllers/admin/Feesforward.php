@@ -33,10 +33,12 @@ class Feesforward extends Admin_Controller {
         $data['classlist'] = $class;
         
         $action = $this->input->post('action');
-		$class_id = array();
+		
 		
         $class_id = $this->input->post('class_id');
-		
+		if(empty($class_id)){
+			$class_id = array();
+		}
 		$data['class_id_array'] = $class_id;
         $section_id = $this->input->post('section_id');
         if ($this->input->server('REQUEST_METHOD') == "POST") {
