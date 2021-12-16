@@ -4,7 +4,7 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title><?php echo $this->customlib->getAppName(); ?></title>
+        <!--title><?php echo $this->customlib->getAppName(); ?></title-->
         <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
         <meta http-equiv="Cache-control" content="no-cache">
         <meta name="theme-color" content="#424242" />
@@ -62,7 +62,8 @@
             var start_week=<?php echo $this->customlib->getStartWeek();?>;
             var chk_validate="<?php echo $this->config->item('SSLK')?>";
         </script>
-     
+		<link href="<?php echo base_url('backend/css/jquery.multiselect.css');?>" rel="stylesheet" type="text/css">
+		<script src="<?php echo base_url('backend/js/jquery.multiselect.js');?>"></script>
   <style type="text/css">
         span.flag-icon.flag-icon-us{text-orientation: mixed;}
   </style>

@@ -1510,7 +1510,13 @@ class Student extends Admin_Controller
                 $carray[] = $cvalue["id"];
             }
         }
-
+		$class_id = $this->input->post('class_id');
+		if(empty($class_id)){
+			$class_id = array();
+		}
+		
+		$data['class_id_array'] = $class_id;
+		
         $button = $this->input->post('search');
         if ($this->input->server('REQUEST_METHOD') == "GET") {
 
@@ -1521,7 +1527,7 @@ class Student extends Admin_Controller
             $search_text = $this->input->post('search_text');
             if (isset($search)) {
                 if ($search == 'search_filter') {
-                    $this->form_validation->set_rules('class_id', $this->lang->line('class'), 'trim|required|xss_clean');
+                    $this->form_validation->set_rules('class_id[]', $this->lang->line('class'), 'trim|required|xss_clean');
                     if ($this->form_validation->run() == false) {
 
                     } else {
@@ -2180,5 +2186,102 @@ class Student extends Admin_Controller
 				redirect($_SERVER['HTTP_REFERER']);
 		}
 	}
+	
+	
+    /* this function is used to validate student report   */
+    public function covidreportvalidation()
+    {
+        $class_id    = $this->input->post('class_id');
+        $section_id  = $this->input->post('section_id');
+        $from_date = $this->input->post('from_date');
+        $to_date      = $this->input->post('to_date');
+
+        $srch_type = $this->input->post('search_type');
+
+        if ($srch_type == 'search_filter') {
+
+            $this->form_validation->set_rules('class_id[]', $this->lang->line('class'), 'trim|required|xss_clean');
+            if ($this->form_validation->run() == true) {
+
+                $params = array('srch_type' => $srch_type, 'class_id' => $class_id, 'section_id' => $section_id, 'from_date' => $from_date,'to_date' => $to_date);
+                $array  = array('status' => 1, 'error' => '', 'params' => $params);
+                echo json_encode($array);
+
+            } else {
+
+                $error             = array();
+                $error['class_id'] = form_error('class_id');
+                $array             = array('status' => 0, 'error' => $error);
+                echo json_encode($array);
+            }
+        } else {
+            $params = array('srch_type' => 'search_full', 'class_id' => $class_id, 'section_id' => $section_id);
+            $array  = array('status' => 1, 'error' => '', 'params' => $params);
+            echo json_encode($array);
+        }
+
+    }
+
+	public function covid_report()
+    {
+        if (!$this->rbac->hasPrivilege('student_report', 'can_view')) {
+            access_denied();
+        }
+
+        $this->session->set_userdata('top_menu', 'Reports');
+        $this->session->set_userdata('sub_menu', 'Reports/student_information');
+        $this->session->set_userdata('subsub_menu', 'Reports/student_information/covid_report');
+        $data['title']           = 'student fee';
+        $data['title']           = 'student fee';
+        
+        $class                   = $this->class_model->get();
+        $data['classlist']       = $class;
+        $userdata                = $this->customlib->getUserData();
+        $this->load->view('layout/header', $data);
+        $this->load->view('student/covid_report', $data);
+        $this->load->view('layout/footer', $data);
+
+    }
+	
+	
+	public function dtcovidreportlist()
+    {
+		$class_id    = $this->input->post('class_id');
+        $section_id  = $this->input->post('section_id');
+        $from_date = $this->input->post('from_date');
+        $to_date      = $this->input->post('to_date');
+
+        $result     = $this->student_model->get_covid_report($class_id, $section_id, $from_date, $to_date);
+        $resultlist = json_decode($result);
+        $dt_data    = array();
+        if (!empty($resultlist->data)) {
+            foreach ($resultlist->data as $resultlist_key => $student) {
+
+                $viewbtn = "<a  href='" . base_url() . "student/view/" . $student->id . "'>" . $this->customlib->getFullName($student->firstname, $student->middlename, $student->lastname, $sch_setting->middlename, $sch_setting->lastname) . "</a>";
+				
+				$download_report = "<a  href='" . base_url() . "student/download_covid_screening/" . $student->c_id."' >Download</a>";
+
+                $row   = array();
+                $row[] = $student->section;
+                $row[] = $student->admission_no;
+                $row[] = $viewbtn;               
+                $row[] = $student->c_date;
+                $row[] = $download_report;
+
+               
+                $dt_data[] = $row;
+            }
+
+        }
+        $json_data = array(
+            "draw"            => intval($resultlist->draw),
+            "recordsTotal"    => intval($resultlist->recordsTotal),
+            "recordsFiltered" => intval($resultlist->recordsFiltered),
+            "data"            => $dt_data,
+        );
+
+        echo json_encode($json_data);
+    }
+
 
 }

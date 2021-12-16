@@ -1,10 +1,7 @@
 <?php
 $currency_symbol = $this->customlib->getSchoolCurrencyFormat();
 ?>
-<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
-<link href="http://www.jqueryscript.net/demo/jQuery-Plugin-For-Multi-Select-List-with-Checkboxes-MultiSelect/jquery.multiselect.css" rel="stylesheet" type="text/css">
 
-<script src="http://www.jqueryscript.net/demo/jQuery-Plugin-For-Multi-Select-List-with-Checkboxes-MultiSelect/jquery.multiselect.js"></script>
 <div class="content-wrapper" style="min-height: 946px;">
     <!-- Content Header (Page header) -->
     <section class="content-header">
@@ -199,18 +196,22 @@ $currency_symbol = $this->customlib->getSchoolCurrencyFormat();
 <script type="text/javascript">
 	$(document.body).ready(function () {
 		var selected_value = '<?php echo json_encode($class_id_array);?>';
-		//var selected_value = ["4"];
 		$('select[multiple]').multiselect({
-			columns:0,
-			placeholder:"Please select"
+			columns:1,
+			placeholder:"Please select",
+			search: false,
+            searchOptions: {
+                'default': 'Search Class'
+            },
+            selectAll: false
 		});
-		$('.form-group ul').css({'max-height':'300px','overflow':'auto',"padding":"0"});
+		
 		$('ul').find("input:checkbox").each(function(key, val) {
-			key++;
-			var value = document.getElementById('ms-opt-'+key).value;
+			key++;			
+			var value = document.getElementById('ms-opt-'+key).value;			
 			if($.inArray(value, selected_value) != -1) {
-				
-					$(this).click();
+				console.log(value);				
+				$(".default").trigger("click");
 			}
 		});
 	});

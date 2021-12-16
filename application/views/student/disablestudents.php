@@ -1,9 +1,6 @@
 <?php
 $currency_symbol = $this->customlib->getSchoolCurrencyFormat();
 ?>
-<style type="text/css">
-
-</style>
 
 <div class="content-wrapper" style="min-height: 946px;">  
     <section class="content-header">
@@ -28,28 +25,33 @@ $currency_symbol = $this->customlib->getSchoolCurrencyFormat();
                                         <div class="col-sm-6">
                                             <div class="form-group"> 
                                                 <label><?php echo $this->lang->line('class'); ?></label><small class="req"> *</small>
-                                                <select autofocus="" id="class_id" name="class_id" class="form-control" >
-                                                    <option value=""><?php echo $this->lang->line('select'); ?></option>
-                                                    <?php
-                                                    foreach ($classlist as $class) {
-                                                        ?>
-                                                        <option value="<?php echo $class['id'] ?>" <?php if (set_value('class_id') == $class['id']) echo "selected=selected" ?>><?php echo $class['class'] ?></option>
-                                                        <?php
-                                                        $count++;
-                                                    }
-                                                    ?>
-                                                </select>
+										<select  id="class_id" multiple="multiple" name="class_id[]" class="form-control"  >
+										<?php
+											
+                                            foreach ($classlist as $class) {
+                                                ?>
+                                                <option value="<?php echo $class['id'] ?>"<?php if(in_array($class['id'],$class_id_array)){ echo "selected=selected"; } ?>><?php echo $class['class'] ?></option>
+                                                <?php
+                                                $count++;
+                                            }
+                                            ?>
+                                        </select>
                                                 <span class="text-danger"><?php echo form_error('class_id'); ?></span>
                                             </div>  
                                         </div><!--./col-md-6-->
                                         <div class="col-sm-6">
-                                            <div class="form-group">
-                                                <label><?php echo $this->lang->line('section'); ?></label>
-                                                <select  id="section_id" name="section_id" class="form-control" >
-                                                    <option value=""><?php echo $this->lang->line('select'); ?></option>
-                                                </select>
-                                                <span class="text-danger"><?php echo form_error('section_id'); ?></span>
-                                            </div>   
+                                           <div class="form-group">
+												<?php $section = get_section(); ?>
+												<label><?php echo $this->lang->line('section'); ?></label>
+												<select  id="" name="section_id" class="form-control" >
+													<option value=""><?php echo $this->lang->line('select'); ?></option>
+													<?php foreach($section as $row){ ?>
+													<option <?php if (set_value('section_id') == $row['id']) echo "selected=selected" ?> value="<?php echo $row['id']; ?>"><?php echo $row['section']; ?></option>
+													<?php } ?>
+													
+												</select>
+												<span class="text-danger"><?php echo form_error('section_id'); ?></span>
+											</div>
                                         </div><!--./col-md-6-->
 
                                         <div class="col-sm-12">
@@ -67,7 +69,7 @@ $currency_symbol = $this->customlib->getSchoolCurrencyFormat();
                                         <div class="col-sm-12">
                                             <div class="form-group">
                                                 <label><?php echo $this->lang->line('search_by_keyword'); ?></label>
-                                                <input type="text" name="search_text" class="form-control"   placeholder="<?php echo $this->lang->line('search_by_student_name'); ?>">
+                                                <input type="text" name="search_text" class="form-control"   placeholder="<?php //echo $this->lang->line('search_by_student_name'); ?>">
                                             </div>
                                         </div>
                                         <div class="col-sm-12">
@@ -250,69 +252,93 @@ $currency_symbol = $this->customlib->getSchoolCurrencyFormat();
     <?php
 }
 ?>
-                                                            </div>  
-                                                            </div> 
-                                                            </section>
-                                                            </div>
-                                                            <script type="text/javascript">
-                                                                function getSectionByClass(class_id, section_id) {
-                                                                    if (class_id != "" && section_id != "") {
-                                                                        $('#section_id').html("");
-                                                                        var base_url = '<?php echo base_url() ?>';
-                                                                        var div_data = '<option value=""><?php echo $this->lang->line('select'); ?></option>';
-                                                                        $.ajax({
-                                                                            type: "GET",
-                                                                            url: base_url + "sections/getByClass",
-                                                                            data: {'class_id': class_id},
-                                                                            dataType: "json",
-                                                                            success: function (data) {
-                                                                                $.each(data, function (i, obj)
-                                                                                {
-                                                                                    var sel = "";
-                                                                                    if (section_id == obj.section_id) {
-                                                                                        sel = "selected";
-                                                                                    }
-                                                                                    div_data += "<option value=" + obj.section_id + " " + sel + ">" + obj.section + "</option>";
-                                                                                });
-                                                                                $('#section_id').append(div_data);
-                                                                            }
-                                                                        });
-                                                                    }
-                                                                }
-                                                                $(document).ready(function () {
-                                                                    var class_id = $('#class_id').val();
-                                                                    var section_id = '<?php echo set_value('section_id') ?>';
-                                                                    getSectionByClass(class_id, section_id);
-                                                                    $(document).on('change', '#class_id', function (e) {
-                                                                        $('#section_id').html("");
-                                                                        var class_id = $(this).val();
-                                                                        var base_url = '<?php echo base_url() ?>';
-                                                                        var div_data = '<option value=""><?php echo $this->lang->line('select'); ?></option>';
-                                                                        $.ajax({
-                                                                            type: "GET",
-                                                                            url: base_url + "sections/getByClass",
-                                                                            data: {'class_id': class_id},
-                                                                            dataType: "json",
-                                                                            success: function (data) {
-                                                                                $.each(data, function (i, obj)
-                                                                                {
-                                                                                    div_data += "<option value=" + obj.section_id + ">" + obj.section + "</option>";
-                                                                                });
-                                                                                $('#section_id').append(div_data);
-                                                                            }
-                                                                        });
-                                                                    });
-                                                                });
-                                                                $(document).ready(function () {
-                                                                    $('.detail_popover').popover({
-                                                                        placement: 'right',
-                                                                        title: '',
-                                                                        trigger: 'hover',
-                                                                        container: 'body',
-                                                                        html: true,
-                                                                        content: function () {
-                                                                            return $(this).closest('td').find('.fee_detail_popover').html();
-                                                                        }
-                                                                    });
-                                                                });
-                                                            </script>
+</div>  
+</div> 
+</section>
+</div>
+<script type="text/javascript">
+	
+	$(document.body).ready(function () {
+		var selected_value = '<?php echo json_encode($class_id_array);?>';
+		$('select[multiple]').multiselect({
+			columns:1,
+			placeholder:"Please select",
+			search: false,
+            searchOptions: {
+                'default': 'Search Class'
+            },
+            selectAll: false
+		});
+		
+		$('ul').find("input:checkbox").each(function(key, val) {
+			key++;			
+			var value = document.getElementById('ms-opt-'+key).value;			
+			if($.inArray(value, selected_value) != -1) {
+				console.log(value);				
+				$(".default").trigger("click");
+			}
+		});
+	});
+
+
+	function getSectionByClass(class_id, section_id) {
+		if (class_id != "" && section_id != "") {
+			$('#section_id').html("");
+			var base_url = '<?php echo base_url() ?>';
+			var div_data = '<option value=""><?php echo $this->lang->line('select'); ?></option>';
+			$.ajax({
+				type: "GET",
+				url: base_url + "sections/getByClass",
+				data: {'class_id': class_id},
+				dataType: "json",
+				success: function (data) {
+					$.each(data, function (i, obj)
+					{
+						var sel = "";
+						if (section_id == obj.section_id) {
+							sel = "selected";
+						}
+						div_data += "<option value=" + obj.section_id + " " + sel + ">" + obj.section + "</option>";
+					});
+					$('#section_id').append(div_data);
+				}
+			});
+		}
+	}
+	$(document).ready(function () {
+		var class_id = $('#class_id').val();
+		var section_id = '<?php echo set_value('section_id') ?>';
+		getSectionByClass(class_id, section_id);
+		$(document).on('change', '#class_id', function (e) {
+			$('#section_id').html("");
+			var class_id = $(this).val();
+			var base_url = '<?php echo base_url() ?>';
+			var div_data = '<option value=""><?php echo $this->lang->line('select'); ?></option>';
+			$.ajax({
+				type: "GET",
+				url: base_url + "sections/getByClass",
+				data: {'class_id': class_id},
+				dataType: "json",
+				success: function (data) {
+					$.each(data, function (i, obj)
+					{
+						div_data += "<option value=" + obj.section_id + ">" + obj.section + "</option>";
+					});
+					$('#section_id').append(div_data);
+				}
+			});
+		});
+	});
+	$(document).ready(function () {
+		$('.detail_popover').popover({
+			placement: 'right',
+			title: '',
+			trigger: 'hover',
+			container: 'body',
+			html: true,
+			content: function () {
+				return $(this).closest('td').find('.fee_detail_popover').html();
+			}
+		});
+	});
+</script>

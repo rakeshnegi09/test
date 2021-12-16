@@ -102,11 +102,25 @@ class Classsection_model extends MY_Model {
 
     public function getDetailbyClassSection($class_id, $section_id) {
         $this->db->select('class_sections.*,classes.class,sections.section')->from('class_sections');
-        $this->db->where('class_id', $class_id);
+       // $this->db->where('class_id', $class_id);
+		$this->db->group_start();
+        if (!empty($class_id)) {
+			foreach($class_id as $class){
+				$this->db->or_where('class_id', $class);
+            }
+        }
+		$this->db->group_end();
         $this->db->where('section_id', $section_id);
         $this->db->join('classes', 'classes.id = class_sections.class_id');
         $this->db->join('sections', 'sections.id = class_sections.section_id');
-        $this->db->where('class_sections.class_id', $class_id);
+        $this->db->group_start();
+        if (!empty($class_id)) {
+			foreach($class_id as $class){
+				$this->db->or_where('class_sections.class_id', $class);
+            }
+        }
+		$this->db->group_end();
+		
         $this->db->where('class_sections.section_id', $section_id);
         $query = $this->db->get();
         return $query->row_array();
