@@ -42,6 +42,7 @@ class Hostelroom extends Admin_Controller {
         $hostelroomlist = $this->hostelroom_model->lists();
         $data['hostelroomlist'] = $hostelroomlist;
         $this->form_validation->set_rules('hostel_id', $this->lang->line('hostel'), 'trim|required|xss_clean');
+        $this->form_validation->set_rules('occupants', $this->lang->line('occupants'), 'trim|required|xss_clean');
         $this->form_validation->set_rules('room_type_id', $this->lang->line('room_type'), 'trim|required|xss_clean');
         $this->form_validation->set_rules('room_no', $this->lang->line('room_no'), 'trim|required|xss_clean');
         $this->form_validation->set_rules('no_of_bed', $this->lang->line('no_of_bed'), 'trim|required|xss_clean');
@@ -59,6 +60,7 @@ class Hostelroom extends Admin_Controller {
                 'hostel_id' => $this->input->post('hostel_id'),
                 'room_type_id' => $this->input->post('room_type_id'),
                 'room_no' => $this->input->post('room_no'),
+                'occupants' => $this->input->post('occupants'),
                 'no_of_bed' => $this->input->post('no_of_bed'),
                 'cost_per_bed' => $this->input->post('cost_per_bed'),
                 'description' => $this->input->post('description'),
@@ -90,6 +92,7 @@ class Hostelroom extends Admin_Controller {
         $hostelroomlist = $this->hostelroom_model->lists();
         $data['hostelroomlist'] = $hostelroomlist;
         $this->form_validation->set_rules('hostel_id', $this->lang->line('hostel'), 'trim|required|xss_clean');
+        $this->form_validation->set_rules('occupants', $this->lang->line('occupants'), 'trim|required|xss_clean');
         $this->form_validation->set_rules('room_type_id', $this->lang->line('room_type'), 'trim|required|xss_clean');
         $this->form_validation->set_rules('room_no', $this->lang->line('room_no'), 'trim|required|xss_clean');
         $this->form_validation->set_rules('no_of_bed', $this->lang->line('no_of_bed'), 'trim|required|xss_clean');
@@ -104,6 +107,7 @@ class Hostelroom extends Admin_Controller {
                 'hostel_id' => $this->input->post('hostel_id'),
                 'room_type_id' => $this->input->post('room_type_id'),
                 'room_no' => $this->input->post('room_no'),
+                'occupants' => $this->input->post('occupants'),
                 'no_of_bed' => $this->input->post('no_of_bed'),
                 'cost_per_bed' => $this->input->post('cost_per_bed'),
                 'description' => $this->input->post('description'),
