@@ -939,5 +939,31 @@ class Examgroup extends Admin_Controller
         $array = array('status' => '1', 'error' => '', 'message' => $this->lang->line('success_message'));
         echo json_encode($array);
     }
+	
+	
+	public function examination()
+    {
+        $data = array();
+        $class             = $this->class_model->get();
+        $data['classlist'] = $class;
+		$this->session->set_userdata('top_menu', 'Examinations');
+        $this->session->set_userdata('sub_menu', 'Examinations/examgroup/examination');
+        if ($this->input->server('REQUEST_METHOD') == 'POST') {
+			$class_id                                       = $this->input->post('class_id');
+            $section_id                                     = $this->input->post('section_id');
+            $session_id                                     = $this->input->post('session_id');
+            $exam_type                                     = $this->input->post('exam_type');           
+
+            $resultlist            = $this->batchsubject_model->getExaminationStudentList($class_id, $section_id, $session_id,$exam_type);
+			echo "<pre>564";
+			print_r($resultlist);die;
+            $data['resultlist'] = $resultlist;
+        }
+
+        $this->load->view('layout/header', $data);
+        $this->load->view('admin/examgroup/examination', $data);
+        $this->load->view('layout/footer', $data);
+    }
+
 
 }

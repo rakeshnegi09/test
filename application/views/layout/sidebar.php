@@ -364,7 +364,10 @@ if ($this->module_lib->hasActive('examination')) {
                             <i class="fa fa-map-o ftlayer"></i> <span><?php echo $this->lang->line('examinations'); ?></span> <i class="fa fa-angle-left pull-right"></i>
                         </a>
                         <ul class="treeview-menu">
-
+						
+							 <li class="<?php echo set_Submenu('Examinations/examgroup/examination'); ?>"><a href="<?php echo site_url('admin/examgroup/examination'); ?>"><i class="fa fa-angle-double-right"></i> Marksheet</a></li>
+							 
+							 
                             <?php if ($this->rbac->hasPrivilege('exam_group', 'can_view')) {?>
                                 <li class="<?php echo set_Submenu('Examinations/examgroup'); ?>"><a href="<?php echo site_url('admin/examgroup'); ?>"><i class="fa fa-angle-double-right"></i> <?php echo $this->lang->line('exam') . " " . $this->lang->line('group') ?></a></li>
                             <?php }
@@ -392,7 +395,7 @@ if ($this->module_lib->hasActive('examination')) {
 }
         if ($this->rbac->hasPrivilege('print_marksheet', 'can_view')) {
             ?>
-                                <!--li class="<?php echo set_Submenu('Examinations/examresult/marksheet'); ?>"><a href="<?php echo base_url(); ?>admin/examresult/marksheet"><i class="fa fa-angle-double-right"></i> <?php echo $this->lang->line('print') . " " . $this->lang->line('marksheet'); ?></a></li-->
+                                <li class="<?php echo set_Submenu('Examinations/examresult/marksheet'); ?>"><a href="<?php echo base_url(); ?>admin/examresult/marksheet"><i class="fa fa-angle-double-right"></i> <?php echo $this->lang->line('print') . " " . $this->lang->line('marksheet'); ?></a></li>
                                 <?php
 }
 
