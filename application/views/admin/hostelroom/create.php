@@ -84,6 +84,11 @@ $currency_symbol = $this->customlib->getSchoolCurrencyFormat();
                                     </select>
                                     <span class="text-danger"><?php echo form_error('room_type_id'); ?></span>
                                 </div>
+								<div class="form-group">
+                                    <label for="exampleInputEmail1"><?php echo $this->lang->line('occupants'); ?></label><small class="req"> *</small>
+                                    <input id="amount" name="occupants" placeholder="" type="text" class="form-control"  value="<?php echo set_value('occupants'); ?>" />
+                                    <span class="text-danger"><?php echo form_error('occupants'); ?></span>
+                                </div>
                                 <div class="form-group">
                                     <label for="exampleInputEmail1"><?php echo $this->lang->line('no_of_bed'); ?></label><small class="req"> *</small>
                                     <input id="amount" name="no_of_bed" placeholder="" type="text" class="form-control"  value="<?php echo set_value('no_of_bed'); ?>" />
@@ -134,6 +139,7 @@ $currency_symbol = $this->customlib->getSchoolCurrencyFormat();
                                         <th><?php echo $this->lang->line('room_no_name'); ?></th>
                                         <th><?php echo $this->lang->line('hostel'); ?></th>
                                         <th><?php echo $this->lang->line('room_type'); ?></th>
+                                        <th><?php echo $this->lang->line('occupants'); ?></th>
                                         <th><?php echo $this->lang->line('no_of_bed'); ?></th>
                                         <th><?php echo $this->lang->line('cost_per_bed'); ?></th>
                                         <th class="text-right no-print"><?php echo $this->lang->line('action'); ?></th>
@@ -167,6 +173,7 @@ $currency_symbol = $this->customlib->getSchoolCurrencyFormat();
                                                 </td>
                                                 <td class="mailbox-name"> <?php echo $hostelroom['hostel_name'] ?></td>
                                                 <td class="mailbox-name"> <?php echo $hostelroom['room_type'] ?></td>
+                                                <td class="mailbox-name"> <?php echo $hostelroom['occupants'] ?></td>
                                                 <td class="mailbox-name"> <?php echo $hostelroom['no_of_bed'] ?></td>
                                                 <td class="mailbox-name"> <?php echo $currency_symbol . $hostelroom['cost_per_bed'] ?></td>
                                                 <td class="mailbox-date pull-right no-print">

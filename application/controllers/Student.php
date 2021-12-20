@@ -2260,19 +2260,24 @@ class Student extends Admin_Controller
                 $viewbtn = "<a  href='" . base_url() . "student/view/" . $student->id . "'>" . $this->customlib->getFullName($student->firstname, $student->middlename, $student->lastname, $sch_setting->middlename, $sch_setting->lastname) . "</a>";
 				
 				$download_report = "<a  href='" . base_url() . "student/download_covid_screening/" . $student->c_id."' >Download</a>";
+				$data = get_covid_screening_details($student->c_id);
+				$data = json_decode($data[0]->data);
 
                 $row   = array();
                 $row[] = $student->section;
                 $row[] = $student->admission_no;
                 $row[] = $viewbtn;               
                 $row[] = $student->c_date;
-                $row[] = $download_report;
-
-               
+				
+				foreach($data as $key=>$rows){
+					$ans = explode(',',$rows);
+					$row[] = $rows[1];
+				}
                 $dt_data[] = $row;
             }
 
         }
+		
         $json_data = array(
             "draw"            => intval($resultlist->draw),
             "recordsTotal"    => intval($resultlist->recordsTotal),

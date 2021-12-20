@@ -91,7 +91,14 @@
                                             <th><?php echo $this->lang->line('admission_no'); ?></th>
                                             <th><?php echo $this->lang->line('student_name'); ?></th>
                                             <th>Date</th>
-                                            <th>Report</th>
+                                            <th>Fever</th>
+                                            <th>Cough</th>
+                                            <th>Aches</th>
+                                            <th>Throat</th>
+                                            <th>Shortness of breath</th>
+                                            <th>Loss of taste and smell</th>
+                                            <th>Contact with Symptoms</th>
+                                            <th>Contact with Person</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -191,7 +198,6 @@
         });
     });
 </script>
-/script>
  <script>
 $(document).ready(function() {
      emptyDatatable('student-list','data');
