@@ -391,5 +391,29 @@ class Batchsubject_model extends CI_Model {
         }
         return false;
     }
+	
+	
+	public function getExaminationStudentList($class_id, $section_id, $session_id,$exam_type){
+		 $this->db->select('*')->from('students');
+        $this->db->join('student_session', 'student_session.student_id = students.id');
+        $this->db->join('classes', 'student_session.class_id = classes.id');
+        $this->db->join('sections', 'sections.id = student_session.section_id');
+        $this->db->where('student_session.session_id', $session_id);
+		$this->db->group_start();
+        if (!empty($class_id)) {
+			foreach($class_id as $class){
+				$this->db->or_where('student_session.class_id', $class);
+            }
+        }
+		$this->db->group_end();
+		
+        if ($section != null) {
+            $this->db->where('student_session.section_id', $section_id);
+        }
+        $this->db->order_by('students.id');
+
+        $query = $this->db->get();
+        return $query->result_array();
+	}
 
 }
