@@ -413,7 +413,7 @@ class Batchsubject_model extends CI_Model {
         $this->db->order_by('students.id');
 
         $query = $this->db->get();
-        return $query->result_array();
+        return $query->result();
 	}
 
 }
