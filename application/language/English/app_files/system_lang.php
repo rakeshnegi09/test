@@ -53,6 +53,7 @@ $lang['Add/Edit'] = 'Add/Edit';
 $lang['address'] = 'Address';
 $lang['address_details'] = 'Address Details';
 $lang['admin'] = 'Admin';
+$lang['admin'] = 'Admin';
 $lang['admin_email'] = 'Admin Email';
 $lang['admin_login'] = 'Admin Login';
 $lang['admin_name'] = 'Admin Name';

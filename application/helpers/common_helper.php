@@ -82,3 +82,53 @@ if(!function_exists('get_section')) {
         return $result;
     }
 }
+
+
+if(!function_exists('get_session')) {
+    function get_session() {
+        $CI = &get_instance();			
+        $CI->db->select('*');
+        $CI->db->from('sessions');    
+        $query = $CI->db->get();
+        $result = $query->result_array();
+        return $result;
+    }
+}
+
+if(!function_exists('get_result')) {
+    function get_result($student_id,$class_id,$section_id,$session_id) {
+        $CI = &get_instance();			
+        $CI->db->select('*');
+        $CI->db->from('student_results');    
+        $CI->db->where('student_id',$student_id);    
+        $CI->db->where('class_id',$class_id);    
+        $CI->db->where('section_id',$section_id);    
+        $CI->db->where('session_id',$session_id);    
+        $query = $CI->db->get();
+        $result = $query->row_array();
+        return $result;
+    }
+}
+
+if(!function_exists('get_subjects')) {
+    function get_subjects() {
+        $CI = &get_instance();			
+        $CI->db->select('*');
+        $CI->db->from('subjects');
+        $query = $CI->db->get();
+        $result = $query->result_array();
+        return $result;
+    }
+}
+
+if(!function_exists('get_subjects_id')) {
+    function get_subjects_id($id=null) {
+        $CI = &get_instance();			
+        $CI->db->select('*');
+        $CI->db->from('subjects');
+        $CI->db->where('id',$id);
+        $query = $CI->db->get();
+        $result = $query->result_array();
+        return $result;
+    }
+}
