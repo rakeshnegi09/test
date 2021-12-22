@@ -273,7 +273,7 @@ $currency_symbol = $this->customlib->getSchoolCurrencyFormat(); ?>
 				  <li class=""><a href="#legal" onclick="change_doc_type('legal')" data-toggle="tab" aria-expanded="true">Legal</a></li>
 				  <li class=""><a href="#certificates" onclick="change_doc_type('certificates')" data-toggle="tab" aria-expanded="true">Certificates</a></li>
 				  <li class=""><a href="#wel" data-toggle="tab" aria-expanded="true">W.E.L</a></li>
-				  <li class=""><a href="#results" data-toggle="tab" aria-expanded="true">Results</a></li>
+				  <li class=""><a href="#result" data-toggle="tab" aria-expanded="true">Results</a></li>
                  
                   <li class=""><a href="#covid" data-toggle="tab" aria-expanded="true">covid-19</a></li>
                  
@@ -1059,13 +1059,6 @@ if (!empty($cutom_fields_data)) {
 			</div>
 		</div>
 	 
-	  <div class="tab-pane" id="results">
-		<div class="timeline-header no-border">
-			 <div class="table-responsive" style="clear: both;">
-		<p>Results Not done Yet</p>
-			</div>
-		</div>
-	  </div>
 	  <div class="tab-pane" id="covid">
 						<div class="timeline-header no-border">
 							 <div class="table-responsive" style="clear: both;">
@@ -1173,780 +1166,94 @@ if (!empty($cutom_fields_data)) {
           </div>
         </div>
       </div>
-      <div class="tab-pane" id="exam">
-        <div class="download_label">
-          <?php echo $this->lang->line("exam") . " " . $this->lang->line("result"); ?>
-        </div>
-        <?php
-if (empty($exam_result)) { ?>
-        <div class="alert alert-danger">
-          <?php echo $this->lang->line("no_record_found"); ?>
-        </div>
-        <?php
-}
-if (!empty($exam_result)) { ?>
-        <div class="dt-buttons btn-group pull-right miusDM40">
-          <a class="btn btn-default btn-xs dt-button no_print" id="print" onclick="printDiv()">
-            <i class="fa fa-print">
-            </i>
-          </a>
-        </div>
-        <?php foreach ($exam_result as $exam_key => $exam_value) { ?>
-        <div class="tshadow mb25">
-          <h4 class="pagetitleh">
-            <?php echo $exam_value->exam; ?>
-          </h4>
-          <?php if (!empty($exam_value->exam_result)) {
-            if ($exam_value->exam_result["exam_connection"] == 0) {
-                if (!empty($exam_value->exam_result["result"])) {
-                    $exam_quality_points = 0;
-                    $exam_total_points = 0;
-                    $exam_credit_hour = 0;
-                    $exam_grand_total = 0;
-                    $exam_get_total = 0;
-                    $exam_pass_status = 1;
-                    $exam_absent_status = 0;
-                    $total_exams = 0;
-?>
-          <div class="table-responsive">
-            <table class="table table-striped table-hover ptt10" id="headerTable">
-              <thead>
-                <th>
-                  <?php echo $this->lang->line("subject"); ?>
-                </th>
-                <?php if ($exam_value->exam_type == "gpa") { ?>
-                <th>
-                  <?php echo $this->lang->line("grade") . " " . $this->lang->line("point"); ?>
-                </th>
-                <th>
-                  <?php echo $this->lang->line("credit") . " " . $this->lang->line("hours"); ?>
-                </th>
-                <th>
-                  <?php echo $this->lang->line("quality") . " " . $this->lang->line("points"); ?>
-                </th>
-                <?php
-                    } ?>
-                <?php if ($exam_value->exam_type != "gpa") { ?>
-                <th>
-                  <?php echo $this->lang->line("max") . " " . $this->lang->line("marks"); ?>
-                </th>
-                <th>
-                  <?php echo $this->lang->line("min") . " " . $this->lang->line("marks"); ?>
-                </th>
-                <th>
-                  <?php echo $this->lang->line("marks") . " " . $this->lang->line("obtained"); ?>
-                </th>
-                <?php
-                    } ?>
-                <?php
-                    if ($exam_value->exam_type == "coll_grade_system" || $exam_value->exam_type == "school_grade_system") { ?>
-                <th>
-                  <?php echo $this->lang->line("grade"); ?> 
-                </th>
-                <?php
-                    }
-                    if ($exam_value->exam_type == "basic_system") { ?>
-                <th>
-                  <?php echo $this->lang->line("result"); ?>
-                </th>
-                <?php
-                    }
-?>
-                <th>
-                  <?php echo $this->lang->line("note"); ?>
-                </th>
-              </thead>
-              <tbody>
-                <?php if (!empty($exam_value->exam_result["result"])) {
-                        $total_exams = 1;
-                        foreach ($exam_value->exam_result["result"] as $exam_result_key => $exam_result_value) {
-                            $exam_grand_total = $exam_grand_total + $exam_result_value->max_marks;
-                            $exam_get_total = $exam_get_total + $exam_result_value->get_marks;
-                            $percentage_grade = ($exam_result_value->get_marks * 100) / $exam_result_value->max_marks;
-                            if ($exam_result_value->get_marks < $exam_result_value->min_marks) {
-                                $exam_pass_status = 0;
-                            }
-?>
-                <tr>
-                  <td>
-                    <?php echo $exam_result_value->name; ?>
-                  </td>
-                  <?php if ($exam_value->exam_type != "gpa") { ?>
-                  <td>
-                    <?php echo $exam_result_value->max_marks; ?>
-                  </td>
-                  <td>
-                    <?php echo $exam_result_value->min_marks; ?>
-                  </td>
-                  <td>
-                    <?php
-                                echo $exam_result_value->get_marks;
-                                if ($exam_result_value->attendence == "absent") {
-                                    $exam_absent_status = 1;
-                                    echo "&nbsp;" . $this->lang->line("abs");
-                                }
-?>
-                  </td>
-                  <?php
-                            } elseif ($exam_value->exam_type == "gpa") { ?>
-                  <td>
-                    <?php
-                                $percentage_grade = ($exam_result_value->get_marks * 100) / $exam_result_value->max_marks;
-                                $point = findGradePoints($exam_grade, $exam_value->exam_type, $percentage_grade);
-                                $exam_total_points = $exam_total_points + $point;
-                                echo number_format($point, 2, ".", "");
-?>
-                  </td>
-                  <td> 
-                    <?php
-                                echo $exam_result_value->credit_hours;
-                                $exam_credit_hour = $exam_credit_hour + $exam_result_value->credit_hours;
-?>
-                  </td>
-                  <td>
-                    <?php
-                                echo number_format($exam_result_value->credit_hours * $point, 2, ".", "");
-                                $exam_quality_points = $exam_quality_points + $exam_result_value->credit_hours * $point;
-?>
-                  </td>
-                  <?php
-                            } ?>
-                  <?php
-                            if ($exam_value->exam_type == "coll_grade_system" || $exam_value->exam_type == "school_grade_system") { ?>
-                  <td>
-                    <?php echo findExamGrade($exam_grade, $exam_value->exam_type, $percentage_grade); ?>
-                  </td>
-                  <?php
-                            }
-                            if ($exam_value->exam_type == "basic_system") { ?>
-                  <td>
-                    <?php if ($exam_result_value->get_marks < $exam_result_value->min_marks) { ?>
-                    <label class="label label-danger">
-                      <?php echo $this->lang->line("fail"); ?>
-                    </label>
-                    <?php
-                                } else { ?>
-                    <label class="label label-success">
-                      <?php echo $this->lang->line("pass"); ?>
-                    </label>
-                    <?php
-                                } ?>
-                  </td>
-                  <?php
-                            }
-?>
-                  <td>
-                    <?php echo $exam_result_value->note; ?>
-                  </td>
-                </tr>
-                <?php
-                        }
-                    } ?>
-              </tbody>
-            </table>
-          </div>
-          <?php ?>
-          <div class="row">
-            <div class="col-md-12">
-              <div class="bgtgray">
-                <?php if ($exam_value->exam_type != "gpa") { ?>
-                <div class="col-sm-3 col-lg-3 col-md-3">
-                  <div class="description-block">
-                    <h5 class="description-header">
-                      <?php echo $this->lang->line("percentage"); ?> :  
-                      <span class="description-text">
-                        <?php
-                        $exam_percentage = ($exam_get_total * 100) / $exam_grand_total;
-                        echo number_format($exam_percentage, 2, ".", "");
-?>
-                      </span>
-                    </h5>
-                  </div>
-                </div>
-                <div class="col-sm-4 col-lg-4 col-md-4 border-right">
-                  <div class="description-block">
-                    <h5 class="description-header">
-                      <?php echo $this->lang->line("result"); ?> :
-                      <span class="description-text">
-                        <?php if ($total_exams) {
-                            if ($exam_absent_status) { ?>
-                        <span class='label label-danger'>
-                          <?php echo $this->lang->line("fail"); ?>
-                        </span>
-                        <?php
-                            } else {
-                                if ($exam_pass_status) { ?>
-                        <span class='label bg-green' style="margin-right: 5px;">
-                          <?php echo $this->lang->line("pass"); ?>
-                        </span> 
-                        <?php
-                                } else { ?>
-                        <span class='label label-danger'>
-                          <?php echo $this->lang->line("fail"); ?>
-                        </span>
-                      </span>
-                      <?php
-                                }
-                                if ($exam_pass_status) {
-                                    echo $this->lang->line("division");
-                                    if ($exam_percentage >= 60) {
-                                        echo " : " . $this->lang->line("first");
-                                    } elseif ($exam_percentage >= 50 && $exam_percentage < 60) {
-                                        echo " : " . $this->lang->line("second");
-                                    } elseif ($exam_percentage >= 0 && $exam_percentage < 50) {
-                                        echo " : " . $this->lang->line("third");
-                                    } else {
-                                    }
-                                }
-                            }
-                        } ?>
-                    </h5>
-                  </div>
-                </div>
-                <div class="col-sm-2 col-lg-2 col-md-2 border-right">
-                  <div class="description-block">
-                    <h5 class="description-header">
-                      <?php echo $this->lang->line("grand") . " " . $this->lang->line("total"); ?> : 
-                      <span class="description-text">
-                        <?php echo $exam_grand_total; ?>
-                      </span>
-                    </h5>
-                  </div>
-                </div>
-                <div class="col-sm-3 col-lg-3 col-md-3 border-right">
-                  <div class="description-block">
-                    <h5 class="description-header">
-                      <?php echo $this->lang->line("total") . " " . $this->lang->line("obtain") . " " . $this->lang->line("marks"); ?> :  
-                      <span class="description-text">
-                        <?php echo $exam_get_total; ?>
-                      </span>
-                    </h5>
-                  </div>
-                </div>
-                <?php
-                    } elseif ($exam_value->exam_type == "gpa") { ?>
-                <div class="col-sm-2">
-                  <div class="description-block">
-                    <h5 class="description-header">
-                      <?php echo $this->lang->line("credit") . " " . $this->lang->line("hours"); ?> :  
-                      <span class="description-text">
-                        <?php echo $exam_credit_hour; ?>
-                      </span>
-                    </h5>
-                  </div>
-                </div>
-                <div class="col-sm-3">
-                  <div class="description-block">
-                    <h5 class="description-header">
-                      <?php echo $this->lang->line("quality") . " " . $this->lang->line("points"); ?> :  
-                      <span class="description-text">
-                        <?php if ($exam_credit_hour <= 0) {
-                            echo "--";
-                        } else {
-                            $exam_grade_percentage = ($exam_get_total * 100) / $exam_grand_total;
-                            echo $exam_quality_points . "/" . $exam_credit_hour . "=" . number_format($exam_quality_points / $exam_credit_hour, 2, ".", "") . " [" . findExamGrade($exam_grade, $exam_value->exam_type, $exam_grade_percentage) . "]";
-                        } ?>
-                      </span>
-                      <?php ?>
-                    </h5>
-                  </div>
-                </div>
-                <?php
-                    } ?>
-              </div>
-            </div>
-          </div>
-        </div>
-        <?php
-                }
-            } elseif ($exam_value->exam_result["exam_connection"] == 1) {
-                $exam_connected_exam = $exam_value->exam_result["exam_result"]["exam_result_" . $exam_value->exam_group_class_batch_exam_id];
-                if (!empty($exam_connected_exam)) {
-                    $exam_quality_points = 0;
-                    $exam_total_points = 0;
-                    $exam_credit_hour = 0;
-                    $exam_grand_total = 0;
-                    $exam_get_total = 0;
-                    $exam_pass_status = 1;
-                    $exam_absent_status = 0;
-                    $total_exams = 0;
-?>
-        <table class="table table-striped ">
-          <thead>
-            <th>
-              <?php echo $this->lang->line("subject"); ?>
-            </th>
-            <?php if ($exam_value->exam_type == "gpa") { ?>
-            <th>
-              <?php echo $this->lang->line("grade") . " " . $this->lang->line("point"); ?> 
-            </th>
-            <th>
-              <?php echo $this->lang->line("credit") . " " . $this->lang->line("hours"); ?>
-            </th>
-            <th>
-              <?php echo $this->lang->line("quality") . " " . $this->lang->line("points"); ?>
-            </th>
-            <?php
-                    } ?>
-            <?php if ($exam_value->exam_type != "gpa") { ?>
-            <th>
-              <?php echo $this->lang->line("max") . " " . $this->lang->line("marks"); ?>
-            </th>
-            <th>
-              <?php echo $this->lang->line("min") . " " . $this->lang->line("marks"); ?>
-            </th>
-            <th>
-              <?php echo $this->lang->line("marks") . " " . $this->lang->line("obtained"); ?> 
-            </th>
-            <?php
-                    } ?>
-            <?php
-                    if ($exam_value->exam_type == "coll_grade_system" || $exam_value->exam_type == "school_grade_system") { ?>
-            <th>
-              <?php echo $this->lang->line("grade"); ?>
-            </th>
-            <?php
-                    }
-                    if ($exam_value->exam_type == "basic_system") { ?>
-            <th>
-              <?php echo $this->lang->line("result"); ?>
-            </th>
-            <?php
-                    }
-?>
-            <th>
-              <?php echo $this->lang->line("remark"); ?>
-            </th>
-          </thead>
-          <tbody>
-            <?php if (!empty($exam_connected_exam)) {
-                        $total_exams = 1;
-                        foreach ($exam_connected_exam as $exam_result_key => $exam_result_value) {
-                            $exam_grand_total = $exam_grand_total + $exam_result_value->max_marks;
-                            $exam_get_total = $exam_get_total + $exam_result_value->get_marks;
-                            $percentage_grade = ($exam_result_value->get_marks * 100) / $exam_result_value->max_marks;
-                            if ($exam_result_value->get_marks < $exam_result_value->min_marks) {
-                                $exam_pass_status = 0;
-                            }
-?>
-            <tr>
-              <td>
-                <?php echo $exam_result_value->name; ?>
-              </td>
-              <?php if ($exam_value->exam_type != "gpa") { ?>
-              <td>
-                <?php echo $exam_result_value->max_marks; ?>
-              </td>
-              <td>
-                <?php echo $exam_result_value->min_marks; ?>
-              </td>
-              <td>
-                <?php
-                                echo $exam_result_value->get_marks;
-                                if ($exam_result_value->attendence == "absent") {
-                                    $exam_absent_status = 1;
-                                    echo "&nbsp; " . $this->lang->line("abs");
-                                }
-?>
-              </td>
-              <?php
-                            } elseif ($exam_value->exam_type == "gpa") { ?>
-              <td style="">
-                <?php
-                                $percentage_grade = ($exam_result_value->get_marks * 100) / $exam_result_value->max_marks;
-                                $point = findGradePoints($exam_grade, $exam_value->exam_type, $percentage_grade);
-                                $exam_total_points = $exam_total_points + $point;
-                                echo number_format($point, 2, ".", "");
-?>
-              </td>
-              <td> 
-                <?php
-                                echo $exam_result_value->credit_hours;
-                                $exam_credit_hour = $exam_credit_hour + $exam_result_value->credit_hours;
-?>
-              </td>
-              <td>
-                <?php
-                                echo number_format($exam_result_value->credit_hours * $point, 2, ".", "");
-                                $exam_quality_points = $exam_quality_points + $exam_result_value->credit_hours * $point;
-?>
-              </td>
-              <?php
-                            } ?>
-              <?php
-                            if ($exam_value->exam_type == "coll_grade_system" || $exam_value->exam_type == "school_grade_system") { ?>
-              <td>
-                <?php echo findExamGrade($exam_grade, $exam_value->exam_type, $percentage_grade); ?>
-              </td>
-              <?php
-                            }
-                            if ($exam_value->exam_type == "basic_system") { ?>
-              <td>
-                <?php if ($exam_result_value->get_marks < $exam_result_value->min_marks) { ?>
-                <label class="label label-danger">
-                  <?php echo $this->lang->line("fail"); ?>
-                  <label>
-                    <?php
-                                } else { ?>
-                    <label class="label label-success">
-                      <?php echo $this->lang->line("pass"); ?>
-                      <label>
-                        <?php
-                                } ?>
-                        </td>
-                      <?php
-                            }
-?>
-                      <td>
-                        <?php echo $exam_result_value->note; ?>
-                      </td>
-                      </tr>
-                    <?php
-                        }
-                    } ?>
-                    </tbody>
-                  </table>
-                <div class="row">
-                  <div class="col-md-12">
-                    <div class="bgtgray">
-                      <?php if ($exam_value->exam_type != "gpa") { ?>
-                      <div class="col-sm-3 col-lg-3 col-md-3 pull no-print">
-                        <div class="description-block">
-                          <h5 class="description-header"> 
-                            <?php echo $this->lang->line("percentage"); ?> :  
-                            <span class="description-text">
-                              <?php
-                        $exam_percentage = ($exam_get_total * 100) / $exam_grand_total;
-                        echo number_format($exam_percentage, 2, ".", "");
-?>
-                            </span>
-                          </h5>
-                        </div>
-                      </div>
-                      <div class="col-sm-4 col-lg-4 col-md-4 border-right no-print">
-                        <div class="description-block">
-                          <h5 class="description-header">
-                            <?php echo $this->lang->line("result"); ?> :
-                            <span class="description-text">
-                              <?php if ($total_exams) {
-                            if ($exam_absent_status) { ?>
-                              <span class='label label-danger' style="margin-right: 5px;">
-                                <?php echo $this->lang->line("fail"); ?>
-                              </span>
-                              <?php
-                            } else {
-                                if ($exam_pass_status) { ?>
-                              <span class='label bg-green' style="margin-right: 5px;">
-                                <?php echo $this->lang->line("pass"); ?>
-                              </span>
-                              <?php
-                                } else { ?>
-                              <span class='label label-danger' style="margin-right: 5px;">
-                                <?php echo $this->lang->line("fail"); ?>
-                              </span>
-                              <?php
-                                }
-                            }
-                        } ?>
-                              <?php if ($total_exams) {
-                            if ($exam_pass_status) {
-                                echo $this->lang->line("division");
-                                if ($exam_percentage >= 60) {
-                                    echo " : " . $this->lang->line("first");
-                                } elseif ($exam_percentage >= 50 && $exam_percentage < 60) {
-                                    echo " : " . $this->lang->line("second");
-                                } elseif ($exam_percentage >= 0 && $exam_percentage < 50) {
-                                    echo " : " . $this->lang->line("third");
-                                } else {
-                                }
-                            }
-                        } ?>
-                            </span>
-                          </h5>
-                        </div>
-                      </div>
-                      <div class="col-sm-2 col-lg-2 col-md-2 border-right no-print">
-                        <div class="description-block">
-                          <h5 class="description-header">
-                            <?php echo $this->lang->line("grand") . " " . $this->lang->line("total"); ?> : 
-                            <span class="description-text">
-                              <?php echo $exam_grand_total; ?>
-                            </span>
-                          </h5>
-                        </div>
-                      </div>
-                      <div class="col-sm-3 border-right no-print">
-                        <div class="description-block">
-                          <h5 class="description-header">
-                            <?php echo $this->lang->line("total") . " " . $this->lang->line("obtain") . " " . $this->lang->line("marks"); ?> :  
-                            <span class="description-text">
-                              <?php echo $exam_get_total; ?>
-                            </span>
-                          </h5>
-                        </div>
-                      </div>
-                      <?php
-                    } elseif ($exam_value->exam_type == "gpa") { ?>
-                      <div class="col-sm-3 col-lg-3 col-md-3 pull no-print">
-                        <div class="description-block">
-                          <h5 class="description-header">
-                            <?php echo $this->lang->line("credit") . " " . $this->lang->line("hours"); ?> :
-                            <span class="description-text">
-                              <?php echo $exam_credit_hour; ?>
-                            </span>
-                          </h5>
-                        </div>
-                      </div>
-                      <div class="col-sm-3 pull no-print">
-                        <div class="description-block">
-                          <h5 class="description-header">
-                            <?php echo $this->lang->line("quality") . " " . $this->lang->line("points"); ?> :
-                            <span class="description-text">
-                              <?php if ($exam_credit_hour <= 0) {
-                            echo "--";
-                        } else {
-                            $exam_grade_percentage = ($exam_get_total * 100) / $exam_grand_total;
-                            echo $exam_quality_points . "/" . $exam_credit_hour . "=" . number_format($exam_quality_points / $exam_credit_hour, 2, ".", "") . " [" . findExamGrade($exam_grade, $exam_value->exam_type, $exam_grade_percentage) . "]";
-                        } ?>
-                            </span>
-                          </h5>
-                        </div>
-                      </div>
-                      <?php
-                    }
-                }
-?>
-                    </div>
-                  </div>
-                </div>
-          </div>
-            <div class="tshadow mb25">
-              <h4 class="pagetitleh">
-                <?php echo $this->lang->line("consolidated") . " " . $this->lang->line("marksheet"); ?>
-              </h4>
-              <?php
-                $consolidate_exam_result = false;
-                $consolidate_exam_result_percentage = false;
-                if ($exam_value->exam_type == "coll_grade_system" || $exam_value->exam_type == "school_grade_system") { ?>
-              <table class="table table-striped ">
-                <thead>
-                  <th>
-                    <?php echo $this->lang->line("exam"); ?>
-                  </th>
-                  <?php foreach ($exam_value->exam_result["exams"] as $each_exam_key => $each_exam_value) { ?>
-                  <th>
-                    <?php echo $each_exam_value->exam; ?>
-                  </th>
-                  <?php
-                    } ?>
-                  <th>
-                    <?php echo $this->lang->line("consolidate"); ?>
-                  </th>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>
-                      <?php echo $this->lang->line("marks") . " " . $this->lang->line("obtained"); ?>
-                    </td>
-                    <?php
-                    $consolidate_get_total = 0;
-                    $consolidate_max_total = 0;
-                    if (!empty($exam_value->exam_result["exams"])) {
-                        $consolidate_exam_result = "pass";
-                        foreach ($exam_value->exam_result["exams"] as $each_exam_key => $each_exam_value) { ?>
-                    <td>
-                      <?php
-                            $consolidate_each = getCalculatedExam($exam_value->exam_result["exam_result"], $each_exam_value->id);
-                            $consolidate_get_percentage_mark = getConsolidateRatio($exam_value->exam_result["exam_connection_list"], $each_exam_value->id, $consolidate_each->get_marks);
-                            if ($consolidate_each->exam_status == "fail") {
-                                $consolidate_exam_result = "fail";
-                            }
-                            echo $consolidate_get_percentage_mark;
-                            $consolidate_get_total = $consolidate_get_total + $consolidate_get_percentage_mark;
-                            $consolidate_max_total = $consolidate_max_total + $consolidate_each->max_marks;
-?>
-                    </td>
-                    <?php
-                        }
-                    }
-?>
-                    <td>
-                      <?php
-                    $consolidate_percentage_grade = $consolidate_max_total > 0 ? ($consolidate_get_total * 100) / $consolidate_max_total : 0;
-                    echo $consolidate_get_total . "/" . $consolidate_max_total . " [" . findExamGrade($exam_grade, $exam_value->exam_type, $consolidate_percentage_grade) . "]";
-                    $consolidate_exam_result_percentage = $consolidate_percentage_grade;
-?>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-              <?php
-                } elseif ($exam_value->exam_type == "basic_system") { ?>
-              <table class="table table-striped ">
-                <thead>
-                  <th>
-                    <?php echo $this->lang->line("exam"); ?>
-                  </th>
-                  <?php foreach ($exam_value->exam_result["exams"] as $each_exam_key => $each_exam_value) { ?>
-                  <th>
-                    <?php echo $each_exam_value->exam; ?>
-                  </th>
-                  <?php
-                    } ?>
-                  <th>
-                    <?php echo $this->lang->line("consolidate"); ?>
-                  </th>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>
-                      <?php echo $this->lang->line("marks") . " " . $this->lang->line("obtained"); ?>
-                    </td>
-                    <?php
-                    $consolidate_get_total = 0;
-                    $consolidate_max_total = 0;
-                    if (!empty($exam_value->exam_result["exams"])) {
-                        $consolidate_exam_result = "pass";
-                        foreach ($exam_value->exam_result["exams"] as $each_exam_key => $each_exam_value) { ?>
-                    <td>
-                      <?php
-                            $consolidate_each = getCalculatedExam($exam_value->exam_result["exam_result"], $each_exam_value->id);
-                            $consolidate_get_percentage_mark = getConsolidateRatio($exam_value->exam_result["exam_connection_list"], $each_exam_value->id, $consolidate_each->get_marks);
-                            if ($consolidate_each->exam_status == "fail") {
-                                $consolidate_exam_result = "fail";
-                            }
-                            echo $consolidate_get_percentage_mark;
-                            $consolidate_get_total = $consolidate_get_total + $consolidate_get_percentage_mark;
-                            $consolidate_max_total = $consolidate_max_total + $consolidate_each->max_marks;
-?>
-                    </td>
-                    <?php
-                        }
-                    }
-?>
-                    <td>
-                      <?php
-                    $consolidate_percentage_grade = $consolidate_max_total > 0 ? ($consolidate_get_total * 100) / $consolidate_max_total : 0;
-                    echo $consolidate_get_total . "/" . $consolidate_max_total . " [" . findExamGrade($exam_grade, $exam_value->exam_type, $consolidate_percentage_grade) . "]";
-                    $consolidate_exam_result_percentage = $consolidate_percentage_grade;
-?>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-              <?php
-                } elseif ($exam_value->exam_type == "gpa") { ?>
-              <table class="table table-striped ">
-                <thead>
-                  <th>
-                    <?php echo $this->lang->line("exam"); ?>
-                  </th>
-                  <?php foreach ($exam_value->exam_result["exams"] as $each_exam_key => $each_exam_value) { ?>
-                  <th>
-                    <?php echo $each_exam_value->exam; ?>
-                  </th>
-                  <?php
-                    } ?>
-                  <th>
-                    <?php echo $this->lang->line("consolidate"); ?>
-                  </th>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>
-                      <?php echo $this->lang->line("marks") . " " . $this->lang->line("obtained"); ?>
-                    </td>
-                    <?php
-                    $consolidate_get_total = 0;
-                    $consolidate_subjects_total = 0;
-                    foreach ($exam_value->exam_result["exams"] as $each_exam_key => $each_exam_value) { ?>
-                    <td>
-                      <?php
-                        $consolidate_each = getCalculatedExamGradePoints($exam_value->exam_result["exam_result"], $each_exam_value->id, $exam_grade, $exam_value->exam_type);
-                        $consolidate_exam_result = $consolidate_each->total_points / $consolidate_each->total_exams;
-                        echo $consolidate_each->total_points . "/" . $consolidate_each->total_exams . "=" . number_format($consolidate_exam_result, 2, ".", "");
-                        $consolidate_get_percentage_mark = getConsolidateRatio($exam_value->exam_result["exam_connection_list"], $each_exam_value->id, $consolidate_exam_result);
-                        $consolidate_get_total = $consolidate_get_total + $consolidate_get_percentage_mark;
-                        $consolidate_subjects_total = $consolidate_subjects_total + $consolidate_each->total_exams;
-?>
-                    </td>
-                    <?php
-                    }
-?>
-                    <td>
-                      <?php
-                    $consolidate_percentage_grade = ($consolidate_get_total * 100) / $consolidate_subjects_total;
-                    echo number_format($consolidate_get_total, 2, ".", "") . "/" . $consolidate_subjects_total . " [" . findExamGrade($exam_grade, $exam_value->exam_type, $consolidate_percentage_grade) . "]";
-?>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-              <?php
-                }
-                if ($consolidate_exam_result) { ?>
-              <div class="row">
-                <div class="col-md-12">
-                  <div class="bgtgray">
-                    <div class="col-sm-3 pull no-print">
-                      <div class="description-block">
-                        <h5 class="description-header">
-                          <?php echo $this->lang->line("result"); ?> :
-                          <span class="description-text">
-                            <?php if ($consolidate_exam_result == "pass") { ?>
-                            <span class='label label-success' style="margin-right: 5px;">
-                              <?php echo $this->lang->line("pass"); ?>
-                            </span>
-                            <?php
-                    } else { ?>
-                            <span class='label label-danger' style="margin-right: 5px;">
-                              <?php echo $this->lang->line("fail"); ?>
-                            </span>
-                            <?php
-                    } ?>
-                          </span>
-                        </h5>
-                      </div>
-                    </div>
-                    <?php if ($consolidate_exam_result_percentage) { ?>
-                    <div class="col-sm-3 border-right no-print">
-                      <div class="description-block">
-                        <h5 class="description-header">
-                          <?php echo $this->lang->line("division"); ?> :
-                          <span class="description-text">
-                            <?php if ($consolidate_exam_result_percentage >= 60) {
-                            echo $this->lang->line("first");
-                        } elseif ($consolidate_exam_result_percentage >= 50 && $consolidate_exam_result_percentage < 60) {
-                            echo $this->lang->line("second");
-                        } elseif ($consolidate_exam_result_percentage >= 0 && $consolidate_exam_result_percentage < 50) {
-                            echo $this->lang->line("third");
-                        } else {
-                        } ?>
-                          </span>
-                        </h5>
-                      </div>
-                    </div>
-                    <?php
-                    }
-                }
-?>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <?php
-            }
-        }
-    }
-} else { ?>
-            <?php
-}
-?>
-          </div>
-      </div>
-    </div>
-  </div>
-</section>
+	
+	  <div class="tab-pane" id="result">	  
+		<div class="timeline-header no-border">
+			<div class="timeline-header no-border">
+				<div class="table-responsive" style="clear: both;">
+				<table class="table table-striped table-bordered table-hover ">
+				 <thead>
+				 <tr>														
+					<th><?php echo $this->lang->line("unit"); ?> <?php echo $this->lang->line("title"); ?></th> 
+					<th><?php echo $this->lang->line("test"); ?></th>
+					<th><?php echo $this->lang->line("project"); ?></th>
+					<th><?php echo $this->lang->line("sub_average"); ?></th>
+					<th><?php echo $this->lang->line("outcome"); ?></th>
+				 </tr>
+				</thead>
+					<tbody>
+						<?php $get_result_student = get_result_student($student["id"]); 
+				
+							foreach($get_result_student as $row) { 
+							if(empty($row['test_mark'])){
+								continue;
+							}
+						?>
+							<tr>
+								<td>
+								<?php
+									$get_subjects_id = get_subjects_id($row['subject_id']);
+									echo $get_subjects_id['name'];
+								?>
+								</td>
+								<td><?php echo $row["test_mark"];?>%</td>
+								<td><?php echo $row["project_mark"];?>%</td>
+								<td><?php echo $row["average"];?>%</td>
+								<td>
+								<?php
+									if(empty($row["competent"])){ echo "NYC"; }else{ echo "C"; }
+								?>
+								</td>
+							</tr>
+						<?php } ?>
+					</tbody>
+				</table><br><br>
+				
+				<table class="table table-striped table-bordered table-hover ">
+				 <thead>
+				 <tr>														
+					<th ><?php echo $this->lang->line("unit"); ?> <?php echo $this->lang->line("title"); ?></th> 
+					<th></th>
+					<th></th>
+					<th></th>
+					<th class="text-center"><?php echo $this->lang->line("grade"); ?></th>
+					<th class="text-center"><?php echo $this->lang->line("outcome"); ?></th>
+				 </tr>
+				</thead>
+					<tbody>
+						<?php $get_result_student = get_result_student($student["id"]); 
+				
+							foreach($get_result_student as $row) { 
+							if(empty($row['menu_mark'])){
+								continue;
+							}
+						?>
+							<tr>
+								<td colspan="4">
+								<?php
+									$get_subjects_id = get_subjects_id($row['subject_id']);
+									echo $get_subjects_id['name'];
+								?>
+								</td>
+								
+								<td class="text-center"><?php echo $row["menu_mark"];?>%</td>
+								<td class="text-center">
+								<?php
+									if(empty($row["competent"])){ echo "NYC"; }else{ echo "C"; }
+								?>
+								</td>
+							</tr>
+						<?php } ?>
+					</tbody>
+				</table>
+
+
+				</div>
+			</div>
+		</div>
+	  </div>
+	 
+	</section>
 </div>
 <script type="text/javascript">
   $("#myTimelineButton").click(function () {

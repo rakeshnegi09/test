@@ -946,6 +946,7 @@ class Examgroup extends Admin_Controller
         $data = array();
         $class             = $this->class_model->get();
         $data['classlist'] = $class;
+		$data['class_id_array'] = array();
 		$this->session->set_userdata('top_menu', 'Examinations');
         $this->session->set_userdata('sub_menu', 'Examinations/examgroup/examination');
         if ($this->input->server('REQUEST_METHOD') == 'POST') {
@@ -962,7 +963,57 @@ class Examgroup extends Admin_Controller
 
             $resultlist            = $this->batchsubject_model->getExaminationStudentList($class_id, $section_id, $session_id,$exam_type);
 			if($this->input->post('examination') == "Save"){
-				die("asd");
+				$student_id = $this->input->post("hidden_student_id");
+				foreach($student_id as $key=>$row){
+					
+					if(!isset($this->input->post("test_mark")[$key])){
+						$this->input->post("test_mark")[$key] = 0;
+					}
+					
+					if(!isset($this->input->post("project_mark")[$key])){
+						$this->input->post("project_mark")[$key] = 0;
+					}
+					
+					if(isset($this->input->post("test_mark")[$key]) || isset($this->input->post("project_mark")[$key])){
+						$average = ($this->input->post("test_mark")[$key] + $this->input->post("project_mark")[$key])/2;
+					}
+					
+					if(!isset($this->input->post("menu_mark")[$key])){
+						$this->input->post("menu_mark")[$key] = 0;
+					}
+					
+					if(isset($this->input->post("menu_mark")[$key])){
+						$average = $this->input->post("menu_mark")[$key];
+					}
+						
+					$data_array = array(
+							'student_id'=>$row,
+							'class_id'=>$this->input->post("hidden_class_id")[$key],
+							'section_id'=>$this->input->post("hidden_section_id")[$key],
+							'session_id'=>$this->input->post("hidden_session_id")[$key],
+							'subject_id'=>$this->input->post("hidden_subject_id")[$key],					
+							'test_mark'=>$this->input->post("test_mark")[$key],
+							'project_mark'=>$this->input->post("project_mark")[$key],
+							'menu_mark'=>$this->input->post("menu_mark")[$key],
+							'competent'=>$this->input->post("competent")[$key],
+							'average'=>$average,
+							'added_by'=>$_SESSION['admin']['id'],
+							'date'=>date('Y-m-d h:i:s'),
+						);
+					$get_result = get_result($row,$this->input->post("hidden_class_id")[$key],$this->input->post("hidden_section_id")[$key],$this->input->post("hidden_session_id")[$key],$this->input->post("hidden_subject_id")[$key]);
+					if($get_result){
+						$this->db->where('student_id',$row);    
+						$this->db->where('class_id',$this->input->post("hidden_class_id")[$key]);    
+						$this->db->where('section_id',$this->input->post("hidden_section_id")[$key]);    
+						$this->db->where('session_id',$this->input->post("hidden_session_id")[$key]);    
+						$this->db->where('subject_id',$this->input->post("hidden_subject_id")[$key]);    
+						$this->db->update("student_results",$data_array);
+					}else{
+						$this->db->insert("student_results",$data_array);
+					}
+					$this->session->set_flashdata("msg","Data saved successfully");
+					//redirect($_SERVER['HTTP_REFERER']);
+				}				
 			}
             $data['examination'] = $resultlist;
         }

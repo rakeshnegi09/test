@@ -96,7 +96,7 @@ if(!function_exists('get_session')) {
 }
 
 if(!function_exists('get_result')) {
-    function get_result($student_id,$class_id,$section_id,$session_id) {
+    function get_result($student_id,$class_id,$section_id,$session_id,$subject_id) {
         $CI = &get_instance();			
         $CI->db->select('*');
         $CI->db->from('student_results');    
@@ -104,8 +104,21 @@ if(!function_exists('get_result')) {
         $CI->db->where('class_id',$class_id);    
         $CI->db->where('section_id',$section_id);    
         $CI->db->where('session_id',$session_id);    
+        $CI->db->where('subject_id',$subject_id);    
         $query = $CI->db->get();
         $result = $query->row_array();
+        return $result;
+    }
+}
+
+if(!function_exists('get_result_student')) {
+    function get_result_student($student_id) {
+        $CI = &get_instance();			
+        $CI->db->select('*');
+        $CI->db->from('student_results');    
+        $CI->db->where('student_id',$student_id);    
+        $query = $CI->db->get();
+        $result = $query->result_array();
         return $result;
     }
 }
@@ -128,7 +141,7 @@ if(!function_exists('get_subjects_id')) {
         $CI->db->from('subjects');
         $CI->db->where('id',$id);
         $query = $CI->db->get();
-        $result = $query->result_array();
+        $result = $query->row_array();
         return $result;
     }
 }
