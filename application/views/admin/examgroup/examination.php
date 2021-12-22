@@ -26,16 +26,13 @@ $currency_symbol = $this->customlib->getSchoolCurrencyFormat();
                                         <div class="col-sm-3">                                  
 											<div class="form-group">
 												<label for="exampleInputEmail1"><?php echo $this->lang->line('class'); ?></label><small class="req"> *</small>
-												<select  id="class_id" multiple name="class_id[]" class="form-control"  >
+												<select required  id="class_id" multiple name="class_id[]" class="form-control"  >
 												<?php
 													
 													foreach ($classlist as $class) {
 														?>
 														<option value="<?php echo $class['id'] ?>" <?php if(in_array($class['id'],$class_id_array)){ echo "selected=selected"; } ?>><?php echo $class['class'] ?></option>
-														<?php
-														$count++;
-													}
-													?>
+														<?php } ?>
 												</select>
 												<span class="text-danger"><?php echo form_error('class_id'); ?></span>
 											</div>
@@ -44,7 +41,7 @@ $currency_symbol = $this->customlib->getSchoolCurrencyFormat();
                                             <div class="form-group">
 												<?php $section = get_section(); ?>
                                                 <label><?php echo $this->lang->line('section'); ?></label>
-                                                <select  id="" name="section_id" class="form-control" >
+                                                <select required id="" name="section_id" class="form-control" >
                                                     <option value=""><?php echo $this->lang->line('select'); ?></option>
 													<?php foreach($section as $row){ ?>
 													<option <?php if (set_value('section_id') == $row['id']) {
@@ -59,7 +56,7 @@ $currency_symbol = $this->customlib->getSchoolCurrencyFormat();
 											<div class="form-group">
 											<?php $session = get_session(); ?>
 											   <label>Year</label><small class="req"> *</small>
-											   <select id="session_id" name="session_id" class="form-control" autocomplete="off">
+											   <select required id="session_id" name="session_id" class="form-control" autocomplete="off">
 												  <option value="">Select</option>
 												  <?php foreach($session as $row){ ?>
 													<option <?php if (set_value('session_id') == $row['id']) {
@@ -73,7 +70,7 @@ $currency_symbol = $this->customlib->getSchoolCurrencyFormat();
 											<div class="form-group">
 											<?php $subjects = get_subjects(); ?>
 											   <label>Examination</label><small class="req"> *</small>
-											   <select id="subject_type" name="subject_id" class="form-control" autocomplete="off">
+											   <select required id="subject_type" name="subject_id" class="form-control" autocomplete="off">
 												  <option value="">Select</option>
 												 <?php foreach($subjects as $row){ ?>
 													<option <?php if (set_value('subject_id') == $row['id']) {
@@ -124,9 +121,13 @@ $currency_symbol = $this->customlib->getSchoolCurrencyFormat();
 
                                 <div class="col-md-12">
 
-                                    <input type="hidden" name="exam_group_class_batch_exam_subject_id" value="<?php echo $id; ?>">
+                                   
                                     <div class=" table-responsive">
-                                       
+                                      <?php
+										$subject_id = set_value('subject_id');
+										$sub_type	=	get_subjects_id($subject_id);
+									  ?>
+									  
 									<table class="table table-striped">
 										<tbody>
 											<tr>
@@ -135,11 +136,12 @@ $currency_symbol = $this->customlib->getSchoolCurrencyFormat();
 												<?php if($sub_type['type'] == "theory"){?>
 												<th><?php echo $this->lang->line('test'); ?></th>
 												<th><?php echo $this->lang->line('project'); ?></th>
+												<th class="text-center"><?php echo $this->lang->line('sub_average')?></th>
 												<?php }else{ ?>
 												<th><?php echo $this->lang->line('menu'); ?></th>
 												<?php } ?>
-												<th class="text-center"><?php echo $this->lang->line('sub_average')?></th>
-												<th><?php echo $this->lang->line('competent'); ?></th>
+												
+												<th class="text-center"><?php echo $this->lang->line('competent'); ?></th>
 												
 											</tr>
 											<?php
@@ -156,22 +158,37 @@ $currency_symbol = $this->customlib->getSchoolCurrencyFormat();
 													$class_id = $row->class_id;
 													$section_id = $row->sections_id;
 													$session_id = set_value('session_id');
-													$subject_id = set_value('subject_id');
-													$sub_type	=	get_subjects_id($subject_id);
 													
-													$get_existing = get_result($student_id,$class_id,$section_id,$session_id );
+													
+													$get_existing = get_result($student_id,$class_id,$section_id,$session_id,$subject_id );
+													$test_mark = "";
+													$project_mark = "";
+													$menu_mark = "";
+													$average = "";
 													if($get_existing){
-														$test_mark = $get_existing['test_mark'];
-														$project_mark = $get_existing['project_mark'];
-														$menu_mark = $get_existing['menu_mark'];
-													}else{
-														$test_mark = "";
-														$project_mark = "";
-														$menu_mark = "";
+														if(!empty($get_existing['test_mark'])){
+															$test_mark = $get_existing['test_mark'];
+														}
+														if(!empty($get_existing['project_mark'])){
+															$project_mark = $get_existing['project_mark'];
+														}
+														if(!empty($get_existing['menu_mark'])){
+															$menu_mark = $get_existing['menu_mark'];
+														}
+														if(!empty($get_existing['average'])){
+															$average = $get_existing['average'];
+														}	
 													}
 													?>
 													<tr>
-														<td><?php echo $row->admission_no; ?></td>
+														<td>
+														<?php echo $row->admission_no; ?>
+														<input type="hidden" value="<?= $student_id; ?>" class="form-control" name="hidden_student_id[]">
+														<input type="hidden" value="<?= $section_id; ?>" class="form-control" name="hidden_section_id[]">
+														<input type="hidden" value="<?= $class_id; ?>" class="form-control" name="hidden_class_id[]">
+														<input type="hidden" value="<?= $session_id; ?>" class="form-control" name="hidden_session_id[]" value="<?= set_value('session_id'); ?>">
+														<input type="hidden" value="<?= $subject_id; ?>" class="form-control" name="hidden_subject_id[]">
+														</td>
 														<td>
 															<a href="<?php echo base_url(); ?>student/view/<?php echo $row->id; ?>"><?php echo $row->firstname . " " . $row->lastname; ?>
 															</a>
@@ -179,29 +196,25 @@ $currency_symbol = $this->customlib->getSchoolCurrencyFormat();
 														<?php if($sub_type['type'] == "theory"){?>
 														<td>
 														<input type="text" value="<?= $test_mark; ?>" class="form-control" name="test_mark[]">
-														<input type="text" value="<?= $student_id; ?>" class="form-control" name="student_id[]">
-														<input type="text" value="<?= $section_id; ?>" class="form-control" name="section_id[]">
-														<input type="text" value="<?= $class_id; ?>" class="form-control" name="class_id[]">
-														<input type="text" value="<?= $session_id; ?>" class="form-control" name="session_id[]" value="<?= set_value('session_id'); ?>">
-														
 														</td>
-														<td><input type="text" class="form-control" name="project_mark[]"></td>
-
-														<td></td>
+														<td><input type="text" value="<?= $project_mark; ?>" class="form-control" name="project_mark[]"></td>
+														<td class="text-center"><?= $average; ?></td>
+														
 														<?php }else{ ?>
-														<td><input type="text" class="form-control" name="menu_mark[]"></td>
+														
+														<td><input type="text" value="<?= $menu_mark; ?>" class="form-control" name="menu_mark[]"></td>
 														<?php } ?>
-														<td  class="text-center"><input type="checkbox" name="competent[]" class=""></td>
+														
+														<td  class="text-center"><input <?php if(!empty($get_existing['competent'])){ echo "checked";} ?> type="checkbox" name="competent[]" value="1" class=""></td>
 														
 													</tr>
-													<?php
-												}
-											}
-											?>
+													<?php } ?><td colspan="7" class="pull-right">
+													<input type="submit" class="btn btn-success pull-right" name="examination" value="Save" style="margin-right:30px"></td>
+											<?php } 	?>
 										</tbody>
 										</table>
                                     </div>
-									<input type="submit" class="btn btn-success pull-right" name="examination" value="Save">
+									
                                 </div>
                             </div>
 							

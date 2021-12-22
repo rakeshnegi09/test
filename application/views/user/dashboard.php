@@ -133,7 +133,7 @@
 				  <li class=""><a href="#legal" data-toggle="tab" aria-expanded="true">Legal</a></li>
 				  <li class=""><a href="#certificates" data-toggle="tab" aria-expanded="true">Certificates</a></li>
 				  <li class=""><a href="#wel" data-toggle="tab" aria-expanded="true">W.E.L</a></li>
-				  <li class=""><a href="#results" data-toggle="tab" aria-expanded="true">Results</a></li>
+				  <li class=""><a href="#result" data-toggle="tab" aria-expanded="true">Results</a></li>
                   <?php if ($this->studentmodule_lib->hasActive("fees")) { ?>
                   <!--li class=""><a href="#fee" data-toggle="tab" aria-expanded="true"><?php echo $this->lang->line(
                       "fees"
@@ -1022,9 +1022,92 @@
 			</div>
 		</div>
 	 
-				  <div class="tab-pane" id="results">
-					<p>Results Not done Yet</p>
-				  </div>
+				   <div class="tab-pane" id="result">	  
+		<div class="timeline-header no-border">
+			<div class="timeline-header no-border">
+				<div class="table-responsive" style="clear: both;">
+				<table class="table table-striped table-bordered table-hover ">
+				 <thead>
+				 <tr>														
+					<th><?php echo $this->lang->line("unit"); ?> <?php echo $this->lang->line("title"); ?></th> 
+					<th><?php echo $this->lang->line("test"); ?></th>
+					<th><?php echo $this->lang->line("project"); ?></th>
+					<th><?php echo $this->lang->line("sub_average"); ?></th>
+					<th><?php echo $this->lang->line("outcome"); ?></th>
+				 </tr>
+				</thead>
+					<tbody>
+						<?php $get_result_student = get_result_student($student["id"]); 
+				
+							foreach($get_result_student as $row) { 
+							if(empty($row['test_mark'])){
+								continue;
+							}
+						?>
+							<tr>
+								<td>
+								<?php
+									$get_subjects_id = get_subjects_id($row['subject_id']);
+									echo $get_subjects_id['name'];
+								?>
+								</td>
+								<td><?php echo $row["test_mark"];?>%</td>
+								<td><?php echo $row["project_mark"];?>%</td>
+								<td><?php echo $row["average"];?>%</td>
+								<td>
+								<?php
+									if(empty($row["competent"])){ echo "NYC"; }else{ echo "C"; }
+								?>
+								</td>
+							</tr>
+						<?php } ?>
+					</tbody>
+				</table><br><br>
+				
+				<table class="table table-striped table-bordered table-hover ">
+				 <thead>
+				 <tr>														
+					<th ><?php echo $this->lang->line("unit"); ?> <?php echo $this->lang->line("title"); ?></th> 
+					<th></th>
+					<th></th>
+					<th></th>
+					<th class="text-center"><?php echo $this->lang->line("grade"); ?></th>
+					<th class="text-center"><?php echo $this->lang->line("outcome"); ?></th>
+				 </tr>
+				</thead>
+					<tbody>
+						<?php $get_result_student = get_result_student($student["id"]); 
+				
+							foreach($get_result_student as $row) { 
+							if(empty($row['menu_mark'])){
+								continue;
+							}
+						?>
+							<tr>
+								<td colspan="4">
+								<?php
+									$get_subjects_id = get_subjects_id($row['subject_id']);
+									echo $get_subjects_id['name'];
+								?>
+								</td>
+								
+								<td class="text-center"><?php echo $row["menu_mark"];?>%</td>
+								<td class="text-center">
+								<?php
+									if(empty($row["competent"])){ echo "NYC"; }else{ echo "C"; }
+								?>
+								</td>
+							</tr>
+						<?php } ?>
+					</tbody>
+				</table>
+
+
+				</div>
+			</div>
+		</div>
+	  </div>
+	 
 				 <div class="tab-pane" id="exam">
                      <div class="download_label">
                         <?php echo $this->lang->line("exam") .

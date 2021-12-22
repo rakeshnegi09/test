@@ -1394,6 +1394,7 @@ $lang['test'] = "Test";
 $lang['project'] = "Project";
 $lang['sub_average'] = "Subject Average";
 $lang['competent'] = "Competent";
+$lang['outcome'] = "Outcome";
 $lang['paytm_merchant_id'] = "Merchant Id";
 $lang['paytm_merchant_key'] = "Merchant Key";
 $lang['paytm_website'] = "Website";

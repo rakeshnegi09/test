@@ -28,7 +28,7 @@ img {
         </style>
     </head>
 
-    <body style="background-image: url(<?= //base_url('uploads/images/studentlogin.jpg');?>)">
+    <body style="background-image: url(<?= base_url('uploads/images/studentlogin.jpg');?>)">
         <!-- Top content -->
         <div class="top-content">
 

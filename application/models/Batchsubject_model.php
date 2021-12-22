@@ -407,7 +407,7 @@ class Batchsubject_model extends CI_Model {
         }
 		$this->db->group_end();
 		
-        if ($section != null) {
+        if ($section_id != null) {
             $this->db->where('student_session.section_id', $section_id);
         }
         $this->db->order_by('students.id');
