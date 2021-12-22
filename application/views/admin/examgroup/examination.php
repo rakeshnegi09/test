@@ -31,7 +31,7 @@ $currency_symbol = $this->customlib->getSchoolCurrencyFormat();
 													
 													foreach ($classlist as $class) {
 														?>
-														<option value="<?php echo $class['id'] ?>"<?php if(in_array($class['id'],$class_id_array)){ echo "selected=selected"; } ?>><?php echo $class['class'] ?></option>
+														<option value="<?php echo $class['id'] ?>" <?php if(in_array($class['id'],$class_id_array)){ echo "selected=selected"; } ?>><?php echo $class['class'] ?></option>
 														<?php
 														$count++;
 													}
@@ -47,7 +47,8 @@ $currency_symbol = $this->customlib->getSchoolCurrencyFormat();
                                                 <select  id="" name="section_id" class="form-control" >
                                                     <option value=""><?php echo $this->lang->line('select'); ?></option>
 													<?php foreach($section as $row){ ?>
-													<option value="<?php echo $row['id']; ?>"><?php echo $row['section']; ?></option>
+													<option <?php if (set_value('section_id') == $row['id']) {
+                                                echo "selected=selected"; } ?> value="<?php echo $row['id']; ?>"><?php echo $row['section']; ?></option>
 													<?php } ?>
 													
                                                 </select>
@@ -56,34 +57,28 @@ $currency_symbol = $this->customlib->getSchoolCurrencyFormat();
                                         </div>
 										<div class="col-sm-3">
 											<div class="form-group">
+											<?php $session = get_session(); ?>
 											   <label>Year</label><small class="req"> *</small>
 											   <select id="session_id" name="session_id" class="form-control" autocomplete="off">
 												  <option value="">Select</option>
-												  <option value="7">2017</option>
-												  <option value="11">2018</option>
-												  <option value="13">2019</option>
-												  <option value="14">2020</option>
-												  <option value="15">2021</option>
-												  <option value="16">2022</option>
-												  <option value="18">2023</option>
-												  <option value="19">2024</option>
-												  <option value="20">2025</option>
-												  <option value="21">2026</option>
-												  <option value="22">2027</option>
-												  <option value="23">2028</option>
-												  <option value="24">2029</option>
-												  <option value="25">2030</option>
+												  <?php foreach($session as $row){ ?>
+													<option <?php if (set_value('session_id') == $row['id']) {
+                                                echo "selected=selected"; } ?> value="<?php echo $row['id']; ?>"><?php echo $row['session']; ?></option>
+													<?php } ?>
 											   </select>
 											   <span class="text-danger"></span>
 											</div>
 										</div>
 										<div class="col-sm-3">
 											<div class="form-group">
+											<?php $subjects = get_subjects(); ?>
 											   <label>Examination</label><small class="req"> *</small>
-											   <select id="subject_type" name="subject_type" class="form-control" autocomplete="off">
+											   <select id="subject_type" name="subject_id" class="form-control" autocomplete="off">
 												  <option value="">Select</option>
-												  <option value="practical">Practical</option>
-												  <option value="theory">Menu</option>								 
+												 <?php foreach($subjects as $row){ ?>
+													<option <?php if (set_value('subject_id') == $row['id']) {
+                                                echo "selected=selected"; } ?> value="<?php echo $row['id']; ?>"><?php echo $row['name']; ?></option>
+													<?php } ?>								 
 											   </select>
 											   <span class="text-danger"></span>
 											</div>
@@ -109,7 +104,7 @@ $currency_symbol = $this->customlib->getSchoolCurrencyFormat();
                                                 <button type="submit" name="search" value="search_full" class="btn btn-primary pull-right btn-sm checkbox-toggle"><i class="fa fa-search"></i> <?php echo $this->lang->line('search'); ?></button>
                                             </div>
                                         </div>
-                                    </form>
+                                    
                                 </div>
                            </div><!--./col-md-6-->
                         </div><!--./row-->
@@ -124,6 +119,7 @@ $currency_symbol = $this->customlib->getSchoolCurrencyFormat();
                             </div>
                         </div>
                         <div class="box-body">
+						
                             <div class="row">
 
                                 <div class="col-md-12">
@@ -136,9 +132,13 @@ $currency_symbol = $this->customlib->getSchoolCurrencyFormat();
 											<tr>
 												<th><?php echo $this->lang->line('admission_no'); ?></th>
 												<th><?php echo $this->lang->line('student_name'); ?></th>
+												<?php if($sub_type['type'] == "theory"){?>
 												<th><?php echo $this->lang->line('test'); ?></th>
 												<th><?php echo $this->lang->line('project'); ?></th>
-												<th><?php echo $this->lang->line('sub_average')?></th>
+												<?php }else{ ?>
+												<th><?php echo $this->lang->line('menu'); ?></th>
+												<?php } ?>
+												<th class="text-center"><?php echo $this->lang->line('sub_average')?></th>
 												<th><?php echo $this->lang->line('competent'); ?></th>
 												
 											</tr>
@@ -152,6 +152,23 @@ $currency_symbol = $this->customlib->getSchoolCurrencyFormat();
 											} else {
 
 												foreach ($examination as $key => $row) {
+													$student_id = $row->id;
+													$class_id = $row->class_id;
+													$section_id = $row->sections_id;
+													$session_id = set_value('session_id');
+													$subject_id = set_value('subject_id');
+													$sub_type	=	get_subjects_id($subject_id);
+													
+													$get_existing = get_result($student_id,$class_id,$section_id,$session_id );
+													if($get_existing){
+														$test_mark = $get_existing['test_mark'];
+														$project_mark = $get_existing['project_mark'];
+														$menu_mark = $get_existing['menu_mark'];
+													}else{
+														$test_mark = "";
+														$project_mark = "";
+														$menu_mark = "";
+													}
 													?>
 													<tr>
 														<td><?php echo $row->admission_no; ?></td>
@@ -159,12 +176,22 @@ $currency_symbol = $this->customlib->getSchoolCurrencyFormat();
 															<a href="<?php echo base_url(); ?>student/view/<?php echo $row->id; ?>"><?php echo $row->firstname . " " . $row->lastname; ?>
 															</a>
 														</td>
-
-														<td><input type="text" class="form-control" name="test[]"></td>
-														<td><input type="text" class="form-control" name="project[]"></td>
+														<?php if($sub_type['type'] == "theory"){?>
+														<td>
+														<input type="text" value="<?= $test_mark; ?>" class="form-control" name="test_mark[]">
+														<input type="text" value="<?= $student_id; ?>" class="form-control" name="student_id[]">
+														<input type="text" value="<?= $section_id; ?>" class="form-control" name="section_id[]">
+														<input type="text" value="<?= $class_id; ?>" class="form-control" name="class_id[]">
+														<input type="text" value="<?= $session_id; ?>" class="form-control" name="session_id[]" value="<?= set_value('session_id'); ?>">
+														
+														</td>
+														<td><input type="text" class="form-control" name="project_mark[]"></td>
 
 														<td></td>
-														<td><input type="checkbox" name="competent[]" class=""></td>
+														<?php }else{ ?>
+														<td><input type="text" class="form-control" name="menu_mark[]"></td>
+														<?php } ?>
+														<td  class="text-center"><input type="checkbox" name="competent[]" class=""></td>
 														
 													</tr>
 													<?php
@@ -174,9 +201,11 @@ $currency_symbol = $this->customlib->getSchoolCurrencyFormat();
 										</tbody>
 										</table>
                                     </div>
-
+									<input type="submit" class="btn btn-success pull-right" name="examination" value="Save">
                                 </div>
                             </div>
+							
+							</form>
 
                         </div>
                     </div>

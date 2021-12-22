@@ -961,7 +961,9 @@ class Examgroup extends Admin_Controller
             $exam_type                                     = $this->input->post('exam_type');           
 
             $resultlist            = $this->batchsubject_model->getExaminationStudentList($class_id, $section_id, $session_id,$exam_type);
-			
+			if($this->input->post('examination') == "Save"){
+				die("asd");
+			}
             $data['examination'] = $resultlist;
         }
 

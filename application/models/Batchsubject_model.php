@@ -394,7 +394,7 @@ class Batchsubject_model extends CI_Model {
 	
 	
 	public function getExaminationStudentList($class_id, $section_id, $session_id,$exam_type){
-		 $this->db->select('*')->from('students');
+		 $this->db->select('students.*,classes.id as class_id,sections.id as sections_id')->from('students');
         $this->db->join('student_session', 'student_session.student_id = students.id');
         $this->db->join('classes', 'student_session.class_id = classes.id');
         $this->db->join('sections', 'sections.id = student_session.section_id');
