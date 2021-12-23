@@ -41,7 +41,7 @@
                                     <div class="form-group">
 										<?php $section = get_section(); ?>
 										<label><?php echo $this->lang->line('section'); ?></label>
-										<select  id="section_id"  name="section_id" class="form-control" >
+										<select  id="section_id" multiple name="section_id[]" class="form-control" >
 											<?php foreach($section as $row){ ?>
 											<option <?php if (set_value('section_id') == $row['id']) echo "selected=selected" ?> value="<?php echo $row['id']; ?>"><?php echo $row['section']; ?></option>
 											<?php } ?>
@@ -91,8 +91,8 @@
                                             <th><?php echo $this->lang->line('admission_no'); ?></th>
                                             <th><?php echo $this->lang->line('student_name'); ?></th>
                                             <th><?php echo $this->lang->line('class'); ?></th>
-                                            <th>ID/Passport</th>                                            
-                                            <th>Reason</th>
+                                            <th class="text-center">ID/Passport</th>                                            
+                                            <th class="text-center">Reason</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -122,6 +122,15 @@
             selectAll: false
 		});
 		
+		$('#section_id').multiselect({
+			columns:1,
+			placeholder:"Please select",
+			search: false,
+            searchOptions: {
+                'default': 'Search Campus'
+            },
+            selectAll: false
+		});
 		
 		
 	});
