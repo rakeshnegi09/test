@@ -2287,6 +2287,112 @@ class Student extends Admin_Controller
 
         echo json_encode($json_data);
     }
+	
+	
+	public function disabled_report()
+    {
+        if (!$this->rbac->hasPrivilege('student_report', 'can_view')) {
+            access_denied();
+        }
+
+        $this->session->set_userdata('top_menu', 'Reports');
+        $this->session->set_userdata('sub_menu', 'Reports/student_information');
+        $this->session->set_userdata('subsub_menu', 'Reports/student_information/disabled_report');
+        $data['title']           = 'disabled report';
+        
+        $class                   = $this->class_model->get();
+        $data['classlist']       = $class;
+        $userdata                = $this->customlib->getUserData();
+		$disable_reason = $this->disable_reason_model->get();
+
+        foreach ($disable_reason as $key => $value) {
+            $id               = $value['id'];
+            $reason_list[$id] = $value;
+        }
+
+        $data['disable_reason'] = $reason_list;
+		
+        $this->load->view('layout/header', $data);
+        $this->load->view('student/disabled_report', $data);
+        $this->load->view('layout/footer', $data);
+
+    }
+	
+	/* this function is used to validate student report   */
+    public function disabledreportvalidation()
+    {
+        $class_id    = $this->input->post('class_id');
+        $section_id  = $this->input->post('section_id');
+        $reason      = $this->input->post('reason');
+
+        $srch_type = $this->input->post('search_type');
+
+        if ($srch_type == 'search_filter') {
+
+            $this->form_validation->set_rules('class_id[]', $this->lang->line('class'), 'trim|required|xss_clean');
+            if ($this->form_validation->run() == true) {
+
+                $params = array('srch_type' => $srch_type, 'class_id' => $class_id, 'section_id' => $section_id, 'reason' => $reason);
+                $array  = array('status' => 1, 'error' => '', 'params' => $params);
+                echo json_encode($array);
+
+            } else {
+
+                $error             = array();
+                $error['class_id'] = form_error('class_id');
+                $array             = array('status' => 0, 'error' => $error);
+                echo json_encode($array);
+            }
+        } else {
+            $params = array('srch_type' => 'search_full', 'class_id' => $class_id, 'section_id' => $section_id,'reason' => $reason);
+            $array  = array('status' => 1, 'error' => '', 'params' => $params);
+            echo json_encode($array);
+        }
+
+    }
+	
+	
+	public function dtdisabledreportlist()
+    {
+		
+		$class_id    = $this->input->post('class_id');
+        $section_id  = $this->input->post('section_id');
+        $reason  = $this->input->post('reason');
+
+        
+		$class_id = $this->input->post('class_id');
+		$result          = $this->student_model->disablestudentByClassSectionReport($class_id, $section_id,$reason);
+        
+		
+        $resultlist = json_decode($result);
+        $dt_data    = array();
+        if (!empty($resultlist->data)) {
+            foreach ($resultlist->data as $resultlist_key => $student) {
+
+                $viewbtn = "<a  href='" . base_url() . "student/view/" . $student->id . "'>" . $this->customlib->getFullName($student->firstname, $student->middlename, $student->lastname, $sch_setting->middlename, $sch_setting->lastname) . "</a>";
+				
+				
+
+                $row   = array();
+                
+                $row[] = $student->admission_no;
+				$row[] = $student->section;
+                $row[] = $student->section;          
+                $row[] = $student->reason;
+				$dt_data[] = $row;
+            }
+
+        }
+		
+        $json_data = array(
+            "draw"            => intval($resultlist->draw),
+            "recordsTotal"    => intval($resultlist->recordsTotal),
+            "recordsFiltered" => intval($resultlist->recordsFiltered),
+            "data"            => $dt_data,
+        );
+
+        echo json_encode($json_data);
+    }
 
 
 }
