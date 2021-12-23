@@ -1989,6 +1989,32 @@ class Student_model extends MY_Model
         ->from('covid_screening');
         return $this->datatables->generate('json');
     }
+	
+	
+	public function disablestudentByClassSectionReport($class, $section,$reason)
+    {
 
+        $this->db->select('students.*')->from('students');
+        $this->db->join('student_session', 'student_session.student_id = students.id');
+        $this->db->join('classes', 'student_session.class_id = classes.id');
+        $this->db->join('sections', 'sections.id = student_session.section_id');
+        $this->db->where('students.dis_reason', $reason);
+        
+		$this->db->group_start();
+        if (!empty($class)) {
+			foreach($class as $class_id){
+				$this->db->or_where('student_session.class_id', $class_id);
+            }
+        }
+		$this->db->group_end();
+		
+        if ($section != null) {
+            $this->db->where('student_session.section_id', $section);
+        }
+        $this->db->order_by('students.id');
+
+        $query = $this->db->get();
+        return $query->result_array();
+    }
 
 }
