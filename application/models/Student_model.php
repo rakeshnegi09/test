@@ -1994,12 +1994,13 @@ class Student_model extends MY_Model
 	public function disablestudentByClassSectionReport($class, $section,$reason)
     {
 
-        $this->db->select('students.*')->from('students');
-        $this->db->join('student_session', 'student_session.student_id = students.id');
+        $this->db->select('classes.id AS `class_id`,student_session.id as student_session_id,students.id,classes.class,sections.id AS `section_id`,sections.section,students.id,students.admission_no , students.roll_no,students.admission_date,students.firstname,students.middlename,  students.lastname,students.image,    students.mobileno, students.email ,students.state ,   students.city , students.pincode ,     students.religion,     students.dob ,students.current_address,    students.permanent_address,IFNULL(students.category_id, 0) as `category_id`,IFNULL(categories.category, "") as `category`,students.adhar_no,students.samagra_id,students.bank_account_no,students.bank_name, students.ifsc_code , students.guardian_name , students.guardian_relation,students.guardian_phone,students.guardian_address,students.is_active ,students.created_at ,students.updated_at,students.father_name,students.rte,students.gender,dis_reason,dis_note')->from('students');
+         $this->db->join('student_session', 'student_session.student_id = students.id');
         $this->db->join('classes', 'student_session.class_id = classes.id');
         $this->db->join('sections', 'sections.id = student_session.section_id');
-        $this->db->where('students.dis_reason', $reason);
-        
+        $this->db->join('categories', 'students.category_id = categories.id', 'left');
+        $this->db->where('students.is_active', "no");
+		$this->db->where('students.dis_reason', $reason);
 		$this->db->group_start();
         if (!empty($class)) {
 			foreach($class as $class_id){
@@ -2008,13 +2009,19 @@ class Student_model extends MY_Model
         }
 		$this->db->group_end();
 		
-        if ($section != null) {
-            $this->db->where('student_session.section_id', $section);
+		
+		$this->db->group_start();
+        if (!empty($section)) {
+			foreach($section as $section_id){
+				$this->db->or_where('student_session.section_id', $section_id);
+            }
         }
+		$this->db->group_end();
+		
         $this->db->order_by('students.id');
-
-        $query = $this->db->get();
-        return $query->result_array();
+		return $this->datatables->generate('json');
+        //$query = $this->db->get();
+        //return $query->result_array();
     }
 
 }

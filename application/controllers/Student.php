@@ -2368,17 +2368,16 @@ class Student extends Admin_Controller
         $dt_data    = array();
         if (!empty($resultlist->data)) {
             foreach ($resultlist->data as $resultlist_key => $student) {
-
+		
                 $viewbtn = "<a  href='" . base_url() . "student/view/" . $student->id . "'>" . $this->customlib->getFullName($student->firstname, $student->middlename, $student->lastname, $sch_setting->middlename, $sch_setting->lastname) . "</a>";
-				
-				
-
+				$array = (array) $student;
                 $row   = array();
                 
                 $row[] = $student->admission_no;
-				$row[] = $student->section;
-                $row[] = $student->section;          
-                $row[] = $student->reason;
+				$row[] = $viewbtn;
+                $row[] = $student->class;          
+                $row[] = $array['id-passport'];          
+                $row[] = $student->dis_note;
 				$dt_data[] = $row;
             }
 

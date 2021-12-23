@@ -811,7 +811,11 @@ class User extends Student_Controller
 	
 	
 	public function add_covid_screening(){
-		
+		if($_SESSION['current_class']['section_id'] == '1'){
+			$campus_email = "portalplk@limpopochefs.co.za";
+		}else{
+			$campus_email = "portalmkp@limpopochefs.co.za";
+		}
 		if(isset($_POST['covid_screening'])){
 			$this->form_validation->set_rules('covid[question1]', 'question to be asked','required', 'trim|required|xss_clean');
 	
@@ -828,12 +832,20 @@ class User extends Student_Controller
 					"Were you in contact with someone that has COVID-19?",				
 					);
 					$count=0;
+					$this->load->library('mailer');
 				foreach($_POST['covid'] as $key=>$row){
 					$csv_row[] = $question[$count];
-					$csv_row[] = $row;			
+					$csv_row[] = $row;
+					$answer_array[] = $row;
+					
 					$final_data[] = $csv_row;
 					$csv_row = array();
 					$count++;
+				}
+				
+				if(in_array("Yes",$answer_array)){
+					
+					$this->mailer->send_mail($campus_email, "Covid Notification", "One student ".$_SESSION['student']["username"]." added Yes in covid screening report!");
 				}
 				
 				$data = array("student_id"=>$_SESSION['student']['student_id'],"data"=>json_encode($final_data));
