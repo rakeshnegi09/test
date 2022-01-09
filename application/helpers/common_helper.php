@@ -14,6 +14,21 @@ if(!function_exists('get_monthly_info')) {
     }
 }
 
+
+if(!function_exists('monthly_information_update')) {
+    function monthly_information_update() {
+        $CI = &get_instance();			
+        $CI->db->select('*');
+        $CI->db->from('monthly_information_update')->limit(1);  
+        $CI->db->where('month', date('m')); 		
+        $CI->db->where('year', date('Y')); 
+        $query = $CI->db->get();
+        $result = $query->row_array();
+        return $result;
+    }
+}
+
+
 if(!function_exists('fees_arrear')) {
     function fees_arrear($id) {
         $CI = &get_instance();			
@@ -96,17 +111,19 @@ if(!function_exists('get_session')) {
 }
 
 if(!function_exists('get_result')) {
-    function get_result($student_id,$class_id,$section_id,$session_id,$subject_id) {
+    function get_result($student_id,$class_id,$section_id,$session_id,$subject_id,$exam_id) {
         $CI = &get_instance();			
         $CI->db->select('*');
         $CI->db->from('student_results');    
         $CI->db->where('student_id',$student_id);    
         $CI->db->where('class_id',$class_id);    
         $CI->db->where('section_id',$section_id);    
-        $CI->db->where('session_id',$session_id);    
+        $CI->db->where('session_id',$session_id); 
+		$CI->db->where('exam_id',$exam_id);
         $CI->db->where('subject_id',$subject_id);    
         $query = $CI->db->get();
         $result = $query->row_array();
+		//print_r($result);die;
         return $result;
     }
 }
@@ -117,6 +134,21 @@ if(!function_exists('get_result_student')) {
         $CI->db->select('*');
         $CI->db->from('student_results');    
         $CI->db->where('student_id',$student_id);    
+        $query = $CI->db->get();
+        $result = $query->result_array();
+        return $result;
+    }
+}
+
+
+if(!function_exists('get_result_student_by_session')) {
+    function get_result_student_by_session($session_id,$student_id) {
+        $CI = &get_instance();			
+        $CI->db->select('*');
+        $CI->db->from('student_results');    
+        $CI->db->where('student_id',$student_id);    
+        $CI->db->where('session_id',$session_id);
+		$CI->db->order_by('test_mark', 'DESC');
         $query = $CI->db->get();
         $result = $query->result_array();
         return $result;
@@ -142,6 +174,31 @@ if(!function_exists('get_subjects_id')) {
         $CI->db->where('id',$id);
         $query = $CI->db->get();
         $result = $query->row_array();
+        return $result;
+    }
+}
+
+
+if(!function_exists('get_all_exams')) {
+    function get_all_exams() {
+        $CI = &get_instance();			
+        $CI->db->select('*');
+        $CI->db->from('exam_group_class_batch_exams');
+        $query = $CI->db->get();
+        $result = $query->result_array();
+        return $result;
+    }
+}
+
+
+if(!function_exists('get_exam_group_name')) {
+    function get_exam_group_name($id=null) {
+        $CI = &get_instance();			
+        $CI->db->select('*');
+        $CI->db->from('exam_groups');
+		$CI->db->where('id',$id);
+        $query = $CI->db->get();
+        $result = $query->row_array()['name'];
         return $result;
     }
 }

@@ -15,7 +15,7 @@ if(empty(check_covid_screening())){?>
     });
 </script>
 <?php } ?>
-<?php if(empty(get_monthly_info($_SESSION['student']['student_id']))){?>
+<?php if(empty(get_monthly_info($_SESSION['student']['student_id'])) && !empty(monthly_information_update())){?>
 <script type="text/javascript">
     $(window).on('load', function() {
         $('#myModalmonthly').modal('show');

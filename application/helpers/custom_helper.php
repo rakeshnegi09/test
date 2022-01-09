@@ -276,7 +276,10 @@ if(!function_exists('get_important_info')) {
         $CI->db->where('student_id', $id); 		
 		$CI->db->order_by("id","desc");
         $query = $CI->db->get();
-        $result = $query->row_array()['info'];
+        $result = $query->row_array();
+		if($result){
+			return $result['info'];
+		}
         return $result;
     }
 }

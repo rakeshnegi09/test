@@ -891,6 +891,82 @@ class User extends Student_Controller
 		$this->db->insert('monthly_information_update',$data);
 		redirect("user/user/dashboard");
 	}
+	
+	
+	public function download_result($id = null){
+		
+		$data = get_result_student($id);
+		//$data = json_decode($data);
+		$csv_row = array();
+		$final_data[] = array(
+			"Unit title",
+			"test mark",
+			"Project Mark",
+			"Average",
+			"Competent",
+			);
+		foreach($data as $key=>$row){
+			if(empty($row['competent'])){
+				$competent = "NYC";
+			}else{
+				$competent = "C";
+			}
+			if(empty($row['average'])){
+				continue;
+			}
+			if(!empty($row['menu_mark'])){
+				continue;
+			}
+			$get_subjects_id = get_subjects_id($row['subject_id']);	
+			$csv['subject_name'] = $get_subjects_id['name'];
+			$csv['test_mark'] = $row['test_mark'];
+			$csv['project_mark'] = $row['project_mark'];
+			
+			$csv['average'] = $row['average'];
+			$csv['competent'] = $competent;
+			$final_data[] = $csv;
+			$csv_row = array();
+		}
+		
+		$final_data[] = array(
+			"Unit title",
+			"Menu Mark",
+			"Competent",
+			);
+		foreach($data as $key=>$row){
+			if(empty($row['competent'])){
+				$competent = "NYC";
+			}else{
+				$competent = "C";
+			}
+			if(empty($row['average'])){
+				continue;
+			}
+			if(empty($row['menu_mark'])){
+				continue;
+			}
+			$get_subjects_id = get_subjects_id($row['subject_id']);	
+			$csv_menu['subject_name'] = $get_subjects_id['name'];
+			$csv_menu['menu_mark'] = $row['menu_mark'];
+			$csv_menu['competent'] = $competent;
+			$final_data[] = $csv_menu;
+			$csv_row = array();
+		}
+		//echo "<pre>";
+		//print_r($final_data);die;
+		header("Content-type: application/csv");
+		header("Content-Disposition: attachment; filename=\"test".".csv\"");
+		header("Pragma: no-cache");
+		header("Expires: 0");
+
+		$handle = fopen('php://output', 'w');
+
+		foreach ($final_data as $data_array) {
+			fputcsv($handle, $data_array);
+		}
+			fclose($handle);
+		exit;
+	}
     
 
 }

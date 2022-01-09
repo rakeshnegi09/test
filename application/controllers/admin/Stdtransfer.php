@@ -82,6 +82,10 @@ class Stdtransfer extends Admin_Controller
                     $student_id     = $value;
                     $result         = $this->input->post('result_' . $value);
                     $session_status = $this->input->post('next_working_' . $value);
+					if(empty($session_status)){
+						$session_status = "countinue";
+					}
+					
                     if ($result == "pass" && $session_status == "countinue") {
                         $promoted_class   = $this->input->post('class_promote_id');
                         $promoted_section = $this->input->post('section_promote_id');

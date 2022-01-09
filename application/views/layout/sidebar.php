@@ -224,7 +224,7 @@ if ($this->module_lib->hasActive('fees_collection')) {
 }
         if ($this->rbac->hasPrivilege('fees_carry_forward', 'can_view')) {
             ?>
-                                <li class="<?php echo set_Submenu('feesforward/index'); ?>"><a href="<?php echo base_url('admin/feesforward'); ?>">Payable Fees</a></li>
+                                <li class="<?php echo set_Submenu('feesforward/index'); ?>"><a href="<?php echo base_url('admin/feesforward'); ?>"><i class="fa fa-angle-double-right"></i>Payable Fees</a></li>
                                 <?php
 }
 
@@ -510,7 +510,7 @@ if ($this->module_lib->hasActive('academics')) {
 }
         if ($this->rbac->hasPrivilege('subject_group', 'can_view')) {
             ?>
-                                <li class="<?php echo set_Submenu('subjectgroup/index'); ?>"><a href="<?php echo base_url('admin/subjectgroup'); ?>"><i class="fa fa-angle-double-right"></i> <?php echo $this->lang->line('subject') . " " . $this->lang->line('group') ?></a></li>
+                                <li class="<?php echo set_Submenu('subjectgroup/index'); ?>"><a href="<?php echo base_url('admin/subjectgroup'); ?>"><i class="fa fa-angle-double-right"></i>Qualification Subjects</a></li>
                                 <?php
 }
         if ($this->rbac->hasPrivilege('subject', 'can_view')) {

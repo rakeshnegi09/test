@@ -23,7 +23,7 @@ $currency_symbol = $this->customlib->getSchoolCurrencyFormat();
                             <div class="col-md-12">
                                 <div class="row">
                                         <?php echo $this->customlib->getCSRF(); ?>
-                                        <div class="col-sm-3">                                  
+                                        <div class="col-sm-2">                                  
 											<div class="form-group">
 												<label for="exampleInputEmail1"><?php echo $this->lang->line('class'); ?></label><small class="req"> *</small>
 												<select required  id="class_id" multiple name="class_id[]" class="form-control"  >
@@ -37,7 +37,7 @@ $currency_symbol = $this->customlib->getSchoolCurrencyFormat();
 												<span class="text-danger"><?php echo form_error('class_id'); ?></span>
 											</div>
                                         </div>
-                                        <div class="col-sm-3">
+                                        <div class="col-sm-2">
                                             <div class="form-group">
 												<?php $section = get_section(); ?>
                                                 <label><?php echo $this->lang->line('section'); ?></label>
@@ -53,6 +53,20 @@ $currency_symbol = $this->customlib->getSchoolCurrencyFormat();
                                             </div>
                                         </div>
 										<div class="col-sm-3">
+											<div class="form-group">
+											<?php $get_all_exams = get_all_exams(); ?>
+											   <label>Exam</label><small class="req"> *</small>
+											   <select required id="exam_id" name="exam_id" class="form-control" autocomplete="off">
+												  <option value="">Select</option>
+												  <?php foreach($get_all_exams as $row){ ?>
+													<option <?php if (set_value('exam_id') == $row['id']) {
+                                                echo "selected=selected"; } ?> value="<?php echo $row['id']; ?>"><?php echo $row['exam']; ?> (<?php echo get_exam_group_name($row['exam_group_id']);?>)</option>
+													<?php } ?>
+											   </select>
+											   <span class="text-danger"></span>
+											</div>
+										</div>
+										<div class="col-sm-2">
 											<div class="form-group">
 											<?php $session = get_session(); ?>
 											   <label>Year</label><small class="req"> *</small>
@@ -133,7 +147,7 @@ $currency_symbol = $this->customlib->getSchoolCurrencyFormat();
 											<tr>
 												<th><?php echo $this->lang->line('admission_no'); ?></th>
 												<th><?php echo $this->lang->line('student_name'); ?></th>
-												<?php if($sub_type['type'] == "theory"){?>
+												<?php if(isset($sub_type['type']) && $sub_type['type'] == "theory"){?>
 												<th><?php echo $this->lang->line('test'); ?></th>
 												<th><?php echo $this->lang->line('project'); ?></th>
 												<th class="text-center"><?php echo $this->lang->line('sub_average')?></th>
@@ -156,11 +170,12 @@ $currency_symbol = $this->customlib->getSchoolCurrencyFormat();
 												foreach ($examination as $key => $row) {
 													$student_id = $row->id;
 													$class_id = $row->class_id;
-													$section_id = $row->sections_id;
+													$section_id = $row->section_id;
 													$session_id = set_value('session_id');
+													$exam_id = set_value('exam_id');
 													
+													$get_existing = get_result($student_id,$class_id,$section_id,$session_id,$subject_id,$exam_id );
 													
-													$get_existing = get_result($student_id,$class_id,$section_id,$session_id,$subject_id );
 													$test_mark = "";
 													$project_mark = "";
 													$menu_mark = "";
@@ -187,6 +202,7 @@ $currency_symbol = $this->customlib->getSchoolCurrencyFormat();
 														<input type="hidden" value="<?= $section_id; ?>" class="form-control" name="hidden_section_id[]">
 														<input type="hidden" value="<?= $class_id; ?>" class="form-control" name="hidden_class_id[]">
 														<input type="hidden" value="<?= $session_id; ?>" class="form-control" name="hidden_session_id[]" value="<?= set_value('session_id'); ?>">
+														<input type="hidden" value="<?= $exam_id; ?>" class="form-control" name="hidden_exam_id[]" value="<?= set_value('exam_id'); ?>">
 														<input type="hidden" value="<?= $subject_id; ?>" class="form-control" name="hidden_subject_id[]">
 														</td>
 														<td>

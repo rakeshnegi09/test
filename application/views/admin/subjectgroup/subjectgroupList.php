@@ -11,7 +11,7 @@
                     <!-- Horizontal Form -->
                     <div class="box box-primary">
                         <div class="box-header with-border">
-                            <h3 class="box-title"><?php echo $this->lang->line('add') . " " . $this->lang->line('subject') . " " . $this->lang->line('group'); ?></h3>
+                            <h3 class="box-title"><?php echo $this->lang->line('add'); ?> Qualification Subjects</h3>
                         </div><!-- /.box-header -->
                         <form id="form1" action="<?php echo site_url('admin/subjectgroup') ?>"  id="employeeform" name="employeeform" method="post" accept-charset="utf-8">
 
@@ -108,7 +108,7 @@
                 <!-- general form elements -->
                 <div class="box box-primary">
                     <div class="box-header ptbnull">
-                        <h3 class="box-title titlefix"><?php echo $this->lang->line('subject') . " " . $this->lang->line('group') . " " . $this->lang->line('list') ?></h3>
+                        <h3 class="box-title titlefix">Qualification Subjects <?php echo  $this->lang->line('list'); ?></h3>
                         <div class="box-tools pull-right">
                         </div><!-- /.box-tools -->
                     </div><!-- /.box-header -->

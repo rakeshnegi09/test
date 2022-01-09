@@ -2392,6 +2392,24 @@ class Student extends Admin_Controller
 
         echo json_encode($json_data);
     }
+	
+	
+	public function add_notification(){
+		$data_array = array(
+				'month'=>date('m'),
+				'year'=>date('Y')
+			);
+		$this->db->insert('monthly_information_update',$data_array);
+		redirect($_SERVER['HTTP_REFERER']);
+	}
+	
+	public function remove_notification(){		
+		$this->db->where('student_id',null);
+        $this->db->where('month',date('m'));
+        $this->db->where('year',date('Y'));
+		$this->db->delete('monthly_information_update');
+		redirect($_SERVER['HTTP_REFERER']);
+	}
 
 
 }
