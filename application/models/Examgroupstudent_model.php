@@ -31,11 +31,33 @@ class Examgroupstudent_model extends CI_Model {
         return $query->result();
     }
 
-    public function searchExamStudents($exam_group_id, $exam_id, $class_id, $section_id, $session_id) {
-        $sql = "SELECT  exam_group_class_batch_exam_students.id as `exam_group_class_batch_exam_student_id`,exam_group_class_batch_exam_students.roll_no as `exam_roll_no`,students.admission_no , students.id as `student_id`, students.roll_no,students.admission_date,students.firstname,students.middlename, students.lastname,students.image, students.mobileno, students.email ,students.state , students.city , students.pincode , students.religion,students.dob ,students.current_address, students.permanent_address,students.category_id, IFNULL(categories.category, '') as `category`, students.adhar_no,students.samagra_id,students.bank_account_no,students.bank_name, students.ifsc_code , students.guardian_name, students.guardian_relation,students.guardian_phone,`classes`.`class`,students.guardian_address,students.is_active,`students`.`father_name`,`students`.`gender` FROM `exam_group_class_batch_exam_students` INNER JOIN student_session on student_session.id=exam_group_class_batch_exam_students.student_session_id INNER join students on students.id=student_session.student_id  INNER JOIN `classes` ON `student_session`.`class_id` = `classes`.`id` LEFT JOIN `categories` ON `students`.`category_id` = `categories`.`id` WHERE exam_group_class_batch_exam_id=" . $this->db->escape($exam_id) . " AND students.is_active='yes' AND student_session.class_id=" . $this->db->escape($class_id) . " and student_session.section_id=" . $this->db->escape($section_id) . " and student_session.session_id=" . $this->db->escape($session_id);
-        $query = $this->db->query($sql);
-
-        return $query->result();
+    public function searchExamStudents($exam_group_id=null, $exam_id=null, $class_id, $section_id, $session_id) {
+		
+        $this->db->select("*")->from("students");
+        $this->db->join('student_session', 'student_session.student_id = students.id');
+        $this->db->join('classes', 'student_session.class_id = classes.id');
+        $this->db->join('sections', 'sections.id = student_session.section_id');
+        $this->db->join('categories', 'students.category_id = categories.id', 'left');
+        $this->db->where('student_session.session_id', $session_id);
+        $this->db->where('students.is_active', 'yes');
+		if(is_array($class_id)){
+			$this->db->group_start();
+			if (!empty($class_id)) {
+				foreach($class_id as $class){
+					$this->db->or_where('student_session.class_id', $class);
+				}
+			}
+			$this->db->group_end();
+			
+		}else{
+			$this->db->where('student_session.class_id', $class_id);
+		}
+		if ($section_id != null) {
+				$this->db->where('student_session.section_id', $section_id);
+			}
+			$query = $this->db->get(); 
+         return $query->result();
+		 echo $this->db->last_query();die;
     }
 
     public function searchExamGroupStudents($exam_group_id, $class_id, $section_id, $session_id) {

@@ -111,7 +111,10 @@ class Examresult extends Admin_Controller {
 
         $marksheet_result = $this->marksheet_model->get();
         $data['marksheetlist'] = $marksheet_result;
-
+		$class_id = $this->input->post('class_id');
+		if(empty($class_id)){
+			$class_id = array();
+		}
         $class = $this->class_model->get();
         $data['title'] = 'Add Batch';
         $data['title_list'] = 'Recent Batch';
@@ -119,18 +122,20 @@ class Examresult extends Admin_Controller {
         $data['classlist'] = $class;
         $session = $this->session_model->get();
         $data['sessionlist'] = $session;
-        $this->form_validation->set_rules('marksheet', $this->lang->line('marksheet'), 'trim|required|xss_clean');
-        $this->form_validation->set_rules('class_id', $this->lang->line('class'), 'trim|required|xss_clean');
+        //$this->form_validation->set_rules('marksheet', $this->lang->line('marksheet'), 'trim|required|xss_clean');
+        $this->form_validation->set_rules('class_id[]', $this->lang->line('class'), 'trim|required|xss_clean');
         $this->form_validation->set_rules('section_id', $this->lang->line('section'), 'trim|required|xss_clean');
         $this->form_validation->set_rules('session_id', $this->lang->line('student'), 'trim|required|xss_clean');
-        $this->form_validation->set_rules('exam_group_id', $this->lang->line('exam') . " " . $this->lang->line('group'), 'trim|required|xss_clean');
-        $this->form_validation->set_rules('exam_id', $this->lang->line('exam'), 'trim|required|xss_clean');
+       // $this->form_validation->set_rules('exam_group_id', $this->lang->line('exam') . " " . $this->lang->line('group'), 'trim|required|xss_clean');
+        //$this->form_validation->set_rules('exam_id', $this->lang->line('exam'), 'trim|required|xss_clean');
 
         if ($this->form_validation->run() == false) {
             
         } else {
-            $exam_group_id = $this->input->post('exam_group_id');
-            $exam_id = $this->input->post('exam_id');
+			
+			
+		   //$exam_group_id = $this->input->post('exam_group_id');
+           // $exam_id = $this->input->post('exam_id');
             $session_id = $this->input->post('session_id');
             $class_id = $this->input->post('class_id');
             $section_id = $this->input->post('section_id');
@@ -138,13 +143,14 @@ class Examresult extends Admin_Controller {
             $marksheet_template = $this->input->post('marksheet');
             $data['marksheet_template'] = $marksheet_template;
 
-            $data['studentList'] = $this->examgroupstudent_model->searchExamStudents($exam_group_id, $exam_id, $class_id, $section_id, $session_id);
+            $data['studentList'] = $this->examgroupstudent_model->searchExamStudents($exam_group_id=null, $exam_id=null, $class_id, $section_id, $session_id);
 
-            $data['examList'] = $this->examgroup_model->getExamByExamGroup($exam_group_id, true);
+            //$data['examList'] = $this->examgroup_model->getExamByExamGroup($exam_group_id, true);
 
-            $data['exam_id'] = $exam_id;
-            $data['exam_group_id'] = $exam_group_id;
+            //$data['exam_id'] = $exam_id;
+            //$data['exam_group_id'] = $exam_group_id;
         }
+		$data['class_id_array'] = $class_id;
         $data['sch_setting'] = $this->sch_setting_detail;
         $this->load->view('layout/header', $data);
         $this->load->view('admin/examresult/marksheet', $data);
@@ -152,33 +158,38 @@ class Examresult extends Admin_Controller {
     }
 
     public function printmarksheet() {
+
         $this->form_validation->set_error_delimiters('', '');
-        $this->form_validation->set_rules('post_exam_id', $this->lang->line('exam'), 'required|trim|xss_clean');
-        $this->form_validation->set_rules('post_exam_group_id', $this->lang->line('exam') . " " . $this->lang->line('group'), 'required|trim|xss_clean');
-        $this->form_validation->set_rules('exam_group_class_batch_exam_student_id[]', $this->lang->line('students'), 'required|trim|xss_clean');
+        //$this->form_validation->set_rules('post_exam_id', $this->lang->line('exam'), 'required|trim|xss_clean');
+        //$this->form_validation->set_rules('post_exam_group_id', $this->lang->line('exam') . " " . $this->lang->line('group'), 'required|trim|xss_clean');
+        $this->form_validation->set_rules('student_id[]', $this->lang->line('students'), 'required|trim|xss_clean');
         $data = array();
 
         if ($this->form_validation->run() == false) {
-            $data = array(
-                'post_exam_id' => form_error('post_exam_id'),
-                'post_exam_group_id' => form_error('post_exam_group_id'),
-                'exam_group_class_batch_exam_student_id' => form_error('exam_group_class_batch_exam_student_id'),
-            );
+            
             $array = array('status' => 0, 'error' => $data);
             echo json_encode($array);
         } else {
-            $data['template'] = $this->marksheet_model->get($this->input->post('marksheet_template'));
-            $post_exam_id = $this->input->post('post_exam_id');
-            $post_exam_group_id = $this->input->post('post_exam_group_id');
-            $students_array = $this->input->post('exam_group_class_batch_exam_student_id');
-            $exam = $this->examgroup_model->getExamByID($post_exam_id);
-            $data['exam'] = $exam;
-
-            $exam_grades = $this->grade_model->getByExamType($exam->exam_group_type);
-            $data['exam_grades'] = $exam_grades;
-            $data['marksheet'] = $this->examresult_model->getExamResults($post_exam_id, $post_exam_group_id, $students_array);
-            $data['sch_setting'] = $this->sch_setting_detail;
-            $student_exam_page = $this->load->view('admin/examresult/_printmarksheet', $data, true); 
+            
+            $students_array = $this->input->post('student_id');
+            $session = $this->input->post('session_id');
+            $qualifications = $this->input->post('qualifications');
+            $section_id = $this->input->post('section_id');
+			if($section_id == "2"){
+				$data['signature'] = base_url('uploads/marksheet/0e761276b56221899039c5eb84e5f3a7.png');
+			}else{
+				$data['signature'] = base_url('uploads/marksheet/05aac7ea78e393425fd008c3ee246ac8.png');
+			}
+			if($qualifications == 1){
+				$data['placeholder'] = "Occupational Certificate: Chef";
+			}elseif($qualifications == 2){
+				$data['placeholder'] = "City & Guilds Diploma in Food Preparation & Culinary Arts - Patisserie";
+			}else{
+				$data['placeholder'] = "City & Guilds Certificate in Introduction to Professional Cookery and the Hospitality Industry";
+			}
+            $data['marksheet'] = $this->examresult_model->getExamResults($session,$students_array);
+          
+            $student_exam_page = $this->load->view('admin/examresult/_printmarksheetnew', $data, true); 
             $array = array('status' => '1', 'error' => '', 'page' => $student_exam_page);
             echo json_encode($array);
         }

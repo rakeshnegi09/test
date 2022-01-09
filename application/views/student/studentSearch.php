@@ -15,6 +15,13 @@ $currency_symbol = $this->customlib->getSchoolCurrencyFormat();
                 <div class="box box-primary">
                     <div class="box-header with-border">
                         <h3 class="box-title"><i class="fa fa-search"></i> <?php echo $this->lang->line('select_criteria'); ?></h3>
+						<?php $monthly_information_update = monthly_information_update(); 
+							if($monthly_information_update){
+						?>
+						<a href="remove_notification" class="pull-right btn btn-success btn-sm">Student Notification <input type="checkbox" checked ></a>
+							<?php }else{ ?>
+						<a href="add_notification" class="pull-right btn btn-success btn-sm">Student Notification <input type="checkbox" ></a>
+						<?php } ?>
                     </div>
                     <div class="box-body">
                          <form role="form" action="<?php echo site_url('student/searchvalidation') ?>" method="post" class="class_search_form">

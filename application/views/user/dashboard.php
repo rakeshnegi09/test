@@ -1026,6 +1026,7 @@
 		<div class="timeline-header no-border">
 			<div class="timeline-header no-border">
 				<div class="table-responsive" style="clear: both;">
+				<a href="" class="pull-right btn btn-success btn-sm">Download</a>
 				<table class="table table-striped table-bordered table-hover ">
 				 <thead>
 				 <tr>														

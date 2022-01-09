@@ -991,6 +991,7 @@ class Examgroup extends Admin_Controller
 							'class_id'=>$this->input->post("hidden_class_id")[$key],
 							'section_id'=>$this->input->post("hidden_section_id")[$key],
 							'session_id'=>$this->input->post("hidden_session_id")[$key],
+							'exam_id'=>$this->input->post("hidden_exam_id")[$key],
 							'subject_id'=>$this->input->post("hidden_subject_id")[$key],					
 							'test_mark'=>$this->input->post("test_mark")[$key],
 							'project_mark'=>$this->input->post("project_mark")[$key],
@@ -1000,12 +1001,13 @@ class Examgroup extends Admin_Controller
 							'added_by'=>$_SESSION['admin']['id'],
 							'date'=>date('Y-m-d h:i:s'),
 						);
-					$get_result = get_result($row,$this->input->post("hidden_class_id")[$key],$this->input->post("hidden_section_id")[$key],$this->input->post("hidden_session_id")[$key],$this->input->post("hidden_subject_id")[$key]);
+					$get_result = get_result($row,$this->input->post("hidden_class_id")[$key],$this->input->post("hidden_section_id")[$key],$this->input->post("hidden_session_id")[$key],$this->input->post("hidden_subject_id")[$key],$this->input->post("hidden_exam_id")[$key]);
 					if($get_result){
 						$this->db->where('student_id',$row);    
 						$this->db->where('class_id',$this->input->post("hidden_class_id")[$key]);    
 						$this->db->where('section_id',$this->input->post("hidden_section_id")[$key]);    
-						$this->db->where('session_id',$this->input->post("hidden_session_id")[$key]);    
+						$this->db->where('session_id',$this->input->post("hidden_session_id")[$key]); 
+						$this->db->where('exam_id',$this->input->post("hidden_exam_id")[$key]); 
 						$this->db->where('subject_id',$this->input->post("hidden_subject_id")[$key]);    
 						$this->db->update("student_results",$data_array);
 					}else{
@@ -1017,7 +1019,7 @@ class Examgroup extends Admin_Controller
 			}
             $data['examination'] = $resultlist;
         }
-
+		
         $this->load->view('layout/header', $data);
         $this->load->view('admin/examgroup/examination', $data);
         $this->load->view('layout/footer', $data);

@@ -128,7 +128,7 @@
                                                 <th><?php echo $this->lang->line('father_name'); ?></th>
                                                 <th><?php echo $this->lang->line('date_of_birth'); ?></th>
                                                 <th class=""><?php echo $this->lang->line('current'); ?> <?php echo $this->lang->line('result'); ?></th>
-                                                <th class=""><?php echo $this->lang->line('next_session_status'); ?></th>
+                                                <th class="">Graduate</th>
                                             </tr>
                                             <?php if (empty($resultlist)) {
                                                 ?>
@@ -139,6 +139,7 @@
                                             } else {
                                                 $count = 1;
                                                 foreach ($resultlist as $student) {
+													
                                                     ?>
                                                 <input type="hidden" value="<?php echo $student['id']; ?>">
                                                 <tr>
@@ -168,16 +169,9 @@
                                                     <td>
                                                         <div class="radio-inline">
                                                             <label>
-                                                                <input type="radio" name="next_working_<?php echo $student['id']; ?>" checked="checked" value="countinue">
-                                                                <?php echo $this->lang->line('continue'); ?>
+                                                                <input type="checkbox" name="next_working_<?php echo $student['id']; ?>" value="leave">
                                                             </label>
-                                                        </div>
-                                                        <div class="radio-inline">
-                                                            <label>
-                                                                <input type="radio" name="next_working_<?php echo $student['id']; ?>" value="leave">
-                                                                <?php echo $this->lang->line('leave'); ?>
-                                                            </label>
-                                                        </div>
+                                                        </div>                                                       
                                                     </td>
                                                 </tr>
                                                 <?php
