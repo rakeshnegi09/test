@@ -1,4 +1,4 @@
-<aside class="main-sidebar" id="alert2">
+<aside class="main-sidebar" id="alert2" style="opacity:0">
     <?php if ($this->rbac->hasPrivilege('student', 'can_view')) {?>
         <form class="navbar-form navbar-left search-form2" role="search"  action="<?php echo site_url('admin/admin/search'); ?>" method="POST">
             <?php echo $this->customlib->getCSRF(); ?>

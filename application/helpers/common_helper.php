@@ -202,3 +202,17 @@ if(!function_exists('get_exam_group_name')) {
         return $result;
     }
 }
+
+if(!function_exists('get_week_date')) {
+    function get_week_date($date=null) {
+		$date = date('Y/m/d',strtotime($date));
+		$firstMondayInWeek = strtotime('last Sunday', strtotime($date.'+1 day'));
+		$nextFiveWeekDays = array();
+		for ($days = 1; $days <= 5; $days++) {
+			$nextFiveWeekDays[] = new DateTime(
+			date('Y-m-d', strtotime("+$days weekdays", $firstMondayInWeek))
+			);
+		}
+		return $nextFiveWeekDays;
+    }
+}

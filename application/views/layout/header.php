@@ -109,7 +109,7 @@ if ($this->config->item('SSLK') == "") {
 </script> 
        <div class="wrapper">
 
-            <header class="main-header" id="alert"> 
+            <header class="main-header" id="alert" style="opacity:0"> 
                 <a href="<?php echo base_url(); ?>admin/admin/dashboard" class="logo">
                     <span class="logo-mini"><img src="<?php echo base_url(); ?>uploads/school_content/admin_small_logo/<?php $this->setting_model->getAdminsmalllogo();?>" alt="<?php echo $this->customlib->getAppName() ?>" /></span>
                     <span class="logo-lg"><img src="<?php echo base_url(); ?>uploads/school_content/admin_logo/<?php $this->setting_model->getAdminlogo();?>" alt="<?php echo $this->customlib->getAppName() ?>" /></span>

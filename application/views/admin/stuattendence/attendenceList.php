@@ -233,12 +233,19 @@
                                                         ?>
                                                         <th><?php echo $this->lang->line('roll_no'); ?></th>
                                                         <th><?php echo $this->lang->line('name'); ?></th>
-                                                        <th class=""><?php echo $this->lang->line('attendance'); ?></th>
-                                                        <th class="noteinput"><?php echo $this->lang->line('note'); ?></th>
+                                                        <th class="">Monday</th>
+                                                        <th class="">Tuesday</th>
+                                                        <th class="">Wednesday</th>
+                                                        <th class="">Thursday</th>
+                                                        <th class="">Friday</th>
+                                                        <th style="width:50px;text-align:right">W.E.L</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
                                                     <?php
+													
+													$get_week_date = get_week_date($date);
+													
                                                     $row_count = 1;
                                                     foreach ($resultlist as $key => $value) {
 
@@ -275,58 +282,69 @@
             <?php 
             echo $this->customlib->getFullName($value['firstname'],$value['middlename'],$value['lastname'],$sch_setting->middlename,$sch_setting->lastname);  ?>
                                                             </td>
-                                                            <td>
-                                                                <?php
-                                                                $c = 1;
-                                                                $count = 0;
-                                                                foreach ($attendencetypeslist as $key => $type) {
-                                                                    if ($type['key_value'] != "H") {
-                                                                        $att_type = str_replace(" ", "_", strtolower($type['type']));
-                                                                        if ($value['date'] != "xxx") {
-                                                                            ?>
-                                                                            <div class="radio radio-info radio-inline">
-                                                                                <input <?php if ($value['attendence_type_id'] == $type['id']) echo "checked"; ?> type="radio" id="attendencetype<?php echo $value['student_session_id'] . "-" . $count; ?>" value="<?php echo $type['id'] ?>" name="attendencetype<?php echo $value['student_session_id']; ?>" >
+					<?php 
+					$count_date = 0;
+					foreach($get_week_date as $key_date=>$date) { $count_date++ ;?>	
+							<td >
+							<div class="inline_radio" style="display:inline-flex">
+								<?php
+								$c = 1;
+								$count = 0;
+								//echo "<pre>";
+								//print_r($attendencetypeslist);die;
+								foreach ($attendencetypeslist as $key => $type) {
+								if ($type['key_value'] != "H") {
+								$att_type = str_replace(" ", "_", strtoupper($type['type']));
+								if ($value['date'] != "xxx") {
+								?>
+								<div class="radio radio-info radio-inline">
+								<input <?php if ($value['attendence_type_id'] == $type['id']) echo "checked"; ?> type="radio" id="attendencetype<?php echo $value['student_session_id'] . "-" . $count; ?>" value="<?php echo $type['id'] ?>" name="attendencetype<?php echo $value['student_session_id']; ?><?php echo $count_date;?>" >
 
-                                                                                <label for="attendencetype<?php echo $value['student_session_id'] . "-" . $count; ?>">
-                        <?php echo $this->lang->line($att_type); ?> 
-                                                                                </label>
+								<label for="attendencetype<?php echo $value['student_session_id'] . "-" . $count; ?>">
+								<?php echo $att_type; ?> 
+								</label>
 
-                                                                            </div>
-                                                                            <?php
-                                                                        }else {
-                                                                            ?>
-                                                                            <div class="radio radio-info radio-inline">
-                                                                                <?php
-                                                                                if ($sch_setting->biometric) {
-                                                                                    ?>
-                                                                                    <input <?php if ($att_type == "absent") echo "checked"; ?> type="radio" id="attendencetype<?php echo $value['student_session_id'] . "-" . $count; ?>" value="<?php echo $type['id'] ?>" name="attendencetype<?php echo $value['student_session_id']; ?>" >
-                                                                                    <?php
-                                                                                }else {
-                                                                                    ?>
-                                                                                    <input <?php if ($c == 1) echo "checked"; ?> type="radio" id="attendencetype<?php echo $value['student_session_id'] . "-" . $count; ?>" value="<?php echo $type['id'] ?>" name="attendencetype<?php echo $value['student_session_id']; ?>" >
-                                                                                    <?php
-                                                                                }
-                                                                                ?>
+								</div>
+								<?php
+								}else {
+								?>
 
 
-                                                                                <label for="attendencetype<?php echo $value['student_session_id'] . "-" . $count; ?>"> 
-                        <?php echo $this->lang->line($att_type); ?> 
-                                                                                </label>
-                                                                            </div>
-                                                                            <?php
-                                                                        }
-                                                                        $c++;
-                                                                        $count++;
-                                                                    }
-                                                                }
-                                                                ?>
+								<div class="radio radio-info radio-inline">
+								<?php
+								if ($sch_setting->biometric) {
+								?>
+								<input required <?php if ($att_type == "absent") echo "checked"; ?> type="radio" id="attendencetype<?php echo $value['student_session_id'] . "-" . $count; ?>" value="<?php echo $type['id'] ?>" name="attendencetype<?php echo $value['student_session_id']; ?><?php echo $count_date;?>" >
+								<?php
+								}else {
+								?>
+								<input required <?php if ($c == 1) echo ""; ?> type="radio" id="attendencetype<?php echo $value['student_session_id'] . "-" . $count; ?>" value="<?php echo $type['id'] ?>" name="attendencetype<?php echo $value['student_session_id']; ?><?php echo $count_date;?>" >
+								<?php
+								}
+								?>
+								<label for="attendencetype<?php echo $value['student_session_id'] . "-" . $count; ?>">
+								<?php echo $att_type; ?> 
+								</label>
+								<input type="hidden" id="attendencedate<?php echo $value['student_session_id'] . "-" . $count; ?>" value="<?php echo $date->format('Y-m-d'); ?>" name="attendencedate<?php echo $value['student_session_id']; ?><?php echo $count_date;?>" >									
+								</div>
 
-                                                            </td>
+
+
+									<?php
+									}
+										$c++;
+										$count++;
+									}
+								}
+								?>
+							</div>
+							</td>
+						<?php } ?>
                                                             <?php if ($date == 'xxx') { ?> 
-                                                                <td class="text-right"><input type="text" class="noteinput" name="remark<?php echo $value["student_session_id"] ?>" ></td>
+                                                                <td class="text-right"><input type="text"  name="remark<?php echo $value["student_session_id"] ?>" ></td>
             <?php } else { ?>
 
-                                                                <td class="text-right"><input type="text" class="noteinput" name="remark<?php echo $value["student_session_id"] ?>" value="<?php echo $value["remark"]; ?>" ></td>
+                                                                <td class="text-right"><input type="checkbox"  name="remark<?php echo $value["student_session_id"] ?>" value="W.E.L" ></td>
                                                         <?php } ?>
                                                         </tr>
                                                         <?php
