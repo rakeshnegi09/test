@@ -103,15 +103,10 @@ $currency_symbol = $this->customlib->getSchoolCurrencyFormat();
 
                                                 <th><?php echo $this->lang->line('student_name'); ?></th>
                                                 <th><?php echo $this->lang->line('class'); ?></th>
-                                                <?php if ($sch_setting->father_name) { ?>
-                                                    <th><?php echo $this->lang->line('father_name'); ?></th>
-                                                <?php } ?>
+                                                <th>ID/Passport</th>
+                                               
                                                 <th><?php echo $this->lang->line('disable') . " " . $this->lang->line('reason'); ?></th>
-                                                <th><?php echo $this->lang->line('gender'); ?></th>
-                                                <?php if ($sch_setting->mobile_no) { ?>
-                                                    <th><?php echo $this->lang->line('mobile_no'); ?></th>
-                                                <?php } ?>
-
+                                               
                                                 <th class="pull-right"><?php echo $this->lang->line('action'); ?></th>
                                             </tr>
                                         </thead>
@@ -134,10 +129,8 @@ $currency_symbol = $this->customlib->getSchoolCurrencyFormat();
                                                             <a href="<?php echo base_url(); ?>student/view/<?php echo $student['id']; ?>"><?php echo $this->customlib->getFullName($student['firstname'],$student['middlename'],$student['lastname'],$sch_setting->middlename,$sch_setting->lastname); ?>
                                                             </a>
                                                         </td>
-                                                        <td><?php echo $student['class'] . "(" . $student['section'] . ")" ?></td>
-                                                        <?php if ($sch_setting->father_name) { ?>
-                                                            <td><?php echo $student['father_name']; ?></td>
-                                                        <?php } ?>
+														 <td><?php echo $student['class'] . "(" . $student['section'] . ")" ?></td>
+                                                        <td><?php echo $student['id-passport']; ?></td>
                                                         <td><span data-toggle="popover" class="detail_popover" data-original-title="" title=""><?php
                                                                 if (array_key_exists($reason_id, $disable_reason)) {
                                                                     echo $disable_reason[$reason_id]['reason'];
@@ -145,12 +138,6 @@ $currency_symbol = $this->customlib->getSchoolCurrencyFormat();
                                                                 ?></span>
                                                             <div class="fee_detail_popover" style="display: none"><?php echo $student['dis_note']; ?></div></td>
 
-                                                        <td><?php echo $student['gender']; ?></td>
-                                                        <?php if ($sch_setting->category) { ?>
-
-                                                        <?php } if ($sch_setting->mobile_no) { ?>
-                                                            <td><?php echo $student['mobileno']; ?></td>
-            <?php } ?>
                                                         <td class="pull-right">
                                                             <a data-placement="left" href="<?php echo base_url(); ?>student/view/<?php echo $student['id'] ?>" class="btn btn-default btn-xs"  data-toggle="tooltip" title="<?php echo $this->lang->line('show'); ?>" >
                                                                 <i class="fa fa-reorder"></i>

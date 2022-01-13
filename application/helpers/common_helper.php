@@ -216,3 +216,16 @@ if(!function_exists('get_week_date')) {
 		return $nextFiveWeekDays;
     }
 }
+
+if(!function_exists('get_attendence_by_date_id')) {
+    function get_attendence_by_date_id($date=null,$st_id=null) {
+		$CI = &get_instance();			
+        $CI->db->select('*');
+        $CI->db->from('student_attendences');
+		$CI->db->where('student_session_id',$st_id);
+		$CI->db->where('date',$date);
+        $query = $CI->db->get();
+        $result = $query->row_array();
+        return $result;
+    }
+}

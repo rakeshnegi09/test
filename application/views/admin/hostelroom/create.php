@@ -173,7 +173,7 @@ $currency_symbol = $this->customlib->getSchoolCurrencyFormat();
                                                 </td>
                                                 <td class="mailbox-name"> <?php echo $hostelroom['hostel_name'] ?></td>
                                                 <td class="mailbox-name"> <?php echo $hostelroom['room_type'] ?></td>
-                                                <td class="mailbox-name"> <?php echo $hostelroom['occupants'] ?></td>
+                                                <td class="mailbox-name"> <?php if(!empty($hostelroom['occupants'])){ echo $hostelroom['occupants']; }else{ echo "CHECKED OUT"; } ?></td>
                                                 <td class="mailbox-name"> <?php echo $hostelroom['no_of_bed'] ?></td>
                                                 <td class="mailbox-name"> <?php echo $currency_symbol . $hostelroom['cost_per_bed'] ?></td>
                                                 <td class="mailbox-date pull-right no-print">

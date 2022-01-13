@@ -267,7 +267,7 @@
                                                                                 $remark = "Late With Excuse";
                                                                             } else {
 
-                                                                                $attendence_key = $resultlist[$at_value][$student_value['student_session_id']]['key'];
+                                                                                $attendence_key = $resultlist[$at_value][$student_value['student_session_id']]['att_type'];
                                                                                 $remark = $resultlist[$at_value][$student_value['student_session_id']]['remark'];
                                                                             }
 

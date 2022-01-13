@@ -93,26 +93,38 @@ class Stuattendence extends Admin_Controller {
 				
                 $session_ary = $this->input->post('student_session');
                 $absent_student_list = array();
+				
                 foreach ($session_ary as $key => $value) {
-					$checkForUpdate = $this->input->post('attendendence_id' . $value);
 					
-					$arr = array(
-						'id'=>$checkForUpdate,
-						'student_session_id'=>$value,
-						'date'=>date('Y-m-d',strtotime($date)),
-						'monday'=>$this->input->post('attendencetype'.$value."1"),
-						'tuesday'=>$this->input->post('attendencetype'.$value."2"),
-						'wednesday'=>$this->input->post('attendencetype'.$value."3"),
-						'thursday'=>$this->input->post('attendencetype'.$value."4"),
-						'friday'=>$this->input->post('attendencetype'.$value."5"),
-						'wel'=>$this->input->post('remark'.$value),
-						'from_date'=>$this->input->post('attendencedate'.$value."1"),
-						'to_date'=>$this->input->post('attendencedate'.$value."5"),
-					);
-					 $this->stuattendence_model->add($arr);
+					$get_week_date = get_week_date($date);
+					$day_count = 1;
+					foreach($get_week_date as $key=> $day){
+						if($key==0){
+							$from_date = $day->format('Y-m-d');
+						}
+						if($key==4){
+							$to_date = $day->format('Y-m-d');
+						}
+						$arr = array(
+							'student_session_id'=>$value,
+							'attendence_type_id'=>$this->input->post('attendencetype'.$value.$day_count),
+							'date'=>$day->format('Y-m-d'),
+							'wel'=>$this->input->post('remark'.$value),
+							'from_date'=>$this->input->post('attendencedate'.$value."1"),
+							'to_date'=>$this->input->post('attendencedate'.$value."5"),
+						);
+						$checkForUpdate = get_attendence_by_date_id($arr['date'],$value);
+						if(empty($checkForUpdate)){
+							$this->stuattendence_model->add($arr);
+						}else{
+							$this->stuattendence_model->update($arr['date'],$value,$arr);
+						}
+						
+						$day_count++;
+					}
+					
 						
                 }
-             
 
                 $this->session->set_flashdata('msg', '<div class="alert alert-success text-left">' . $this->lang->line('success_message') . '</div>');
                // redirect('admin/stuattendence/index', 'refresh');
@@ -121,7 +133,15 @@ class Stuattendence extends Admin_Controller {
             $data['attendencetypeslist'] = $attendencetypes;
             $resultlist = $this->stuattendence_model->searchAttendenceClassSection($class, $section, date('Y-m-d', $this->customlib->datetostrtotime($date)));
 			if($resultlist){
+				$student_id_array = array();
 				foreach($resultlist as $std){
+					
+					
+					if(in_array($std['student_session_id'],$student_id_array)){
+						continue;
+					}
+					$student_id_array[] = $std['student_session_id'];
+					
 					$at_data = $this->stuattendence_model->get_at_data($std['attendence_id']);
 					if($at_data){
 						$new_data[] = array_merge($at_data,$std);
@@ -271,6 +291,7 @@ class Stuattendence extends Admin_Controller {
             $data['section_id'] = $section;
             $data['month_selected'] = $month;
             $studentlist = $this->student_model->searchByClassSection($class, $section);
+		
             $session_current = $this->setting_model->getCurrentSessionName();
             $startMonth = $this->setting_model->getStartMonth();
             $centenary = substr($session_current, 0, 2); //2017-18 to 2017
@@ -301,16 +322,28 @@ class Stuattendence extends Admin_Controller {
             for ($i = 1; $i <= $num_of_days; $i++) {
                 $att_date = $year . "-" . $month_number . "-" . sprintf("%02d", $i);
                 $attendence_array[] = $att_date;
-
+				
                 $res = $this->stuattendence_model->searchAttendenceReport($class, $section, $att_date);
+				
                 $student_result = $res;
                 $s = array();
                 foreach ($res as $result_k => $result_v) {
-                    $s[$result_v['student_session_id']] = $result_v;
+					$at_data = get_attendence_by_date_id($att_date, $result_v['student_session_id']);
+					$day = date('l', strtotime($att_date));
+					
+					$at_data['attendence_type_id'] = $at_data[strtolower($day)];
+					
+					if($at_data){
+						$s[$result_v['student_session_id']] = array_merge($at_data,$result_v);					
+					}else{
+						$s[$result_v['student_session_id']] = $result_v;
+					}
+					$s[$result_v['student_session_id']] = $result_v;
+										
                 }
                 $date_result[$att_date] = $s;
             }
-
+			
             $monthAttendance = array();
             foreach ($res as $result_k => $result_v) {
 

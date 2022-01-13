@@ -41,53 +41,27 @@ class Stuattendence_model extends MY_Model {
     }
 
     public function add($data) {
+		$this->db->insert('student_attendences', $data);
+		$id = $this->db->insert_id();
+		$message = INSERT_RECORD_CONSTANT . " On  student attendences id " . $id;
+		$action = "Insert";
+		$record_id = $id;
+		$this->log($message, $record_id, $action);
+    }
 	
-        $this->db->trans_start(); # Starting Transaction
-        $this->db->trans_strict(false); # See Note 01. If you wish can remove as well
-        //=======================Code Start===========================
-        if (!empty($data['id'])) {
-			
-            $this->db->where('id', $data['id']);
-            $this->db->update('student_attendences', $data);
-            $message = UPDATE_RECORD_CONSTANT . " On  student attendences id " . $data['id'];
-            $action = "Update";
-            $record_id = $data['id'];
-            $this->log($message, $record_id, $action);
-        } else {
-			
-            $this->db->insert('student_attendences', $data);
-            $id = $this->db->insert_id();
-            $message = INSERT_RECORD_CONSTANT . " On  student attendences id " . $id;
-            $action = "Insert";
-            $record_id = $id;
-            $this->log($message, $record_id, $action);
-        }
-        //======================Code End==============================
-
-        $this->db->trans_complete(); # Completing transaction
-        /* Optional */
-
-        if ($this->db->trans_status() === false) {
-            # Something went wrong.
-            $this->db->trans_rollback();
-            return false;
-        } else {
-            //return $return_value;
-        }
+	public function update($date,$s_id,$data) {
+		$this->db->where("date",$date);
+		$this->db->where("student_session_id",$s_id);
+		$this->db->update('student_attendences', $data);		
+		$message = INSERT_RECORD_CONSTANT . " On  student attendences id " . $id;
+		$action = "Insert";
+		$record_id = '';
+		$this->log($message, $record_id, $action);
     }
 
     public function searchAttendenceClassSection($class_id, $section_id, $date) {
-		$get_week_date = get_week_date($date);
-		foreach($get_week_date as $key=> $day){
-			if($key==0){
-				$from_date = $day->format('Y-m-d');
-			}
-			if($key==4){
-				$to_date = $day->format('Y-m-d');
-			}
-		}
 		
-        $sql = "select student_sessions.attendence_id,student_sessions.attendence_dt,students.firstname,students.middlename,students.lastname,student_sessions.date,student_sessions.remark,student_sessions.biometric_attendence,students.roll_no,students.admission_no,students.id as std_id,students.lastname,student_sessions.attendence_type_id,student_sessions.id as student_session_id, attendence_type.type as `att_type`,attendence_type.key_value as `key` from students ,(SELECT student_session.id,student_session.student_id ,IFNULL(student_attendences.date, 'xxx') as date,IFNULL(student_attendences.created_at, 'xxx') as attendence_dt,student_attendences.remark,student_attendences.biometric_attendence, IFNULL(student_attendences.id, 0) as attendence_id,student_attendences.attendence_type_id FROM `student_session` LEFT JOIN student_attendences ON student_attendences.student_session_id=student_session.id  and student_attendences.date >=" . $this->db->escape($from_date) . " and student_attendences.date <=" . $this->db->escape($to_date) . " where  student_session.session_id=" . $this->db->escape($this->current_session) . " and student_session.class_id=" . $this->db->escape($class_id) . " and student_session.section_id=" . $this->db->escape($section_id) . ") as student_sessions   LEFT JOIN attendence_type ON attendence_type.id=student_sessions.attendence_type_id where student_sessions.student_id = students.id and students.is_active = 'yes' ORDER BY students.id desc";
+        $sql = "select student_sessions.attendence_id,student_sessions.attendence_dt,students.firstname,students.middlename,students.lastname,student_sessions.date,student_sessions.remark,student_sessions.biometric_attendence,students.roll_no,students.admission_no,students.id as std_id,students.lastname,student_sessions.attendence_type_id,student_sessions.id as student_session_id, attendence_type.type as `att_type`,attendence_type.key_value as `key` from students ,(SELECT student_session.id,student_session.student_id ,IFNULL(student_attendences.date, 'xxx') as date,IFNULL(student_attendences.created_at, 'xxx') as attendence_dt,student_attendences.remark,student_attendences.biometric_attendence, IFNULL(student_attendences.id, 0) as attendence_id,student_attendences.attendence_type_id FROM `student_session` LEFT JOIN student_attendences ON student_attendences.student_session_id=student_session.id  and student_attendences.date =" . $this->db->escape($date) . " where  student_session.session_id=" . $this->db->escape($this->current_session) . " and student_session.class_id=" . $this->db->escape($class_id) . " and student_session.section_id=" . $this->db->escape($section_id) . ") as student_sessions   LEFT JOIN attendence_type ON attendence_type.id=student_sessions.attendence_type_id where student_sessions.student_id = students.id and students.is_active = 'yes' ORDER BY students.id desc";
 
         $query = $this->db->query($sql);
         return $query->result_array();

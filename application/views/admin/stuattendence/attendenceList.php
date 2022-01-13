@@ -128,15 +128,25 @@
                                         <span class="text-danger"><?php echo form_error('class_id'); ?></span>
                                     </div>
                                 </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label for="exampleInputEmail1"><?php echo $this->lang->line('section'); ?></label><small class="req"> *</small>
-                                        <select  id="section_id" name="section_id" class="form-control" >
-                                            <option value=""><?php echo $this->lang->line('select'); ?></option>
-                                        </select>
-                                        <span class="text-danger"><?php echo form_error('section_id'); ?></span>
-                                    </div>
-                                </div>
+								<div class="col-sm-4">
+									<div class="form-group">
+										<?php $section = get_section(); ?>
+										<label><?php echo $this->lang->line('section'); ?></label>
+										<select  id="" name="section_id" class="form-control" >
+											<option value=""><?php echo $this->lang->line('select'); ?></option>
+											<?php foreach($section as $row){ ?>
+											<option  <?php
+                                                if ($section_id == $row['id']) {
+                                                    echo "selected =selected";
+                                                }
+                                                ?> value="<?php echo $row['id']; ?>"><?php echo $row['section']; ?></option>
+											<?php } ?>
+											
+										</select>
+										<span class="text-danger"><?php echo form_error('section_id'); ?></span>
+									</div>
+								</div>
+                               
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label for="exampleInputEmail1">
@@ -202,7 +212,7 @@
                                                
                                                 </span>
                                                 <div >
-												<span  style="margin-left:85%">
+												<span  style="margin-left:93%">
 														<span class="btn btn-primary btn-file">Upload<input type="file" id="file-upload" name="doc"></span>
 														<div id="file-upload-filename" style="margin-left:85%"></div>
 													</span>
@@ -281,31 +291,20 @@
 							<td >
 							
 								<?php
+								$value['attendence_type_id'] = '';
+								$get_attendence_by_date_id = get_attendence_by_date_id($date->format('Y-m-d'),$value['student_session_id']);
+								$value['attendence_type_id'] = $get_attendence_by_date_id['attendence_type_id'];
 								$c = 1;
 								$count = 0;
 								
+								
 								foreach ($attendencetypeslist as $key => $type) {
-								if ($type['key_value'] != "H") {
-								$att_type = str_replace(" ", "_", strtoupper($type['type']));
-								if ($value['date'] != "xxx") {
-									switch ($c) {
-									  case '1':
-										$value['attendence_type_id'] = $value['monday'];
-										break;
-									  case '2':
-										$value['attendence_type_id'] = $value['tuesday'];
-										break;
-									  case '3':
-										$value['attendence_type_id'] = $value['wednesday'];
-										break;
-									  case '4':
-										$value['attendence_type_id'] = $value['thursday'];
-										break;
-									  case '5':
-										$value['attendence_type_id'] = $value['friday'];
-										break;
-									 
-									}
+									
+									
+									if ($type['key_value'] != "H") {
+									$att_type = str_replace(" ", "_", strtoupper($type['type']));
+									if ($value['date'] != "xxx") {
+									
 									
 									
 								?>
@@ -326,22 +325,18 @@
 								<?php
 								if ($sch_setting->biometric) {
 								?>
-								<input required <?php if ($att_type == "absent") echo "checked"; ?> type="radio" id="attendencetype<?php echo $value['student_session_id'] . "-" . $count; ?>" value="<?php echo $type['id'] ?>" name="attendencetype<?php echo $value['student_session_id']; ?><?php echo $count_date;?>" >
+								<input  <?php if ($value['attendence_type_id'] == $type['id']) echo "checked"; ?> type="radio" id="attendencetype<?php echo $value['student_session_id'] . "-" . $count; ?>" value="<?php echo $type['id'] ?>" name="attendencetype<?php echo $value['student_session_id']; ?><?php echo $count_date;?>" >
 								<?php
 								}else {
 								?>
-								<input required <?php if ($c == 1) echo ""; ?> type="radio" id="attendencetype<?php echo $value['student_session_id'] . "-" . $count; ?>" value="<?php echo $type['id'] ?>" name="attendencetype<?php echo $value['student_session_id']; ?><?php echo $count_date;?>" >
+								<input  <?php if ($value['attendence_type_id'] == $type['id']) echo "checked"; ?> type="radio" id="attendencetype<?php echo $value['student_session_id'] . "-" . $count; ?>" value="<?php echo $type['id'] ?>" name="attendencetype<?php echo $value['student_session_id']; ?><?php echo $count_date;?>" >
 								<?php
 								}
 								?>
 								<label for="attendencetype<?php echo $value['student_session_id'] . "-" . $count; ?>">
 								<?php echo $att_type; ?> 
 								</label>
-								<input type="hidden" id="attendencedate<?php echo $value['student_session_id'] . "-" . $count; ?>" value="<?php echo $date->format('Y-m-d'); ?>" name="attendencedate<?php echo $value['student_session_id']; ?><?php echo $count_date;?>" >									
 								
-
-
-
 									<?php
 									}
 										$c++;
@@ -349,7 +344,7 @@
 									}
 								}
 								?>
-							
+							<input type="hidden" id="attendencedate<?php echo $value['student_session_id'] . "-" . $count; ?>" value="<?php echo $date->format('Y-m-d'); ?>" name="attendencedate<?php echo $value['student_session_id']; ?><?php echo $count_date;?>" >
 							</td>
 						<?php } ?>
                                                             <?php if ($date == 'xxx') { ?> 
