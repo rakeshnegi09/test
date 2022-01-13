@@ -71,42 +71,51 @@ class Stuattendence extends Admin_Controller {
             $search = $this->input->post('search');
             //$holiday = $this->input->post('holiday');
             if ($search == "saveattendence") {
+				
+				if(isset($_FILES["doc"]) && !empty($_FILES['doc']['name'])) {
+						$uploaddir = './uploads/attendance_doc/';
+						if (!is_dir($uploaddir) && !mkdir($uploaddir)) {
+							die("Error creating folder $uploaddir");
+						}
+
+						$fileInfo    = pathinfo($_FILES["doc"]["name"]);
+						$first_title = $this->input->post('first_title');
+						$doc = $this->input->post('doc');
+						$file_name   = $_FILES['doc']['name'];
+						$exp         = explode(' ', $file_name);
+						$imp         = implode('_', $exp).time();
+						$img_name    = $uploaddir . basename($imp);
+						move_uploaded_file($_FILES["doc"]["tmp_name"], $img_name);
+						$data_img = array('doc' => $img_name,'date'=>$date);
+						$this->stuattendence_model->adddoc($data_img);
+
+					}
+				
                 $session_ary = $this->input->post('student_session');
                 $absent_student_list = array();
                 foreach ($session_ary as $key => $value) {
-						$checkForUpdate = $this->input->post('attendendence_id' . $value);
+					$checkForUpdate = $this->input->post('attendendence_id' . $value);
+					
+					$arr = array(
+						'id'=>$checkForUpdate,
+						'student_session_id'=>$value,
+						'date'=>date('Y-m-d',strtotime($date)),
+						'monday'=>$this->input->post('attendencetype'.$value."1"),
+						'tuesday'=>$this->input->post('attendencetype'.$value."2"),
+						'wednesday'=>$this->input->post('attendencetype'.$value."3"),
+						'thursday'=>$this->input->post('attendencetype'.$value."4"),
+						'friday'=>$this->input->post('attendencetype'.$value."5"),
+						'wel'=>$this->input->post('remark'.$value),
+						'from_date'=>$this->input->post('attendencedate'.$value."1"),
+						'to_date'=>$this->input->post('attendencedate'.$value."5"),
+					);
+					 $this->stuattendence_model->add($arr);
 						
-						$arr = array(
-							'id'=>$checkForUpdate,
-							'student_session_id'=>$value,
-							'date'=>$date,
-							'monday'=>$this->input->post('attendencetype'.$value."1"),
-							'tuesday'=>$this->input->post('attendencetype'.$value."2"),
-							'wednesday'=>$this->input->post('attendencetype'.$value."3"),
-							'thursday'=>$this->input->post('attendencetype'.$value."4"),
-							'friday'=>$this->input->post('attendencetype'.$value."5"),
-							'wel'=>$this->input->post('remark'.$value),
-							'from_date'=>$this->input->post('attendencedate'.$value."1"),
-							'to_date'=>$this->input->post('attendencedate'.$value."5"),
-						);
-						 $this->stuattendence_model->add($arr);
-						/*$check_exist = $this->stuattendence_model->check_attendence($value,$arr['from_date'],$arr['to_date']);
-						if($check_exist){
-							 $this->stuattendence_model->update($arr,$value);
-						}else{
-							  $this->stuattendence_model->add($arr);
-						}*/
-                       
-                        
                 }
-              /*  $absent_config = $this->config_attendance['absent'];
-                if (!empty($absent_student_list)) {
-
-                    $this->mailsmsconf->mailsms('absent_attendence', $absent_student_list, $date);
-                }*/
+             
 
                 $this->session->set_flashdata('msg', '<div class="alert alert-success text-left">' . $this->lang->line('success_message') . '</div>');
-                redirect('admin/stuattendence/index', 'refresh');
+               // redirect('admin/stuattendence/index', 'refresh');
             }
             $attendencetypes = $this->attendencetype_model->get();
             $data['attendencetypeslist'] = $attendencetypes;
@@ -114,10 +123,15 @@ class Stuattendence extends Admin_Controller {
 			if($resultlist){
 				foreach($resultlist as $std){
 					$at_data = $this->stuattendence_model->get_at_data($std['attendence_id']);
-					$new_data[] = array_merge($at_data,$std);
+					if($at_data){
+						$new_data[] = array_merge($at_data,$std);
+					}else{
+						$new_data[] = $std;
+					}
+					
 				}
 			}
-		
+			
             $data['resultlist'] = $new_data;
             $this->load->view('layout/header', $data);
             $this->load->view('admin/stuattendence/attendenceList', $data);

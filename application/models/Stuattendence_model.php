@@ -41,10 +41,12 @@ class Stuattendence_model extends MY_Model {
     }
 
     public function add($data) {
+	
         $this->db->trans_start(); # Starting Transaction
         $this->db->trans_strict(false); # See Note 01. If you wish can remove as well
         //=======================Code Start===========================
-        if (isset($data['id'])) {
+        if (!empty($data['id'])) {
+			
             $this->db->where('id', $data['id']);
             $this->db->update('student_attendences', $data);
             $message = UPDATE_RECORD_CONSTANT . " On  student attendences id " . $data['id'];
@@ -52,6 +54,7 @@ class Stuattendence_model extends MY_Model {
             $record_id = $data['id'];
             $this->log($message, $record_id, $action);
         } else {
+			
             $this->db->insert('student_attendences', $data);
             $id = $this->db->insert_id();
             $message = INSERT_RECORD_CONSTANT . " On  student attendences id " . $id;
@@ -174,6 +177,27 @@ class Stuattendence_model extends MY_Model {
 	
 	public function get_at_data($id){
 		return $this->db->select('*')->from('student_attendences')->where('id',$id)->get()->row_array();
+	}
+	
+	public function adddoc($data){
+		$get_week_date = get_week_date($data['date']);
+		foreach($get_week_date as $key=> $day){
+			if($key==0){
+				$from_date = $day->format('Y-m-d');
+			}
+			if($key==4){
+				$to_date = $day->format('Y-m-d');
+			}
+		}
+		$final_array = array(
+				'doc'=>$data['doc'],
+				'from_date'=>$from_date,
+				'to_date'=>$to_date,
+				);
+		if(!empty($data['doc'])){
+			return $this->db->insert('attendance_report',$final_array);
+		}
+		
 	}
 
 }

@@ -195,24 +195,17 @@
                                         <?php
                                     }
                                     ?>
-                                    <form action="<?php echo site_url('admin/stuattendence/index') ?>" method="post" class="form_attendence">
+                                    <form action="<?php echo site_url('admin/stuattendence/index') ?>" method="post" class="form_attendence" enctype='multipart/form-data'>
                                         <?php echo $this->customlib->getCSRF(); ?>
-                                        <div class="mailbox-controls">
+                                      <div class="mailbox-controls">
                                             <span class="button-checkbox">
-                                                <?php if ($this->rbac->hasPrivilege('student_attendance', 'can_add')) { ?>
-                                                    <button type="button" class="btn btn-sm btn-primary" data-color="primary"><?php echo $this->lang->line('mark_as_holiday'); ?></button>
-                                                    <input type="checkbox" id="checkbox1" class="hidden" name="holiday" value="checked" <?php echo $checked; ?>/>
+                                               
                                                 </span>
-                                                <div class="pull-right">
-                                                    <?php
-                                                }
-                                                if ($can_edit == 1) {
-                                                    if ($this->rbac->hasPrivilege('student_attendance', 'can_add')) {
-                                                        ?>
-                                                        <button type="submit" name="search" value="saveattendence" class="btn btn-primary btn-sm pull-right checkbox-toggle"><i class="fa fa-save"></i> <?php echo $this->lang->line('save_attendance'); ?> </button>
-                                                    <?php }
-                                                }
-                                                ?>
+                                                <div >
+												<span  style="margin-left:85%">
+														<span class="btn btn-primary btn-file">Upload<input type="file" id="file-upload" name="doc"></span>
+														<div id="file-upload-filename" style="margin-left:85%"></div>
+													</span>
                                             </div>
                                         </div>
                                         <input type="hidden" name="class_id" value="<?php echo $class_id; ?>">
@@ -286,31 +279,50 @@
 					$count_date = 0;
 					foreach($get_week_date as $key_date=>$date) { $count_date++ ;?>	
 							<td >
-							<div class="inline_radio" style="display:inline-flex">
+							
 								<?php
 								$c = 1;
 								$count = 0;
-								//echo "<pre>";
-								//print_r($attendencetypeslist);die;
+								
 								foreach ($attendencetypeslist as $key => $type) {
 								if ($type['key_value'] != "H") {
 								$att_type = str_replace(" ", "_", strtoupper($type['type']));
 								if ($value['date'] != "xxx") {
+									switch ($c) {
+									  case '1':
+										$value['attendence_type_id'] = $value['monday'];
+										break;
+									  case '2':
+										$value['attendence_type_id'] = $value['tuesday'];
+										break;
+									  case '3':
+										$value['attendence_type_id'] = $value['wednesday'];
+										break;
+									  case '4':
+										$value['attendence_type_id'] = $value['thursday'];
+										break;
+									  case '5':
+										$value['attendence_type_id'] = $value['friday'];
+										break;
+									 
+									}
+									
+									
 								?>
-								<div class="radio radio-info radio-inline">
+								
 								<input <?php if ($value['attendence_type_id'] == $type['id']) echo "checked"; ?> type="radio" id="attendencetype<?php echo $value['student_session_id'] . "-" . $count; ?>" value="<?php echo $type['id'] ?>" name="attendencetype<?php echo $value['student_session_id']; ?><?php echo $count_date;?>" >
 
 								<label for="attendencetype<?php echo $value['student_session_id'] . "-" . $count; ?>">
 								<?php echo $att_type; ?> 
 								</label>
 
-								</div>
+								
 								<?php
 								}else {
 								?>
 
 
-								<div class="radio radio-info radio-inline">
+								
 								<?php
 								if ($sch_setting->biometric) {
 								?>
@@ -326,7 +338,7 @@
 								<?php echo $att_type; ?> 
 								</label>
 								<input type="hidden" id="attendencedate<?php echo $value['student_session_id'] . "-" . $count; ?>" value="<?php echo $date->format('Y-m-d'); ?>" name="attendencedate<?php echo $value['student_session_id']; ?><?php echo $count_date;?>" >									
-								</div>
+								
 
 
 
@@ -337,14 +349,14 @@
 									}
 								}
 								?>
-							</div>
+							
 							</td>
 						<?php } ?>
                                                             <?php if ($date == 'xxx') { ?> 
-                                                                <td class="text-right"><input type="text"  name="remark<?php echo $value["student_session_id"] ?>" ></td>
+                                                                  <td class="text-right"><input <?php if ($value['wel'] == "1") echo "checked"; ?> type="checkbox"  name="remark<?php echo $value["student_session_id"] ?>" value="1" ></td>
             <?php } else { ?>
 
-                                                                <td class="text-right"><input type="checkbox"  name="remark<?php echo $value["student_session_id"] ?>" value="W.E.L" ></td>
+                                                                <td class="text-right"><input <?php if ($value['wel'] == "1") echo "checked"; ?> type="checkbox"  name="remark<?php echo $value["student_session_id"] ?>" value="1" ></td>
                                                         <?php } ?>
                                                         </tr>
                                                         <?php
@@ -353,6 +365,18 @@
                                                     ?>
                                                 </tbody>
                                             </table>
+											
+                                                <div class="">
+                                                    <?php
+                                               
+                                                if ($can_edit == 1) {
+                                                    if ($this->rbac->hasPrivilege('student_attendance', 'can_add')) {
+                                                        ?>
+                                                        <button type="submit" name="search" value="saveattendence" class="btn btn-primary btn-sm pull-right checkbox-toggle"><i class="fa fa-save"></i> <?php echo $this->lang->line('save_attendance'); ?> </button>
+                                                    <?php }
+                                                }
+                                                ?>
+                                            </div>
                                         </div>
                                     </form>
                                     <?php
@@ -373,6 +397,22 @@
             <script type="text/javascript">
 
                 $(document).ready(function () {
+					var input = document.getElementById( 'file-upload' );
+					var infoArea = document.getElementById( 'file-upload-filename' );
+
+					input.addEventListener( 'change', showFileName );
+
+					function showFileName( event ) {
+					  
+					  // the change event gives us the input it occurred in 
+					  var input = event.srcElement;
+					  
+					  // the input has an array of files in the `files` property, each one has a name that you can use. We're just using the name here.
+					  var fileName = input.files[0].name;
+					  
+					  // use fileName however fits your app best, i.e. add it into a div
+					  infoArea.textContent = 'File name: ' + fileName;
+					}
                     $.extend($.fn.dataTable.defaults, {
                         searching: false,
                         ordering: true,
