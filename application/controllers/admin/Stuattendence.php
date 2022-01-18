@@ -86,7 +86,7 @@ class Stuattendence extends Admin_Controller {
 						$imp         = implode('_', $exp).time();
 						$img_name    = $uploaddir . basename($imp);
 						move_uploaded_file($_FILES["doc"]["tmp_name"], $img_name);
-						$data_img = array('doc' => $img_name,'date'=>$date);
+						$data_img = array('doc' => $img_name,'date'=>$date,'class_id'=>$_POST['class_id'],'section_id'=>$_POST['section_id']);
 						$this->stuattendence_model->adddoc($data_img);
 
 					}
@@ -360,6 +360,102 @@ class Stuattendence extends Admin_Controller {
 
             $this->load->view('layout/header', $data);
             $this->load->view('admin/stuattendence/classattendencereport', $data);
+            $this->load->view('layout/footer', $data);
+        }
+    }
+	
+	
+	function classattendencereportuploaded() {
+
+        if (!$this->rbac->hasPrivilege('attendance_report', 'can_view')) {
+            access_denied();
+        }
+
+        $this->session->set_userdata('top_menu', 'Reports');
+        $this->session->set_userdata('sub_menu', 'Reports/attendance_uploaded');
+        $this->session->set_userdata('subsub_menu', 'Reports/attendance/attendance_report_uploaded');
+        $attendencetypes = $this->attendencetype_model->getAttType();
+        $data['attendencetypeslist'] = $attendencetypes;
+        $data['title'] = 'Add Fees Type';
+        $data['title_list'] = 'Fees Type List';
+        $class = $this->class_model->get();
+        $userdata = $this->customlib->getUserData();
+
+        $role_id = $userdata["role_id"];
+
+
+        if (isset($role_id) && ($userdata["role_id"] == 2) && ($userdata["class_teacher"] == "yes")) {
+            if ($userdata["class_teacher"] == 'yes') {
+                $carray = array();
+                $class = array();
+                $class = $this->teacher_model->get_daywiseattendanceclass($userdata["id"]);
+            }
+        }
+        $data['classlist'] = $class;
+        $userdata = $this->customlib->getUserData();
+
+        $data['monthlist'] = $this->customlib->getMonthDropdown();
+        $data['yearlist'] = $this->stuattendence_model->attendanceYearCount();
+        $data['class_id'] = "";
+        $data['section_id'] = "";
+        $data['date'] = "";
+        $data['month_selected'] = "";
+        $data['year_selected'] = "";
+        $data['sch_setting'] = $this->sch_setting_detail;
+        $this->form_validation->set_rules('class_id', $this->lang->line('class'), 'trim|required|xss_clean');
+        $this->form_validation->set_rules('section_id', $this->lang->line('section'), 'trim|required|xss_clean');
+        $this->form_validation->set_rules('month', $this->lang->line('month'), 'trim|required|xss_clean');
+        if ($this->form_validation->run() == FALSE) {
+            $this->load->view('layout/header', $data);
+            $this->load->view('admin/stuattendence/classattendencereportuploaded', $data);
+            $this->load->view('layout/footer', $data);
+        } else {
+            $resultlist = array();
+            $class = $this->input->post('class_id');
+            $section = $this->input->post('section_id');
+            $month = $this->input->post('month');
+            $data['class_id'] = $class;
+            $data['section_id'] = $section;
+            $data['month_selected'] = $month;
+            $studentlist = $this->student_model->searchByClassSection($class, $section);
+		
+            $session_current = $this->setting_model->getCurrentSessionName();
+            $startMonth = $this->setting_model->getStartMonth();
+            $centenary = substr($session_current, 0, 2); //2017-18 to 2017
+            $year_first_substring = substr($session_current, 2, 2); //2017-18 to 2017
+            $year_second_substring = substr($session_current, 5, 2); //2017-18 to 18
+            $month_number = date("m", strtotime($month));
+            $year = $this->input->post('year');
+            $data['year_selected'] = $year;
+            if (!empty($year)) {
+
+                $year = $this->input->post("year");
+            } else {
+
+                if ($month_number >= $startMonth && $month_number <= 12) {
+                    $year = $centenary . $year_first_substring;
+                } else {
+                    $year = $centenary . $year_second_substring;
+                }
+            }
+
+
+            $num_of_days = cal_days_in_month(CAL_GREGORIAN, $month_number, $year);
+            $attr_result = array();
+            $attendence_array = array();
+            $student_result = array();
+            $data['no_of_days'] = $num_of_days;
+            $date_result = array();
+            for ($i = 1; $i <= $num_of_days; $i++) {
+                $att_date = $year . "-" . $month_number . "-" . sprintf("%02d", $i);
+                $attendence_array[] = $att_date;
+				
+            }
+			
+            $data['attendence_array'] = $attendence_array;
+
+            $this->load->view('layout/header', $data);
+            $this->load->view('admin/stuattendence/classattendencereportuploaded', $data);
             $this->load->view('layout/footer', $data);
         }
     }

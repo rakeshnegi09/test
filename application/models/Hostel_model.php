@@ -17,7 +17,7 @@ class Hostel_model extends MY_Model {
      * @return mixed
      */
     public function get($id = null) {
-        $this->db->select()->from('hostel');
+        $this->db->select("*")->from('hostel');
         if ($id != null) {
             $this->db->where('hostel.id', $id);
         } else {

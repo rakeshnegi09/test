@@ -115,7 +115,7 @@ if ($this->module_lib->hasActive('online_admission')) {
             if ($this->rbac->hasPrivilege('online_admission', 'can_view')) {
                 ?>
 
-                                    <li class="<?php echo set_Submenu('onlinestudent'); ?>"><a href="<?php echo site_url('admin/onlinestudent'); ?>"><i class="fa fa-angle-double-right"></i> <?php echo $this->lang->line('online') . " " . $this->lang->line('admission'); ?></a></li>
+                                    <!--li class="<?php echo set_Submenu('onlinestudent'); ?>"><a href="<?php echo site_url('admin/onlinestudent'); ?>"><i class="fa fa-angle-double-right"></i> <?php echo $this->lang->line('online') . " " . $this->lang->line('admission'); ?></a></li-->
 
                                     <?php
 }
@@ -365,11 +365,11 @@ if ($this->module_lib->hasActive('examination')) {
                         </a>
                         <ul class="treeview-menu">
 						
-							 <li class="<?php echo set_Submenu('Examinations/examgroup/examination'); ?>"><a href="<?php echo site_url('admin/examgroup/examination'); ?>"><i class="fa fa-angle-double-right"></i> Marksheet</a></li>
+							 <li class="<?php echo set_Submenu('Examinations/examgroup/examination'); ?>"><a href="<?php echo site_url('admin/examgroup/examination'); ?>"><i class="fa fa-angle-double-right"></i> Capture</a></li>
 							 
 							 
                             <?php if ($this->rbac->hasPrivilege('exam_group', 'can_view')) {?>
-                                <li class="<?php echo set_Submenu('Examinations/examgroup'); ?>"><a href="<?php echo site_url('admin/examgroup'); ?>"><i class="fa fa-angle-double-right"></i> <?php echo $this->lang->line('exam') . " " . $this->lang->line('group') ?></a></li>
+                                <li class="<?php echo set_Submenu('Examinations/examgroup'); ?>"><a href="<?php echo site_url('admin/examgroup'); ?>"><i class="fa fa-angle-double-right"></i> Class Group</a></li>
                             <?php }
         ?>
                             <!--li class="<?php echo set_Submenu('Examinations/Examschedule'); ?>"><a href="<?php echo site_url('admin/exam_schedule'); ?>"><i class="fa fa-angle-double-right"></i> <?php echo $this->lang->line('exam_schedule'); ?></a></li-->
@@ -395,7 +395,7 @@ if ($this->module_lib->hasActive('examination')) {
 }
         if ($this->rbac->hasPrivilege('print_marksheet', 'can_view')) {
             ?>
-                                <li class="<?php echo set_Submenu('Examinations/examresult/marksheet'); ?>"><a href="<?php echo base_url(); ?>admin/examresult/marksheet"><i class="fa fa-angle-double-right"></i> <?php echo $this->lang->line('print') . " " . $this->lang->line('marksheet'); ?></a></li>
+                                <li class="<?php echo set_Submenu('Examinations/examresult/marksheet'); ?>"><a href="<?php echo base_url(); ?>admin/examresult/marksheet"><i class="fa fa-angle-double-right"></i>S.O.R</a></li>
                                 <?php
 }
 
@@ -416,7 +416,7 @@ if ($this->module_lib->hasActive('examination')) {
 if ($this->module_lib->hasActive('online_examination')) {
     if (($this->rbac->hasPrivilege('online_examination', 'can_view') || $this->rbac->hasPrivilege('question_bank', 'can_view'))) {
         ?>
-                    <li class="treeview <?php echo set_Topmenu('Online_Examinations'); ?>">
+                    <!--li class="treeview <?php echo set_Topmenu('Online_Examinations'); ?>">
                         <a href="#">
                             <i class="fa fa-rss ftlayer"></i> <span><?php echo $this->lang->line('online') . " " . $this->lang->line('examinations'); ?></span> <i class="fa fa-angle-left pull-right"></i>
                         </a>
@@ -437,7 +437,7 @@ if ($this->rbac->hasPrivilege('online_examination', 'can_view')) {
 
 
                         </ul>
-                    </li>
+                    </li-->
                     <?php
 }
 }
@@ -445,7 +445,7 @@ if ($this->rbac->hasPrivilege('online_examination', 'can_view')) {
 if ($this->module_lib->hasActive('lesson_plan')) {
     if (($this->rbac->hasPrivilege('manage_lesson_plan', 'can_view')) || ($this->rbac->hasPrivilege('manage_syllabus_status', 'can_view')) || ($this->rbac->hasPrivilege('lesson', 'can_view')) || ($this->rbac->hasPrivilege('topic', 'can_view'))) {
         ?>
-                    <li class="treeview <?php echo set_Topmenu('lessonplan'); ?>">
+                    <!--li class="treeview <?php echo set_Topmenu('lessonplan'); ?>">
                         <a href="#">
                             <i class="fa fa-list-alt ftlayer"></i> <span><?php echo $this->lang->line('lesson_plan'); ?></span> <i class="fa fa-angle-left pull-right"></i>
                         </a>
@@ -462,7 +462,7 @@ if ($this->module_lib->hasActive('lesson_plan')) {
         <?php }?>
 
                         </ul>
-                    </li>
+                    </li-->
                 <?php }
 }
 ?>

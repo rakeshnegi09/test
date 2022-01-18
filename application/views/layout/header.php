@@ -66,6 +66,9 @@
 		<script src="<?php echo base_url('backend/js/jquery.multiselect.js');?>"></script>
   <style type="text/css">
         span.flag-icon.flag-icon-us{text-orientation: mixed;}
+		.form-control {
+				height: auto;
+			}
   </style>
     </head>
     <body class="hold-transition skin-blue fixed sidebar-mini">
@@ -107,12 +110,21 @@ if ($this->config->item('SSLK') == "") {
     checksidebar();
 
 </script> 
+<style>
+span.logo-lg img {
+    width: 100%;
+}
+a.studentsideopen {
+    color: #000;
+    display: none;
+}
+</style>
        <div class="wrapper">
 
             <header class="main-header" id="alert" > 
                 <a href="<?php echo base_url(); ?>admin/admin/dashboard" class="logo">
-                    <span class="logo-mini"><img src="<?php echo base_url(); ?>uploads/school_content/admin_small_logo/<?php $this->setting_model->getAdminsmalllogo();?>" alt="<?php echo $this->customlib->getAppName() ?>" /></span>
-                    <span class="logo-lg"><img src="<?php echo base_url(); ?>uploads/school_content/admin_logo/<?php $this->setting_model->getAdminlogo();?>" alt="<?php echo $this->customlib->getAppName() ?>" /></span>
+                    <span class="logo-lg"><img src="<?php echo base_url(); ?>uploads/logoside.jpg" alt="<?php echo $this->customlib->getAppName() ?>" /></span>
+                    
                 </a>
                 <nav class="navbar navbar-static-top" role="navigation">
                     <a onclick="collapseSidebar()"  class="sidebar-toggle" data-toggle="offcanvas" role="button">
@@ -133,7 +145,7 @@ if ($this->config->item('SSLK') == "") {
                                 <form id="header_search_form" class="navbar-form navbar-left search-form" role="search"  action="<?php echo site_url('admin/admin/search'); ?>" method="POST">
                                     <?php echo $this->customlib->getCSRF(); ?>
                                     <div class="input-group">
-                                        <input type="text" value="<?php echo set_value('search_text1');?>" name="search_text1" id="search_text1" class="form-control search-form search-form3" placeholder="<?php echo $this->lang->line('search_by_student_name'); ?>">
+                                        <input style="border-radius: 20px;" type="text" value="<?php echo set_value('search_text1');?>" name="search_text1" id="search_text1" class="form-control search-form search-form3" placeholder="Search By Student">
                                         <span class="input-group-btn">
                                             <button type="submit" name="search" id="search-btn" onclick="getstudentlist()" style="" class="btn btn-flat topsidesearchbtn"><i class="fa fa-search"></i></button>
                                         </span>
@@ -208,6 +220,7 @@ $tasklist = $this->customlib->getincompleteTask($userdata["id"]);
                                     if($this->rbac->hasPrivilege('chat','can_view')){
                                         ?>
                                          <li class="cal15"><a target="_blank" data-placement="bottom" data-toggle="tooltip" title="" href="https://api.whatsapp.com/send?phone=1234567890" data-original-title="<?php echo $this->lang->line('chat')?>" class="todoicon"><i class="fa fa-whatsapp"></i></a></li> 
+										  <li class="cal15"><a target="_blank" data-placement="bottom" data-toggle="tooltip" title="" href="https://login.live.com/" data-original-title="<?php echo $this->lang->line('chat')?>" class="todoicon"><img width="20px" src="https://img.icons8.com/color/48/000000/microsoft-teams.png"/></a></li> 
                                         <?php
                                     }
                                 ?>

@@ -24,7 +24,7 @@
         
 
     </head>
-    <body style="ackground-image: url(<?= base_url('uploads/images/adminlogin.jpg');?>)">
+    <body style="background-image: url(<?= base_url('uploads/images/adminlogin.jpg');?>)">
         <!-- Top content -->
         <div class="top-content">
             <div class="inner-bg" >

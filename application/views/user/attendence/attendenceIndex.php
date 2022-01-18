@@ -66,8 +66,7 @@ $(document).ready(function () {
     legend: [
     {type: "block", label: "<?php echo $this->lang->line('absent') ?>", classname: 'grade-1'},
     {type: "block", label: "<?php echo $this->lang->line('present') ?>", classname: 'grade-4'},
-    {type: "block", label: "<?php echo $this->lang->line('late') ?>", classname: 'grade-3'},
-    {type: "block", label: "<?php echo $this->lang->line('half_day') ?>", classname: 'grade-2'},
+    {type: "block", label: "absent with reason", classname: 'grade-3'},
     {type: "block", label: "<?php echo $this->lang->line('holiday') ?>", classname: 'grade-5'},
     ],
     ajax: {

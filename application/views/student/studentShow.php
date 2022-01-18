@@ -2,6 +2,14 @@
 $currency_symbol = $this->customlib->getSchoolCurrencyFormat(); ?>
 <style type="text/css">
   /*.table td:last-child, th:last-child {float: none;text-align: start;}*/
+  .image-upload>input {
+  display: none;
+}
+.dropify-wrapper .dropify-message {
+	font-size:0px;
+	top: 70%;
+}
+
 </style>
 <div class="content-wrapper">
   <div class="row">
@@ -108,8 +116,42 @@ $currency_symbol = $this->customlib->getSchoolCurrencyFormat(); ?>
            <?php if ($student["is_active"] == "no") {
     echo "style='background-color:#f0dddd;'";
 } ?>>
+<script>
+
+	$(document).ready(function (e) {
+		$('#imageUploadForm').on('submit',(function(e) {
+			e.preventDefault();
+			var formData = new FormData(this);
+
+			$.ajax({
+				type:'POST',
+				url: '<?php echo base_url("student/edit_profile_image");?>',
+				data:formData,
+				cache:false,
+				contentType: false,
+				processData: false,
+				success:function(data){
+					window.location.reload();
+					
+				},
+				error: function(data){
+					
+				}
+			});
+		}));
+
+		$("#file-input").on("change", function() {
+			$("#imageUploadForm").submit();
+		});
+	});
+
+</script>
       <div class="box-body box-profile">
-        <?php if ($sch_setting->student_photo) { ?>
+        
+		<div class="image-upload text-center">
+		<form name="photo" id="imageUploadForm" enctype="multipart/form-data" action="<?php echo $_SERVER["PHP_SELF"];?>" method="post">
+		  <label for="file-input">
+		  <?php if ($sch_setting->student_photo) { ?>
         <img class="profile-user-img img-responsive img-circle" src="<?php if (!empty($student["image"])) {
         echo base_url() . $student["image"];
     } else {
@@ -119,6 +161,14 @@ $currency_symbol = $this->customlib->getSchoolCurrencyFormat(); ?>
             echo base_url() . "uploads/student_images/default_male.jpg";
         }
     } ?>" alt="User profile picture">
+			<img width="15px" style="margin-top: -100%;margin-right: -100%;" src="<?php echo base_url() . "uploads/edit-solid.svg";?>"/>
+			
+		  </label>
+			
+			<input type="hidden" name="student_id" value="<?php echo $student["id"]; ?>">
+		  <input id="file-input" name="first_doc" type="file" />
+		  </form>
+		</div>
         <?php
 } ?>
         <h3 class="profile-username text-center">
@@ -180,7 +230,7 @@ $currency_symbol = $this->customlib->getSchoolCurrencyFormat(); ?>
 					<?php } ?>
 						<a class="pull-right text-aqua">
 						<?php 
-							if($data['in_arrear'] == "YES"){
+							if($data['amount'] > 0){
 								echo "<strong class='text-danger'>R ".$data['amount']."</strong>";
 							}else{
 								echo "R ".$data['amount'];
@@ -191,20 +241,7 @@ $currency_symbol = $this->customlib->getSchoolCurrencyFormat(); ?>
 			  </div>
 			</div>
 			
-				<div class="box box-primary">
-				 <div class="box-body box-profile">
-					<div class="form-group">
-						<a class="pull-left text-aqua">Important Information</a><br>
-						<form method="POST" action="<?= base_url("student/add_important_info");?>">
-						 <input type="hidden" name="student_id" value="<?php echo $student["id"]; ?>" id="student_id">
-						<textarea rows="10" name="info" class="form-control" id="exampleFormControlTextarea1"><?= get_important_info($student["id"]);?></textarea>
-						
-						</div>
-					<input type="submit" name="Save" class="btn btn-success" style="float:right">
-				 
-				 </form>
-				 </div>
-				</div>
+				
 	
     <?php if (!empty($siblings)) { ?>
     <div class="box box-primary">
@@ -268,14 +305,14 @@ $currency_symbol = $this->customlib->getSchoolCurrencyFormat(); ?>
       <ul class="nav nav-tabs">
 		<li class="active"><a href="#activity" data-toggle="tab" aria-expanded="true">Profile</a></li>
 				  
-                  <li class=""><a href="#documents" onclick="change_doc_type('documents')" data-toggle="tab" aria-expanded="true">documents</a></li>
+                  <li class=""><a href="#documents" onclick="change_doc_type('documents')" data-toggle="tab" aria-expanded="true">Documents</a></li>
 				
 				  <li class=""><a href="#legal" onclick="change_doc_type('legal')" data-toggle="tab" aria-expanded="true">Legal</a></li>
 				  <li class=""><a href="#certificates" onclick="change_doc_type('certificates')" data-toggle="tab" aria-expanded="true">Certificates</a></li>
 				  <li class=""><a href="#wel" data-toggle="tab" aria-expanded="true">W.E.L</a></li>
 				  <li class=""><a href="#result" data-toggle="tab" aria-expanded="true">Results</a></li>
                  
-                  <li class=""><a href="#covid" data-toggle="tab" aria-expanded="true">covid-19</a></li>
+                  <li class=""><a href="#covid" data-toggle="tab" aria-expanded="true">Covid-19</a></li>
                  
                  
         <?php if ($student["is_active"] == "yes") { ?>
@@ -440,7 +477,9 @@ if ($sch_setting->student_email) { ?>
                   <?php
 $cutom_fields_data = get_custom_table_values($student["id"], "students");
 if (!empty($cutom_fields_data)) {
-    foreach ($cutom_fields_data as $field_key => $field_value) { ?>
+    foreach ($cutom_fields_data as $field_key => $field_value) { 
+	
+	?>
                   <tr>
                     <td>
                       <?php echo $field_value->name; ?>
@@ -850,12 +889,10 @@ if (!empty($cutom_fields_data)) {
       </div>
 	  
 	  <div class="tab-pane" id="legal">
-        <div class="timeline-header no-border">
-          <button type="button"  data-student-session-id="<?php echo $student["student_session_id"]; ?>" class="btn btn-xs btn-primary pull-right myTransportFeeBtn"> 
-            <i class="fa fa-upload">
-            </i>  
-            <?php echo $this->lang->line("upload_documents"); ?>
-          </button>
+        <div class="timeline-header no-border" >
+		 
+          <form  action="<?php echo base_url('student/create_doc_legal');?>" method="POST" enctype="multipart/form-data">
+				
           <div class="table-responsive" style="clear: both;">
             <table class="table table-striped table-bordered table-hover">
               <thead>
@@ -867,6 +904,7 @@ if (!empty($cutom_fields_data)) {
                     <?php echo $this->lang->line("file"); ?> 
                     <?php echo $this->lang->line("name"); ?>
                   </th>
+				  <th></th>
                   <th class="mailbox-date text-right">
                     <?php echo $this->lang->line("action"); ?>
                   </th>
@@ -881,7 +919,46 @@ if (!empty($cutom_fields_data)) {
                     </td>
                   </tr>
                   <?php
-				} else {
+				} else { ?>
+				
+				<tr>
+				<td>
+					<select style="width:50%" required id="legal_doc" name="first_title" class="form-control">
+					  <option value="">Select Legal Documents</option>
+					  <option value="SPI Form">SPI Form</option>
+					  <option value="Student Application Check List">Student Application Check List</option>
+					  <option value="Application form">Application form</option>
+					  <option value="Uniform order sheet">Uniform order sheet</option>
+					  <option value="Accommodation application">Accommodation application</option>
+					  <option value="Student study agreement">Student study agreement</option>
+					  <option value="Accommodation Agreement">Accommodation Agreement</option>
+					  <option value="Accommodation Inspection">Accommodation Inspection</option>
+					  <option value="Health Questionaire">Health Questionaire</option>
+					  <option value="Learner code of conduct">Learner code of conduct</option>
+					  <option value="Proof of address">Proof of address</option>
+					  <option value="Certified ID copies">Certified ID copies</option>
+					  <option value="Highest School result">Highest School result</option>
+					  <option value="Plagiarism policy">Plagiarism policy</option>
+					  <option value="Substance abuse policy">Substance abuse policy</option>
+					  <option value="Student tablet policy">Student tablet policy</option>
+					  <option value="Re-assestment policy">Re-assestment policy</option>
+					</select> 
+				</td>
+				<td></td>
+				<td style="width:20px;text-align:right"> 
+				 <input required type="file" name="first_doc" class="filestyle form-control ">
+				  <input required type="hidden" name="doc_type" value="legal">
+				  <input required type="hidden" name="student_id" value="<?php echo $student["id"];?>">
+				</td>
+				
+				<td style="text-align:right;width:20px;">
+				 
+				  <input type="submit" value="save" class="btn btn-primary btn-sm pull-right">
+				</td>
+				
+				</tr>
+				
+				<?php
 					foreach ($student_doc as $value) {
 						if($value['doc_type'] != "legal"){ continue; }
 						
@@ -893,6 +970,7 @@ if (!empty($cutom_fields_data)) {
                     <td>
                       <?php echo $value["doc"]; ?>
                     </td>
+					<td></td>
                     <td class="mailbox-date pull-right">
                       <a href="<?php echo base_url(); ?>student/download/<?php echo $value["student_id"] . "/" . $value["doc"]; ?>"class="btn btn-default btn-xs"  data-toggle="tooltip" title="<?php echo $this->lang->line("download"); ?>">
                         <i class="fa fa-download">
@@ -910,26 +988,27 @@ if (!empty($cutom_fields_data)) {
               </div>
           </div>
           </table>
+		  </form>
       </div>
 	  
 	  <div class="tab-pane" id="certificates">
         <div class="timeline-header no-border">
-          <button type="button"  data-student-session-id="<?php echo $student["student_session_id"]; ?>" class="btn btn-xs btn-primary pull-right myTransportFeeBtn"> 
-            <i class="fa fa-upload">
-            </i>  
-            <?php echo $this->lang->line("upload_documents"); ?>
-          </button>
+			 
+		 
           <div class="table-responsive" style="clear: both;">
+		  <form action="<?php echo base_url('student/create_doc_certificate');?>" method="POST" enctype="multipart/form-data">
             <table class="table table-striped table-bordered table-hover">
               <thead>
                 <tr>
                   <th>
                     <?php echo $this->lang->line("title"); ?>
                   </th>
-                  <th>
-                    <?php echo $this->lang->line("file"); ?> 
-                    <?php echo $this->lang->line("name"); ?>
-                  </th>
+				  <th>Date Collected</th>
+				  <th>Person Who Collected</th>
+				  <th>Telephone</th>
+				  <th>Certificate Collected</th>
+				  <th></th>
+                  
                   <th class="mailbox-date text-right">
                     <?php echo $this->lang->line("action"); ?>
                   </th>
@@ -944,15 +1023,78 @@ if (!empty($cutom_fields_data)) {
                     </td>
                   </tr>
                   <?php
-} else {
+} else {?>
+
+	<tr>
+	
+				
+	<td>
+		<select style="width: 149px;" required id="legal_doc" name="first_title" class="form-control">
+					  <option value="">Select Certificate</option>
+					  <option value="City & Guilds Certificate">City & Guilds Certificate</option>
+					  <option value="City & Guilds Diploma">City & Guilds Diploma</option>
+					  <option value="City & Guilds Advanced Diploma">City & Guilds Advanced Diploma</option>
+					  <option value="City & Guilds Safety Certificate">City & Guilds Safety Certificate</option>
+					  <option value="Trade Certificate">Trade Certificate</option>
+					  <option value="City & Guilds Pastry Diploma">City & Guilds Pastry Diploma</option>
+					  <option value="City & Guilds Results - Certificate">City & Guilds Results - Certificate</option>
+					  <option value="City & Guilds Results - Diploma">City & Guilds Results - Diploma</option>
+					  <option value="City & Guilds Results - Pastry Diploma">City & Guilds Results - Pastry Diploma</option>
+					  <option value="City & Guilds Results - Advanced Diploma">City & Guilds Results - Advanced Diploma</option>
+					  <option value="POE File Collected">POE File Collected</option>
+					  
+					</select> 
+	</td>
+	<td>
+		<input type="text" required class="form-control date" name="date_collected" placeholder="YYYY/MM/DD">
+	  </td>
+	  <td >
+		<input type="text" required class="form-control" name="person_collected" placeholder="Person Who Collected">
+	  </td>
+	  <td>
+		<input type="text" required class="form-control" name="telephone" placeholder="+9876543210">
+	  </td>
+	   <td class="text-center">
+		
+		<input type="checkbox" class="form-check-input" name="cert_collected" value="YES">
+	  </td>
+	  <td class="text-center">
+		 <input required type="hidden" name="doc_type" value="certificates">
+		 <input required type="hidden" name="student_id" value="<?php echo $student["id"];?>">
+		<input type="file" class="filestyle" name="first_doc" >
+	  </td>
+		<td class="text-center">
+		
+		<input type="submit" class="btn btn-primary btn-sm" value="save" >
+	  </td>
+
+	</tr>
+		 
+<?php
     foreach ($student_doc as $value) { if($value['doc_type'] != "certificates"){ continue; } ?>
                   <tr>
                     <td>
                       <?php echo $value["title"]; ?>
                     </td>
-                    <td>
-                      <?php echo $value["doc"]; ?>
+					<td>
+                      <?php echo date('Y-m-d',strtotime($value["date_collected"])); ?>
                     </td>
+					<td>
+                      <?php echo $value["person_collected"]; ?>
+                    </td>
+					<td>
+                      <?php echo $value["telephone"]; ?>
+                    </td>
+					
+                    <td class="text-center">
+					<?php if(trim($value["cert_collected"]) == "YES"){
+						$checked = "checked";
+					}else{
+						$checked = $value["cert_collected"];
+					} ?>
+                     <input type="checkbox" class="form-check-input" name="cert_collected" <?php echo $checked;?> value="YES">
+                    </td>
+					<td></td>
                     <td class="mailbox-date pull-right">
                       <a href="<?php echo base_url(); ?>student/download/<?php echo $value["student_id"] . "/" . $value["doc"]; ?>"class="btn btn-default btn-xs"  data-toggle="tooltip" title="<?php echo $this->lang->line("download"); ?>">
                         <i class="fa fa-download">
@@ -972,6 +1114,7 @@ if (!empty($cutom_fields_data)) {
               </div>
           </div>
           </table>
+		   </form>
       </div>
 	  
 	   <div class="tab-pane" id="wel">
@@ -1042,7 +1185,7 @@ if (!empty($cutom_fields_data)) {
 							  <?php } ?>
 								 <div class="col-lg-12">
 									<div class="pull-right"><label>Total hours worked</label>
-										<input type="text" class="" size="10" name="total_hour" value="<?= $total_hours; ?>">
+										<input type="text" class="" size="10" name="total_hour" value="<?= $total_hours; ?>"> /
 										<input type="text" class="" size="12" name="manual_hours" value="<?php if(isset($row["manual_hours"][0])){ echo $get_wel[0]["manual_hours"]; } ?>" >
 									</div>
 								 </div><br><br>
@@ -1167,7 +1310,20 @@ if (!empty($cutom_fields_data)) {
         </div>
       </div>
 	
-	  <div class="tab-pane" id="result">	  
+	  <div class="tab-pane" id="result">
+<?php
+	$get_student_session_by_session_id = get_student_session_by_session_id($student["student_session_id"]);
+	$session_id = $get_student_session_by_session_id['session_id'];
+?>	  
+		<div class="pull-right">
+		<form action="<?php echo site_url('admin/examresult/printmarksheet') ?>" method="post"  id="printMarksheet1" >
+			<input type="hidden" name="session_id" value="<?php echo $session_id; ?>">
+            <input type="hidden" name="section_id" value="<?php echo $student["section_id"]; ?>">
+            <input type="hidden" name="student_id[]" value="<?php echo $student["student_session_id"]; ?>">
+            <input type="hidden" name="qualifications" value="<?php echo $student["qualification"]; ?>">
+			<input type="button" id="printMarksheet" value="Download" name="submit" class="btn btn-success btn-sm">
+		</form>
+		</div>
 		<div class="timeline-header no-border">
 			<div class="timeline-header no-border">
 				<div class="table-responsive" style="clear: both;">
@@ -1254,6 +1410,18 @@ if (!empty($cutom_fields_data)) {
 	  </div>
 	 
 	</section>
+	 <div class="box-body box-profile">
+		<div class="form-group">
+			<a class="pull-left text-aqua">Important Information</a><br>
+			<form method="POST" action="<?= base_url("student/add_important_info");?>">
+			 <input type="hidden" name="student_id" value="<?php echo $student["id"]; ?>" id="student_id">
+			<textarea rows="10" name="info" class="form-control" id="exampleFormControlTextarea1"><?= get_important_info($student["id"]);?></textarea>
+			
+			</div>
+		<input type="submit" name="Save" class="btn btn-success" style="float:right">
+	 
+		</form>
+	 </div>
 </div>
 <script type="text/javascript">
   $("#myTimelineButton").click(function () {
@@ -1502,7 +1670,9 @@ if (!empty($cutom_fields_data)) {
             </div>
           </div>
         </div>
+		
         <div class="box-footer">
+		
           <div class="pull-right paddA10">
             <button class="btn btn-info pull-right"  data-loading-text="<i class='fa fa-spinner fa-spin '></i> Please wait" value="">
               <?php echo $this->lang->line("save"); ?>
@@ -1511,8 +1681,11 @@ if (!empty($cutom_fields_data)) {
           </form>
         </div>
     </div>
+	
   </div>
+  
 </div>
+
 <script type="text/javascript">
   $(document).ready(function (e) {
     $("#timelineform").on('submit', (function (e) {
@@ -2027,3 +2200,78 @@ function getCalculatedExam($array, $exam_id) {
     return $object;
 }
 ?>
+
+<script>
+
+    $(document).on('click', '#printMarksheet', function (e) {
+	
+        e.preventDefault();
+        var form = $("form#printMarksheet1");
+       // var subsubmit_button = $(this).find(':submit');
+        var formdata = form.serializeArray();
+
+        var list_selected =  $('form#printMarksheet1 input[name="student_id[]"]').length;
+		//alert(list_selected);
+      if(list_selected > 0){
+        $.ajax({
+            type: "POST",
+            url: form.attr('action'),
+            data: formdata, // serializes the form's elements.
+            dataType: "JSON", // serializes the form's elements.
+            beforeSend: function () {
+               // subsubmit_button.button('loading');
+            },
+            success: function (response)
+            {
+				console.log(response);
+                Popup(response.page);
+            },
+            error: function (xhr) { // if error occured
+
+                alert("Error occured.please try again");
+                subsubmit_button.button('reset');
+            },
+            complete: function () {
+                subsubmit_button.button('reset');
+            }
+        });
+      }else{
+         confirm("<?php echo $this->lang->line('please_select_student'); ?>");
+      }
+    });
+
+
+    $(document).on('click', '#select_all', function () {
+        $(this).closest('table').find('td input:checkbox').prop('checked', this.checked);
+    });
+
+</script>
+<script type="text/javascript">
+
+    var base_url = '<?php echo base_url() ?>';
+    function Popup(data)
+    {
+
+        var frame1 = $('<iframe />');
+        frame1[0].name = "frame1";
+        $("body").append(frame1);
+        var frameDoc = frame1[0].contentWindow ? frame1[0].contentWindow : frame1[0].contentDocument.document ? frame1[0].contentDocument.document : frame1[0].contentDocument;
+        frameDoc.document.open();
+//Create a new HTML document.
+        frameDoc.document.write('<html>');
+        frameDoc.document.write('<head>');
+        frameDoc.document.write('<title></title>');
+        frameDoc.document.write('</head>');
+        frameDoc.document.write('<body>');
+        frameDoc.document.write(data);
+        frameDoc.document.write('</body>');
+        frameDoc.document.write('</html>');
+        frameDoc.document.close();
+        setTimeout(function () {
+            window.frames["frame1"].focus();
+            window.frames["frame1"].print();
+            frame1.remove();
+        }, 500);
+        return true;
+    }
+</script>

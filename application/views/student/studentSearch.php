@@ -110,16 +110,11 @@ $currency_symbol = $this->customlib->getSchoolCurrencyFormat();
                                             <th><?php echo $this->lang->line('student_name'); ?></th>
                                             <th><?php echo $this->lang->line('class'); ?></th>
                                              
-                                            <th><?php echo $this->lang->line('date_of_birth'); ?></th>
-                                            <th><?php echo $this->lang->line('gender'); ?></th>
+                                            <th class="">ID/Passport</th>
                                             <?php if ($sch_setting->category) {
     ?>
-                                              <?php if ($sch_setting->category) {?>
-                                            <th><?php echo $this->lang->line('category'); ?></th>
-                                            <?php }
-}if ($sch_setting->mobile_no) {
-    ?>
-                                            <th><?php echo $this->lang->line('mobile_no'); ?></th>
+                                              
+                                            
                                             <?php
 }
 if (!empty($fields)) {

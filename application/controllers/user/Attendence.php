@@ -81,15 +81,15 @@ class Attendence extends Student_Controller
                 $s['footer'] = "Extra information";
                 $type        = $student_attendence->type;
                 $s['title']  = $type;
-                if ($type == 'Present') {
+                if ($type == 'P') {
                     $s['classname'] = "grade-4";
-                } else if ($type == 'Absent') {
+                } else if ($type == 'A') {
                     $s['classname'] = "grade-1";
-                } else if ($type == 'Late') {
+                } else if ($type == 'AR') {
                     $s['classname'] = "grade-3";
                 } else if ($type == 'Late with excuse') {
                     $s['classname'] = "grade-2";
-                } else if ($type == 'Holiday') {
+                } else if ($type == 'H') {
                     $s['classname'] = "grade-5";
                 } else if ($type == 'Half Day') {
                     $s['classname'] = "grade-2";

@@ -229,3 +229,41 @@ if(!function_exists('get_attendence_by_date_id')) {
         return $result;
     }
 }
+
+if(!function_exists('get_attendence_type')) {
+    function get_attendence_type($id=null) {
+		$CI = &get_instance();			
+        $CI->db->select('*');
+        $CI->db->from('attendence_type');
+		$CI->db->where('id',$id);
+        $query = $CI->db->get();
+        $result = $query->row_array();
+        return $result;
+    }
+}
+
+if(!function_exists('get_attendence_uploaded_report')) {
+    function get_attendence_uploaded_report($date=null,$class_id=null,$section_id=null) {
+		$CI = &get_instance();			
+        $CI->db->select('*');
+        $CI->db->from('attendance_report');
+		$CI->db->where('date',$date);
+		$CI->db->where('class_id',$class_id);
+		$CI->db->where('section_id',$section_id);
+        $query = $CI->db->get();
+        $result = $query->result_array();
+        return $result;
+    }
+}
+
+if(!function_exists('get_student_session_by_session_id')) {
+    function get_student_session_by_session_id($student_session_id=null) {
+		$CI = &get_instance();			
+        $CI->db->select('*');
+        $CI->db->from('student_session');
+		$CI->db->where('id',$student_session_id);
+        $query = $CI->db->get();
+        $result = $query->row_array();
+        return $result;
+    }
+}

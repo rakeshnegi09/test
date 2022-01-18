@@ -195,19 +195,34 @@
 											
 											   <div class="col-md-3 col-xs-12">
                                                 <div class="form-group">
-                                                    <label for="exampleInputEmail1"><?php echo $this->lang->line('house') ?></label>
-                                                    <select class="form-control" rows="3" placeholder="" name="house">
+                                                     <label for="exampleInputEmail1">Accommodation</label>
+                                                    <select class="form-control" rows="3" placeholder="" name="hostel_id">
                                                         <option value=""><?php echo $this->lang->line('select') ?></option>
-                                                        <?php foreach ($houses as $hkey => $hvalue) {
+                                                        <?php foreach ($hostelList as $hkey => $hvalue) {
                                                             ?>
-                                                            <option value="<?php echo $hvalue["id"] ?>"><?php echo $hvalue["house_name"] ?></option>
+                                                            <option value="<?php echo $hvalue["id"] ?>" <?php
+                                                            if ($hvalue["id"] == $student["hostel_id"]) {
+                                                                echo "selected";
+                                                            }
+                                                            ?> ><?php echo $hvalue["hostel_name"] ?></option>
 
 													<?php } ?>
                                                     </select>
                                                     <span class="text-danger"><?php echo form_error('house'); ?></span>
                                                 </div>
                                             </div>
-									
+											<div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label for="exampleInputEmail1">Qualification</label>
+                                                    <select class="form-control" rows="3" placeholder="" name="qualification">
+                                                        <option value=""><?php echo $this->lang->line('select') ?></option>
+                                                        <option <?php if($student['qualification'] == "Occupational Certificate: Chef"){ echo "selected"; } ?> value="Occupational Certificate: Chef">Occupational Certificate: Chef</option>
+                                                        <option <?php if($student['qualification'] == "City & Guilds Diploma in Food Preparation & Culinary Arts - Patisserie"){ echo "selected"; } ?> value="City & Guilds Diploma in Food Preparation & Culinary Arts - Patisserie">City & Guilds Diploma in Food Preparation & Culinary Arts - Patisserie</option>
+                                                        <option <?php if($student['qualification'] == "City & Guilds Certificate in Introduction to Professional Cookery and the Hospitality Industry"){ echo "selected"; } ?> value="City & Guilds Certificate in Introduction to Professional Cookery and the Hospitality Industry">City & Guilds Certificate in Introduction to Professional Cookery and the Hospitality Industry</option>
+                                                    </select>
+                                                    <span class="text-danger"><?php echo form_error('house'); ?></span>
+                                                </div>
+                                            </div>
 										</div>
 									 </div>
                          

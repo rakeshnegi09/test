@@ -171,8 +171,33 @@
                         <div class="">
                             <div class="box-header ptbnull"></div> 
                             <div class="box-header with-border">
-                                <h3 class="box-title"><i class="fa fa-users"></i> <?php echo $this->lang->line('student'); ?> <?php echo $this->lang->line('list'); ?></h3>
+							<?php
+									$get_week_date = get_week_date($date);
+									$day_count = 1;
+									foreach($get_week_date as $key=> $day){
+										if($key==0){
+											$from_date = $day->format('Y/m/d');
+										}
+										if($key==4){
+											$to_date = $day->format('Y/m/d');
+										}
+									}
+									
+								
+								?>
+                               
+								<strong class="text-center">Week: <?php echo $from_date ;?> - <?php echo $to_date ;?></strong>
                                 <div class="box-tools pull-right">
+								
+								
+								 <div class="lateday">
+								 
+									<b>Present: <b class="text text-success">P </b></b>
+									<b>Absent: <b class="text text-danger">A </b></b>
+									<b>Holiday: <b class="text text-danger">H</b></b>
+									<b>Absent with Reason: <b class="text text-success">AR</b></b>
+									<b>W.E.L: <b class="text text-success">W.E.L</b></b>
+								</div>
                                 </div>
                             </div>
                             <div class="box-body">
@@ -390,166 +415,21 @@
                 </section>
             </div>
             <script type="text/javascript">
-
-                $(document).ready(function () {
+				function showFileName( event ) {
+				  
+				  // the change event gives us the input it occurred in 
+				  var input = event.srcElement;
+				  
+				  // the input has an array of files in the `files` property, each one has a name that you can use. We're just using the name here.
+				  var fileName = input.files[0].name;
+				  
+				  // use fileName however fits your app best, i.e. add it into a div
+				  infoArea.textContent = 'File name: ' + fileName;
+				}
 					var input = document.getElementById( 'file-upload' );
-					var infoArea = document.getElementById( 'file-upload-filename' );
+				var infoArea = document.getElementById( 'file-upload-filename' );
 
-					input.addEventListener( 'change', showFileName );
-
-					function showFileName( event ) {
-					  
-					  // the change event gives us the input it occurred in 
-					  var input = event.srcElement;
-					  
-					  // the input has an array of files in the `files` property, each one has a name that you can use. We're just using the name here.
-					  var fileName = input.files[0].name;
-					  
-					  // use fileName however fits your app best, i.e. add it into a div
-					  infoArea.textContent = 'File name: ' + fileName;
-					}
-                    $.extend($.fn.dataTable.defaults, {
-                        searching: false,
-                        ordering: true,
-                        paging: false,
-                        retrieve: true,
-                        destroy: true,
-                        info: false
-                    });
-                    var table = $('.example').DataTable();
-                    table.buttons('.export').remove();
-                    var section_id_post = '<?php echo $section_id; ?>';
-                    var class_id_post = '<?php echo $class_id; ?>';
-                    populateSection(section_id_post, class_id_post);
-                    function populateSection(section_id_post, class_id_post) {
-                        $('#section_id').html("");
-                        var base_url = '<?php echo base_url() ?>';
-                        var div_data = '<option value=""><?php echo $this->lang->line('select'); ?></option>';
-                        $.ajax({
-                            type: "GET",
-                            url: base_url + "sections/getByClass",
-                            data: {'class_id': class_id_post, 'day_wise': 'yes'},
-                            dataType: "json",
-                            success: function (data) {
-                                $.each(data, function (i, obj)
-                                {
-                                    var select = "";
-                                    if (section_id_post == obj.section_id) {
-                                        var select = "selected=selected";
-                                    }
-                                    div_data += "<option value=" + obj.section_id + " " + select + ">" + obj.section + "</option>";
-                                });
-                                $('#section_id').append(div_data);
-                            }
-                        });
-                    }
-
-                    $(document).on('change', '#class_id', function (e) {
-                        $('#section_id').html("");
-                        var class_id = $(this).val();
-                        var base_url = '<?php echo base_url() ?>';
-                        var div_data = '<option value=""><?php echo $this->lang->line('select'); ?></option>';
-                        var url = "<?php
-                $userdata = $this->customlib->getUserData();
-                if (($userdata["role_id"] == 2)) {
-                    echo "getClassTeacherSection";
-                } else {
-                    echo "getByClass";
-                }
-                ?>";
-                        $.ajax({
-                            type: "GET",
-                            url: base_url + "sections/getByClass",
-                            data: {'class_id': class_id, 'day_wise': 'yes'},
-                            dataType: "json",
-                            success: function (data) {
-                                $.each(data, function (i, obj)
-                                {
-                                    div_data += "<option value=" + obj.section_id + ">" + obj.section + "</option>";
-                                });
-                                $('#section_id').append(div_data);
-                            }
-                        });
-                    });
-
-                });
-            </script>
-            <script type="text/javascript">
-                $(function () {
-                    $('.button-checkbox').each(function () {
-                        var $widget = $(this),
-                                $button = $widget.find('button'),
-                                $checkbox = $widget.find('input:checkbox'),
-                                color = $button.data('color'),
-                                settings = {
-                                    on: {
-                                        icon: 'glyphicon glyphicon-check'
-                                    },
-                                    off: {
-                                        icon: 'glyphicon glyphicon-unchecked'
-                                    }
-                                };
-                        $button.on('click', function () {
-                            $checkbox.prop('checked', !$checkbox.is(':checked'));
-                            $checkbox.triggerHandler('change');
-                            updateDisplay();
-                        });
-                        $checkbox.on('change', function () {
-                            updateDisplay();
-                        });
-
-                        function updateDisplay() {
-                            var isChecked = $checkbox.is(':checked');
-                            $button.data('state', (isChecked) ? "on" : "off");
-                            $button.find('.state-icon')
-                                    .removeClass()
-                                    .addClass('state-icon ' + settings[$button.data('state')].icon);
-                            if (isChecked) {
-                                $button
-                                        .removeClass('btn-success')
-                                        .addClass('btn-' + color + ' active');
-                            } else {
-                                $button
-                                        .removeClass('btn-' + color + ' active')
-                                        .addClass('btn-primary');
-                            }
-                        }
-
-                        function init() {
-                            updateDisplay();
-                            if ($button.find('.state-icon').length == 0) {
-                                $button.prepend('<i class="state-icon ' + settings[$button.data('state')].icon + '"></i> ');
-                            }
-                        }
-                        init();
-                    });
-                });
- 
-                $('#checkbox1').change(function () {
-
-                    if (this.checked) {
-                        var returnVal = confirm("<?php echo $this->lang->line('are_you_sure'); ?>");
-                        $(this).prop("checked", returnVal);
-
-                        $("input[type=radio]").attr('disabled', true);
-
-
-                    } else {
-                        $("input[type=radio]").attr('disabled', false);
-                        $("input[type=radio][value='1']").attr("checked", "checked");
-
-                    }
-
-                });
-
-
-                $('form.form_attendence').on('submit', function (e) {
-
-                    $(this).submit(function () {
-                        return false;
-                    });
-                    return true;
-
-                });
+				input.addEventListener( 'change', showFileName );
+             
 
             </script>

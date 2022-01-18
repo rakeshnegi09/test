@@ -109,13 +109,6 @@
 
 		   </div>
 		 
-				<div class="box box-primary">
-				 <div class="box-body box-profile">
-						<a class="pull-left text-aqua">Important Information</a><br>
-						<p><?= get_important_info($student["id"]);?></p>
-				 </div>
-				</div>
-				
          </div>
 		
 				
@@ -1002,7 +995,7 @@
 								
 								 <div class="col-lg-12">
 									<div class="pull-right"><label>Total hours worked</label>
-										<input type="text" readonly class="" size="10" name="total_hour" value="<?= $total_hours; ?>">
+										<input type="text" readonly class="" size="10" name="total_hour" value="<?= $total_hours; ?>"> /
 										<input type="text" readonly class="" size="12" name="manual_hours" value="<?php if(isset($row["manual_hours"][0])){ echo $get_wel[0]["manual_hours"]; } ?>" >
 									</div>
 								 </div><br><br>
@@ -2112,6 +2105,18 @@
 
 
   </section>
+  <div class="box-body box-profile">
+		<div class="form-group">
+			<a class="pull-left text-aqua">Important Information</a><br>
+			<form method="POST" action="<?= base_url("student/add_important_info");?>">
+			 <input type="hidden" name="student_id" value="<?php echo $student["id"]; ?>" id="student_id">
+			<textarea rows="10" name="info" class="form-control" id="exampleFormControlTextarea1"><?= get_important_info($student["id"]);?></textarea>
+			
+			</div>
+		<input type="submit" name="Save" class="btn btn-success" style="float:right">
+	 
+		</form>
+	 </div>
 </div>
 <div class="modal fade" id="myTransportFeesModal" role="dialog">
 <div class="modal-dialog modal-sm400">

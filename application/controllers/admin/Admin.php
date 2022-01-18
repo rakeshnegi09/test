@@ -940,21 +940,9 @@ class Admin extends Admin_Controller
                 $row   = array();
                 $row[] = $student->admission_no;
                 $row[] =  "<a href='".base_url()."student/view/".$student->id."'>".$this->customlib->getFullName($student->firstname,$student->middlename,$student->lastname,$sch_setting->middlename,$sch_setting->lastname)."</a>";              
-                  $row[] = $student->class . "(" . $student->section . ")";
-                if ($sch_setting->father_name) {
-                    $row[]= $student->father_name ;
-                }
-                
-                   $row[]=  $this->customlib->dateformat($student->dob);
-              
-
-                $row[] = $student->gender;
-                if ($sch_setting->category) {
-                    $row[] = $student->category ;
-                }
-                if ($sch_setting->mobile_no) {
-                    $row[] = $student->mobileno ;
-                }
+                $row[] = $student->class . "(" . $student->section . ")";
+                $new_array = (array)$student;
+                $row[] = $new_array['id-passport'];
 
                 foreach ($fields as $fields_key => $fields_value) {
                    

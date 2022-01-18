@@ -124,22 +124,11 @@
                                         </div>
                                         <div class="col-md-8 col-sm-8">
                                             <div class="lateday">
-                                                <?php
-                                                foreach ($attendencetypeslist as $key_type => $value_type) {
-                                                    ?>
-                                                    &nbsp;&nbsp;
-                                                    <b>
-                                                        <?php
-                                                        $att_type = str_replace(" ", "_", strtolower($value_type['type']));
-                                                        if (strip_tags($value_type["key_value"]) != "E") {
-
-                                                            echo $this->lang->line($att_type) . ": " . $value_type['key_value'] . "";
-                                                        }
-                                                        ?>
-                                                    </b>
-                                                    <?php
-                                                }
-                                                ?>
+                                                <b>Present: <b class="text text-success">P </b></b>
+                                                <b>Absent: <b class="text text-danger">A </b></b>
+                                                <b>Holiday: <b class="text text-danger">H</b></b>
+                                                <b>Absent with Reason: <b class="text text-success">AR</b></b>
+												<b><b class="text text-success">W.E.L</b></b>
                                             </div>
 
                                         </div>
@@ -161,34 +150,10 @@
                                                     <th>
             <?php echo $this->lang->line('student'); ?> / <?php echo $this->lang->line('date'); ?>
                                                     </th>
-                                                    <th><br/><span data-toggle="tooltip" title="<?php echo "Gross Present Percentage(%)"; ?>">%</span></th>
-
+                                                   
                                                     <?php
-                                                    foreach ($attendencetypeslist as $key => $value) {                                                       
-                                                        if (strip_tags($value["key_value"]) != "E") {
-                                                            ?>
-                                                            <th colspan="" ><span data-toggle="tooltip" title="<?php echo "Total " . $value["type"]; ?>"><?php echo strip_tags($value["key_value"]); ?>
-
-                                                                </span></th>
-
-                                                            <?php
-                                                        }
-                                                    }
-                                                    ?>
-                                                    <?php
-                                                    foreach ($attendence_array as $at_key => $at_value) {
-                                                        if (date('D', $this->customlib->dateyyyymmddTodateformat($at_value)) == "Sun") {
-                                                            ?>
-                                                            <th class="tdcls text text-center bg-danger">
-                                                                <?php
-                                                                echo date('d', $this->customlib->dateyyyymmddTodateformat($at_value)) . "<br/>" .
-                                                                date('D', $this->customlib->dateyyyymmddTodateformat($at_value))
-                                                                ;
-                                                                ?>
-                                                            </th>
-                                                            <?php
-                                                        } else {
-                                                            ?>
+                                                   foreach ($attendence_array as $at_key => $at_value) {
+                                                        ?>
                                                             <th class="tdcls text text-center">
                                                                 <?php
                                                                 echo date('d', $this->customlib->dateyyyymmddTodateformat($at_value)) . "<br/>" .
@@ -196,10 +161,7 @@
                                                                 ;
                                                                 ?>
                                                             </th>
-                                                            <?php
-                                                        }
-                                                    }
-                                                    ?>
+                                                   <?php }  ?>
 
                                                 </tr>
                                             </thead>
@@ -222,56 +184,24 @@
                                                                 <span data-toggle="popover" class="detail_popover" data-original-title="" title=""><a href="#" style="color:#333"><?php echo $this->customlib->getFullName($student_value['firstname'],$student_value['middlename'],$student_value['lastname'],$sch_setting->middlename,$sch_setting->lastname); ?></a></span>
                                                                 <div class="fee_detail_popover" style="display: none"><?php echo "Admission No: " . $student_value['admission_no']; ?></div> 
                                                             </th>
-                                                            <th><?php
-                                                                $total_present = ($monthAttendance[$i][$student_value['student_session_id']]['present'] + $monthAttendance[$i][$student_value['student_session_id']]['late_with_excuse'] + $monthAttendance[$i][$student_value['student_session_id']]['half_day'] + $monthAttendance[$i][$student_value['student_session_id']]['late']);
-                                                                $month_number = date("m", strtotime($month_selected));
-                                                                $num_of_days = cal_days_in_month(CAL_GREGORIAN, $month_number, date("Y"));
-                                                                $total_school_days = $monthAttendance[$i][$student_value['student_session_id']]['present'] + $monthAttendance[$i][$student_value['student_session_id']]['late_with_excuse'] + $monthAttendance[$i][$student_value['student_session_id']]['late'] + $monthAttendance[$i][$student_value['student_session_id']]['half_day'] + $monthAttendance[$i][$student_value['student_session_id']]['absent'];
-                                                                if ($total_school_days == 0) {
-                                                                    $percentage = -1;
-                                                                    $print_percentage = "-";
-                                                                } else {
-
-                                                                    $percentage = ($total_present / $total_school_days) * 100;
-                                                                    $print_percentage = round($percentage, 0);
-                                                                }
-
-                                                                if (($percentage < 75) && ($percentage >= 0)) {
-                                                                    $label = "class='label label-danger'";
-                                                                } else if ($percentage > 75) {
-
-                                                                    $label = "class='label label-success'";
-                                                                } else {
-
-                                                                    $label = "class='label label-default'";
-                                                                }
-                                                                echo "<label $label>" . $print_percentage . "</label>";
-                                                                ?></th>
-
-                                                            <th><?php print_r($monthAttendance[$i][$student_value['student_session_id']]['present']); ?></th>
-                                                            <!--th><?php print_r($monthAttendance[$i][$student_value['student_session_id']]['late_with_excuse']); ?></th-->
-                                                            <th><?php print_r($monthAttendance[$i][$student_value['student_session_id']]['late'] + $monthAttendance[$i][$student_value['student_session_id']]['late_with_excuse']); ?></th>
-                                                            <th><?php print_r($monthAttendance[$i][$student_value['student_session_id']]['absent']); ?></th>
-                                                            <th><?php print_r($monthAttendance[$i][$student_value['student_session_id']]['holiday']); ?></th>
-                                                            <th><?php print_r($monthAttendance[$i][$student_value['student_session_id']]['half_day']); ?></th>
-
+                                                           
                                                             <?php
+															$data_atte= array();
                                                             foreach ($attendence_array as $at_key => $at_value) {
+																
+																$data_atte = get_attendence_by_date_id($at_value,$student_value['student_session_id']);
+																
                                                                 ?>
                                                                 <th class="tdcls text text-center">
 
                                                                     <span data-toggle="popover" class="detail_popover" data-original-title="" title=""><a href="#" style="color:#333"><?php
-                                                                            if (strip_tags($resultlist[$at_value][$student_value['student_session_id']]['key']) == "E") {
+																	
+																	if(!empty($data_atte)){
+																		$get_attendence_type = get_attendence_type($data_atte['attendence_type_id']);
 
-                                                                                $attendence_key = "L";
-                                                                                $remark = "Late With Excuse";
-                                                                            } else {
-
-                                                                                $attendence_key = $resultlist[$at_value][$student_value['student_session_id']]['att_type'];
-                                                                                $remark = $resultlist[$at_value][$student_value['student_session_id']]['remark'];
-                                                                            }
-
-                                                                            print_r($attendence_key);
+                                                                            print_r($get_attendence_type['key_value']);
+																	}
+                                                                            
                                                                             ?></a></span>
                                                                     <div class="fee_detail_popover" style="display: none"><?php echo $remark; ?></div>
 

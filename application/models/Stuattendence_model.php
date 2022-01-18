@@ -166,6 +166,9 @@ class Stuattendence_model extends MY_Model {
 		$final_array = array(
 				'doc'=>$data['doc'],
 				'from_date'=>$from_date,
+				'date'=>$data['date'],
+				'class_id'=>$data['class_id'],
+				'section_id'=>$data['section_id'],
 				'to_date'=>$to_date,
 				);
 		if(!empty($data['doc'])){

@@ -285,7 +285,9 @@ class Student extends Admin_Controller
                 'firstname'         => $this->input->post('firstname'),
                 'dob'               => $this->customlib->dateFormatToYYYYMMDD($this->input->post('dob')),		
                 'guardian_email'    => $this->input->post('guardian_email'),
+                'qualification'            => $this->input->post('qualification'),
                 'gender'            => $this->input->post('gender'),
+                'hostel_id'            => $this->input->post('hostel_id'),
                 'guardian_name'     => $this->input->post('guardian_name'),
                 'guardian_relation' => $this->input->post('guardian_relation'),
                 'guardian_phone'    => $this->input->post('guardian_phone'),
@@ -531,9 +533,135 @@ class Student extends Admin_Controller
 
         }
         echo json_encode($array);
-
+		//redirect($_SERVER['HTTP_REFERER']);
     }
+	
+	
+	 public function create_doc_legal()
+    {
 
+        $this->form_validation->set_rules('first_title', $this->lang->line('title'), 'trim|required|xss_clean');
+        $this->form_validation->set_rules('first_doc', $this->lang->line('document'), 'callback_handle_uploadcreate_doc');
+
+        if ($this->form_validation->run() == false) {
+            $msg = array(
+                'first_title' => form_error('first_title'),
+                'first_doc'   => form_error('first_doc'),
+            );
+            $array = array('status' => 'fail', 'error' => $msg, 'message' => '');
+        } else {
+            $student_id = $this->input->post('student_id');
+            if (isset($_FILES["first_doc"]) && !empty($_FILES['first_doc']['name'])) {
+                $uploaddir = './uploads/student_documents/' . $student_id . '/';
+                if (!is_dir($uploaddir) && !mkdir($uploaddir)) {
+                    die("Error creating folder $uploaddir");
+                }
+
+                $fileInfo    = pathinfo($_FILES["first_doc"]["name"]);
+                $first_title = $this->input->post('first_title');
+                $doc_type = $this->input->post('doc_type');
+                $file_name   = $_FILES['first_doc']['name'];
+                $exp         = explode(' ', $file_name);
+                $imp         = implode('_', $exp);
+                $img_name    = $uploaddir . basename($imp);
+                move_uploaded_file($_FILES["first_doc"]["tmp_name"], $img_name);
+                $data_img = array('student_id' => $student_id, 'title' => $first_title, 'doc' => $imp,'doc_type' => $doc_type);
+                $this->student_model->adddoc($data_img);
+
+            }
+
+            $msg   = $this->lang->line('success_message');
+            $array = array('status' => 'success', 'error' => '', 'message' => $msg);
+
+        }
+      
+		redirect($_SERVER['HTTP_REFERER']);
+    }
+	
+	
+	public function create_doc_certificate()
+    {
+
+        $this->form_validation->set_rules('first_title', $this->lang->line('title'), 'trim|required|xss_clean');
+       
+        if ($this->form_validation->run() == false) {
+			
+            $msg = array(
+                'first_title' => form_error('first_title'),
+                'first_doc'   => form_error('first_doc'),
+            );
+            $array = array('status' => 'fail', 'error' => $msg, 'message' => '');
+        } else {
+			
+            $student_id = $this->input->post('student_id');
+            if (isset($_FILES["first_doc"]) && !empty($_FILES['first_doc']['name'])) {
+                $uploaddir = './uploads/student_documents/' . $student_id . '/';
+                if (!is_dir($uploaddir) && !mkdir($uploaddir)) {
+                    die("Error creating folder $uploaddir");
+                }
+
+                $fileInfo    = pathinfo($_FILES["first_doc"]["name"]);
+                $first_title = $this->input->post('first_title');
+                $doc_type = $this->input->post('doc_type');
+                $file_name   = $_FILES['first_doc']['name'];
+                $exp         = explode(' ', $file_name);
+                $imp         = implode('_', $exp);
+                $img_name    = $uploaddir . basename($imp);
+                move_uploaded_file($_FILES["first_doc"]["tmp_name"], $img_name);
+				if($this->input->post('cert_collected') == "YES"){
+					$cert_collected = "YES";
+				}else{
+					$cert_collected = "NO";
+				}
+                $data_img = array(
+					'student_id' => $student_id,				
+					'date_collected' => date('Y-m-d',strtotime($this->input->post('date_collected'))), 
+					'title' => $first_title, 
+					'person_collected' => $this->input->post('person_collected'), 
+					'telephone' => $this->input->post('telephone'), 
+					'cert_collected' => $cert_collected, 
+					'doc' => $imp,
+					'doc_type' => $doc_type
+				);
+				
+                $this->student_model->adddoc($data_img);
+
+            }
+
+            $msg   = $this->lang->line('success_message');
+            $array = array('status' => 'success', 'error' => '', 'message' => $msg);
+
+        }
+      
+		redirect($_SERVER['HTTP_REFERER']);
+    }
+	
+	
+	
+	public function edit_profile_image()
+    {
+
+		$student_id = $this->input->post('student_id');
+		if (isset($_FILES["first_doc"]) && !empty($_FILES['first_doc']['name'])) {
+			$uploaddir = './uploads/student_images/';
+			if (!is_dir($uploaddir) && !mkdir($uploaddir)) {
+				die("Error creating folder $uploaddir");
+			}
+
+			$fileInfo    = pathinfo($_FILES["first_doc"]["name"]);
+			$first_title = $this->input->post('first_title');
+			$doc_type = $this->input->post('doc_type');
+			$file_name   = $_FILES['first_doc']['name'];
+			$exp         = explode(' ', $file_name);
+			$imp         = implode('_', $exp);
+			$img_name    = $uploaddir . basename($imp).time();
+			move_uploaded_file($_FILES["first_doc"]["tmp_name"], $img_name);
+			$data_img = array('image' => $img_name);
+			$this->db->where('id',$student_id);
+			$this->db->update('students',$data_img);
+		}
+    }
+	
     public function handle_uploadcreate_doc()
     {
 
@@ -1078,7 +1206,9 @@ class Student extends Admin_Controller
                 'dob'               => $this->customlib->dateFormatToYYYYMMDD($this->input->post('dob')),
                 'guardian_email'    => $this->input->post('guardian_email'),
                 'gender'            => $this->input->post('gender'),
+                'hostel_id'            => $this->input->post('hostel_id'),
                 'guardian_name'     => $this->input->post('guardian_name'),
+                'qualification'     => $this->input->post('qualification'),
                 'guardian_relation' => $this->input->post('guardian_relation'),
                 'guardian_phone'    => $this->input->post('guardian_phone'),
                 'vehroute_id'       => $vehroute_id,
@@ -1920,16 +2050,10 @@ class Student extends Admin_Controller
                   //  $row[] = $student->father_name;
                 }
                
-                $row[] = $this->customlib->dateformat($student->dob);          
-
-                $row[] = $student->gender;
-                if ($sch_setting->category) {
-                    $row[] = $student->category;
-                }
-                if ($sch_setting->mobile_no) {
-                    $row[] = $student->mobileno;
-                }
-
+               // $row[] = $this->customlib->dateformat($student->dob);          
+				$new_array = (array)$student;
+                $row[] = $new_array['id-passport'];
+               
                 foreach ($fields as $fields_key => $fields_value) {
 
                     $custom_name   = $fields_value->name;
